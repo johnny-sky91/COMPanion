@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+
+<p>Place for systems list</p>
+<a href="/systems_list/add_new_system">Add new system</a>
+<br><b>Systems:</b>
+{% for system in systems %}
+<br>{{ system.system_name }}
+{% endfor %}
+</html>
+{% endblock %}

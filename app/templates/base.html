@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>COMPanion - {{ title }}</title>
+</head>
+<body>
+<style>
+b,a {font-size:20px;}
+</style>
+<div>
+        <b><a href="/components_list">Components</a></b> ||
+        <b><a href="/soi_list">SOI</a></b> ||
+        <b><a href="/systems_list">Systems</a></b> ||
+</div>
+<div class="container" style="max-width: 90%">
+    <div class="text-left mt-5">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>{% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        <hr>
+        <p class="lead">{% block content %}{% endblock %}</p>
+    </div>
+</div>
+</body>
+</html>

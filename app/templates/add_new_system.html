@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+
+<p>Tutaj dodajesz nowy system</p>
+<form action="" method="post" novalidate>
+    {{form.hidden_tag()}}
+    <p style="font-size:18px">
+        1. {{ form.system_name.label }}: {{ form.system_name() }}<br><br>
+        {{ form.submit() }} <br>
+        {% for error in form.system_name.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}<br>
+    </p>
+</form>
+{% endblock %}

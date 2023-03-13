@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+
+<p>Place for for new component comment</p>
+<form action="" method="post" novalidate>
+    {{form.hidden_tag()}}
+    <p style="font-size:18px">
+        1. {{ form.component_comment_text.label }}: {{ form.component_comment_text() }}<br><br>
+        {{ form.submit() }} <br>
+        {% for error in form.component_comment_text.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}<br>
+    </p>
+</form>
+{% endblock %}

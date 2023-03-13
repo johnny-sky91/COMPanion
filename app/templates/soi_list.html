@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+
+<p>Place for SOI list</p>
+<a href="/soi_list/add_new_soi">Add new SOI</a>
+<br><b>SOI:</b>
+{% for soi in sois %}
+<br><a href="{{ url_for('soi_view', soi_id=soi.soi_id) }}">{{ soi.soi_name }}</a>, status: {{ soi.soi_status }}
+{% endfor %}
+{% endblock %}

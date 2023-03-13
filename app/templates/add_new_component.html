@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<p>Tutaj dodajesz nowy komponent</p>
+<form action="" method="post" novalidate>
+    {{form.hidden_tag()}}
+    <p style="font-size:18px">
+        1. {{ form.component_name.label }}: {{ form.component_name() }}<br><br>
+        1. {{ form.component_status.label }}: {{ form.component_status() }}<br><br>
+        {{ form.submit() }} <br>
+        {% for error in form.component_name.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}<br>
+    </p>
+</form>
+{% endblock %}
+

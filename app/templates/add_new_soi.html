@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<p>Tutaj dodajesz nowy SOI</p>
+<form action="" method="post" novalidate>
+    {{form.hidden_tag()}}
+    <p style="font-size:18px">
+        1. {{ form.soi_name.label }}: {{ form.soi_name() }}<br><br>
+        1. {{ form.soi_status.label }}: {{ form.soi_status() }}<br><br>
+        {{ form.submit() }} <br>
+        {% for error in form.soi_name.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}<br>
+    </p>
+</form>
+{% endblock %}
