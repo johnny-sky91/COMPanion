@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 
-<p>Tutaj dodajesz nowy komponent</p>
+<p>Add new component</p>
 <form action="" method="post" novalidate>
     {{form.hidden_tag()}}
     <p style="font-size:18px">
-        1. {{ form.component_name.label }}: {{ form.component_name() }}<br><br>
-        2. {{ form.component_description.label }}: {{ form.component_description() }}<br><br>
-        3. {{ form.component_status.label }}: {{ form.component_status() }}<br><br>
+        1. {{ form.component_name.label }}: {{ form.component_name(style='height: 20px; width:200px') }}<br><br>
+        2. {{ form.component_description.label }}: {{ form.component_description(style='height: 20px; width:200px') }}<br><br>
+        3. {{ form.component_status.label }}: {{ form.component_status(style='height: 20px; width:200px') }}<br><br>
         {{ form.submit() }} <br>
         {% for error in form.component_name.errors %}
         <span style="color: red;">{{ error }}</span>

@@ -21,6 +21,10 @@ def components_list():
 @app.route("/components_list/add_new_component", methods=["GET", "POST"])
 def add_new_component():
     form = AddComponent()
+
+    status_list = ['Status 1', 'Status 2', 'Status 3']
+    form.component_status.choices = status_list
+
     if form.validate_on_submit():
         new_component = Component(
             component_name=form.component_name.data,
