@@ -1,4 +1,5 @@
 from app import db
+from datetime import datetime
 
 
 class SOI(db.Model):
@@ -19,6 +20,7 @@ class SOI_Comment(db.Model):
 class Component(db.Model):
     component_id = db.Column(db.Integer, primary_key=True)
     component_name = db.Column(db.String(160), unique=True)
+    component_description = db.Column(db.String(160), unique=True)
     component_status = db.Column(db.String(160))
 
     def __repr__(self):
@@ -29,6 +31,7 @@ class Component_Comment(db.Model):
     component_comment_id = db.Column(db.Integer, primary_key=True)
     what_component_id = db.Column(db.Integer)
     component_comment_text = db.Column(db.String(160))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
 
 class System(db.Model):

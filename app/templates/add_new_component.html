@@ -6,7 +6,8 @@
     {{form.hidden_tag()}}
     <p style="font-size:18px">
         1. {{ form.component_name.label }}: {{ form.component_name() }}<br><br>
-        1. {{ form.component_status.label }}: {{ form.component_status() }}<br><br>
+        2. {{ form.component_description.label }}: {{ form.component_description() }}<br><br>
+        3. {{ form.component_status.label }}: {{ form.component_status() }}<br><br>
         {{ form.submit() }} <br>
         {% for error in form.component_name.errors %}
         <span style="color: red;">{{ error }}</span>

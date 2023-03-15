@@ -24,6 +24,7 @@ def add_new_component():
     if form.validate_on_submit():
         new_component = Component(
             component_name=form.component_name.data,
+            component_description=form.component_description.data,
             component_status=form.component_status.data,
         )
         db.session.add(new_component)

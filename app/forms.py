@@ -32,12 +32,13 @@ class AddSOI(FlaskForm):
 class AddComponent(FlaskForm):
     component_name = TextAreaField(
         "Component name",
-        validators=[DataRequired(message="Component name can't be empty")],
-    )
+        validators=[DataRequired(message="Component name can't be empty")])
+    component_description = TextAreaField(
+        "Component Description",
+        validators=[DataRequired(message="Component Description can't be empty")])
     component_status = TextAreaField(
         "Component Status",
-        validators=[DataRequired(message="Component status can't be empty")],
-    )
+        validators=[DataRequired(message="Component status can't be empty")])
     submit = SubmitField("Add new Component")
 
 
