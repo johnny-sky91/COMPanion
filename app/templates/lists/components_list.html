@@ -1,16 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
 
-<p>Place for components list</p>
 <a href="/components_list/add_new_component">Add new component</a>
-<br><b>Components:</b>
-{% for component in components %}
-<br>
-<a href="{{ url_for('component_view', component_id=component.component_id) }}">{{ component.component_name }}</a> 
-status: {{ component.component_status }}
-status: {{ component.component_description }}
-{% endfor %}
-
+<br><b>Components list:</b>
 <style type="text/css">
     .tg  {border-collapse:collapse;border-spacing:0;}
     .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
@@ -29,12 +21,15 @@ status: {{ component.component_description }}
       </tr>
     </thead>
     <tbody>
+      {% for component in components %}
       <tr>
-        <td class="tg-0lax">AAA</td>
-        <td class="tg-0lax">BBB</td>
-        <td class="tg-0lax">CCC</td>
-        <td class="tg-0lax">DDD</td>
+        <td class="tg-0lax">{{ component.component_id }}</td>
+        <td class="tg-0lax"><a href="{{ url_for('component_view', component_id=component.component_id) }}">{{ component.component_name }}</a> </td>
+        <td class="tg-0lax">{{ component.component_description }}</td>
+        <td class="tg-0lax">{{ component.component_status }}</td>
       </tr>
+      {% endfor %}
+
     </tbody>
     </table>
 
