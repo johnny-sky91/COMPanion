@@ -1,6 +1,12 @@
 from app import app, db
 from flask import render_template, flash, redirect, url_for
-from app.forms import AddSystem, AddSOI, AddComponent, AddComponentComment
+from app.forms import (
+    AddSystem,
+    AddSOI,
+    AddComponent,
+    AddComponentComment,
+    ChangeComponentStatus,
+)
 from app.models import System, SOI, Component, Component_Comment
 
 
@@ -22,7 +28,7 @@ def components_list():
 def add_new_component():
     form = AddComponent()
 
-    status_list = ['Status 1', 'Status 2', 'Status 3']
+    status_list = ["Status 1", "Status 2", "Status 3"]
     form.component_status.choices = status_list
 
     if form.validate_on_submit():
@@ -51,6 +57,21 @@ def component_view(component_id):
         title=f"{component.component_name}",
         component=component,
         comments_list=comments_list,
+    )
+
+
+@app.route("/component_view/<component_id>/change_status", methods=["GET", "POST"])
+def component_change_status(component_id):
+    form = ChangeComponentStatus()
+    component = Component.query.get(component_id)
+    status_list = ["Status 1", "Status 2", "Status 3"]
+    form.component_status.choices = status_list
+    if form.validate_on_submit():
+        component.component_status = form.component_status.data
+        db.session.commit()
+        return redirect(url_for("component_view", component_id=component_id))
+    return render_template(
+        "update_component_status.html", title=f"{component.component_name}", form=form
     )
 
 
