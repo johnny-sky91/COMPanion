@@ -6,7 +6,6 @@
 <p>Component name: {{ component.component_name }}</p>
 <p>Component name: {{ component.component_description}}</p>
 <p>Component status: <a href="{{ url_for('component_change_status', component_id=component.component_id) }}">{{ component.component_status }}</a></p>
-<p>Change status</p>
 <p>Add SOI usage</p>
 <a href="{{ url_for('add_component_comment', component_id=component.component_id) }}">Add new comment</a>
 {% for comment in comments_list %}

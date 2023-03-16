@@ -45,7 +45,8 @@ class AddComponent(FlaskForm):
 
 class ChangeComponentStatus(FlaskForm):
     component_status = SelectField(
-        "Status", validators=[DataRequired(message="Component status can't be empty")]
+        "New status",
+        validators=[DataRequired(message="Component status can't be empty")],
     )
     submit = SubmitField("Change component status")
 

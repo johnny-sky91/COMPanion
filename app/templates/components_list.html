@@ -6,9 +6,40 @@
 <br><b>Components:</b>
 {% for component in components %}
 <br>
-<a href="{{ url_for('component_view', component_id=component.component_id) }}">{{ component.component_name }}</a>
-, status: {{ component.component_status }}
+<a href="{{ url_for('component_view', component_id=component.component_id) }}">{{ component.component_name }}</a> 
+status: {{ component.component_status }}
+status: {{ component.component_description }}
 {% endfor %}
-</html>
+
+<style type="text/css">
+    .tg  {border-collapse:collapse;border-spacing:0;}
+    .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+      overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+      font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg .tg-0lax{text-align:left;vertical-align:top}
+    </style>
+    <table class="tg">
+    <thead>
+      <tr>
+        <th class="tg-0lax">ID</th>
+        <th class="tg-0lax">Name</th>
+        <th class="tg-0lax">Description</th>
+        <th class="tg-0lax">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="tg-0lax">AAA</td>
+        <td class="tg-0lax">BBB</td>
+        <td class="tg-0lax">CCC</td>
+        <td class="tg-0lax">DDD</td>
+      </tr>
+    </tbody>
+    </table>
+
+
+
+
 {% endblock %}
 
