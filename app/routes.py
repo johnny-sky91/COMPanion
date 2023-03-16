@@ -17,7 +17,7 @@ def basic_view():
 
 @app.route("/components_list")
 def components_list():
-    components = Component.query.order_by(Component.component_name.desc())
+    components = Component.query.order_by(Component.component_id.asc())
 
     return render_template(
         "lists/components_list.html", title="Components", components=components
