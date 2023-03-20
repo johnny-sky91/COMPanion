@@ -28,8 +28,7 @@
         <td class="tg-0lax"><a href="{{ url_for('component_view', component_id=component.component_id) }}">{{ component.component_name }}</a> </td>
         <td class="tg-0lax">{{ component.component_description }}</td>
         <td class="tg-0lax">{{ component.component_status }}</td>
-        <td class="tg-0lax">Latest comment</td>
-
+        <td class="tg-0lax">{{ component.component_comments[0] }}</td>
       </tr>
       {% endfor %}
 

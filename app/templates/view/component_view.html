@@ -2,10 +2,10 @@
 {% block content %}
 
 <b>Component info</b>
-<p>Component ID: {{ component.component_id }}</p>
-<p>Component name: {{ component.component_name }}</p>
-<p>Component name: {{ component.component_description}}</p>
-<p>Component status: <a href="{{ url_for('component_change_status', component_id=component.component_id) }}">{{ component.component_status }}</a></p>
+<p>ID: {{ component.component_id }}</p>
+<p>Name: {{ component.component_name }}</p>
+<p>Description: {{ component.component_description}}</p>
+<p>Status: <a href="{{ url_for('component_change_status', component_id=component.component_id) }}">{{ component.component_status }}</a></p>
 <p>Add SOI usage</p>
 <a href="{{ url_for('add_component_comment', component_id=component.component_id) }}">Add new comment</a>
 {% for comment in comments_list %}
