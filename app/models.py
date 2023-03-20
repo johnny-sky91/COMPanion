@@ -23,7 +23,7 @@ class Component(db.Model):
     component_description = db.Column(db.String(160), unique=True)
     component_status = db.Column(db.String(160))
     component_comments = db.relationship(
-        "Component_Comment", backref="component", lazy=True, uselist=False
+        "Component_Comment", backref="component", lazy=True
     )
 
     def __repr__(self):
