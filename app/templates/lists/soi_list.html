@@ -28,7 +28,7 @@
         <td class="tg-0lax"><a href="{{ url_for('soi_view', soi_id=soi.soi_id) }}">{{ soi.soi_name }}</a> </td>
         <td class="tg-0lax">{{ soi.soi_description }}</td>
         <td class="tg-0lax">{{ soi.soi_status }}</td>
-        <td class="tg-0lax"> ADD COMMENTS </td>
+        <td class="tg-0lax">{{ comments_list[loop.index -1] }}</td>
       </tr>
       {% endfor %}
 

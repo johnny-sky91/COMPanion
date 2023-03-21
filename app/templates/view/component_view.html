@@ -7,6 +7,7 @@
 <p>Description: {{ component.component_description}}</p>
 <p>Status: <a href="{{ url_for('component_change_status', component_id=component.component_id) }}">{{ component.component_status }}</a></p>
 <p>Add SOI usage</p>
+<p>List of SOI that use that component</p>
 <a href="{{ url_for('add_component_comment', component_id=component.component_id) }}">Add new comment</a>
 {% for comment in comments_list %}
 <br>{{ comment.component_comment_text }}, {{ comment.timestamp.strftime("%d/%m/%Y, %H:%M:%S") }}

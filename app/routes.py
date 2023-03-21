@@ -15,7 +15,12 @@ statuses_component = ["Status 1", "Status 2", "Status 3"]
 statuses_soi = ["Status 1B", "Status 2B", "Status 3B"]
 
 
-def comment_query(component_id):
+@app.route("/")
+def basic_view():
+    return render_template("base.html", title="Base")
+
+
+def component_comment_query(component_id):
     last_comment = (
         ComponentComment.query.filter_by(what_component_id=component_id)
         .order_by(ComponentComment.component_comment_id.desc())
@@ -24,18 +29,13 @@ def comment_query(component_id):
     return last_comment
 
 
-@app.route("/")
-def basic_view():
-    return render_template("base.html", title="Base")
-
-
 @app.route("/components_list")
 def components_list():
     components = Component.query.order_by(Component.component_id.asc())
     components_id = [x.component_id for x in components]
     comments_list = [
-        comment_query(x).component_comment_text
-        if comment_query(x) is not None
+        component_comment_query(x).component_comment_text
+        if component_comment_query(x) is not None
         else "No comment"
         for x in components_id
     ]
@@ -114,10 +114,29 @@ def add_component_comment(component_id):
     )
 
 
+def soi_comment_query(soi_id):
+    last_comment = (
+        SoiComment.query.filter_by(what_soi_id=soi_id)
+        .order_by(SoiComment.soi_comment_id.desc())
+        .first()
+    )
+    return last_comment
+
+
 @app.route("/soi_list")
 def soi_list():
     sois = SOI.query.order_by(SOI.soi_name.asc())
-    return render_template("lists/soi_list.html", title="SOI", sois=sois)
+    soi_id = [x.soi_id for x in sois]
+    comments_list = [
+        soi_comment_query(x).soi_comment_text
+        if soi_comment_query(x) is not None
+        else "No comment"
+        for x in soi_id
+    ]
+
+    return render_template(
+        "lists/soi_list.html", title="SOI", sois=sois, comments_list=comments_list
+    )
 
 
 @app.route("/soi_view/<soi_id>", methods=["GET", "POST"])
