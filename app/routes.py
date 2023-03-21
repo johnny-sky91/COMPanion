@@ -10,6 +10,15 @@ from app.forms import (
 from app.models import System, SOI, Component, Component_Comment
 
 
+def comment_query(component_id):
+    last_comment = (
+        Component_Comment.query.filter_by(what_component_id=component_id)
+        .order_by(Component_Comment.component_comment_id.desc())
+        .first()
+    )
+    return last_comment
+
+
 @app.route("/")
 def basic_view():
     return render_template("base.html", title="Base")
@@ -18,10 +27,18 @@ def basic_view():
 @app.route("/components_list")
 def components_list():
     components = Component.query.order_by(Component.component_id.asc())
+    components_id = [x.component_id for x in components]
+    comments_list = [
+        comment_query(x).component_comment_text
+        if comment_query(x) is not None
+        else "No comment"
+        for x in components_id
+    ]
     return render_template(
         "lists/components_list.html",
         title="Components",
         components=components,
+        comments_list=comments_list,
     )
 
 
