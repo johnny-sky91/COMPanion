@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 
-<p>Tutaj dodajesz nowy SOI</p>
+<p>Add new SOI</p>
 <form action="" method="post" novalidate>
     {{form.hidden_tag()}}
     <p style="font-size:18px">
-        1. {{ form.soi_name.label }}: {{ form.soi_name() }}<br><br>
-        1. {{ form.soi_status.label }}: {{ form.soi_status() }}<br><br>
+        1. {{ form.soi_name.label }}: {{ form.soi_name(style='height: 20px; width:200px') }}<br><br>
+        2. {{ form.soi_description.label }}: {{ form.soi_description(style='height: 20px; width:200px') }}<br><br>
+        3. {{ form.soi_status.label }}: {{ form.soi_status(style='height: 20px; width:200px') }}<br><br>
         {{ form.submit() }} <br>
         {% for error in form.soi_name.errors %}
         <span style="color: red;">{{ error }}</span>

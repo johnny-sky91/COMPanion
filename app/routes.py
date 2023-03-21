@@ -6,6 +6,7 @@ from app.forms import (
     AddComponent,
     AddComponentComment,
     ChangeComponentStatus,
+    ChangeSoiStatus,
 )
 from app.models import System, SOI, Component, ComponentComment
 
@@ -115,7 +116,7 @@ def add_component_comment(component_id):
 
 @app.route("/soi_list")
 def soi_list():
-    sois = SOI.query.order_by(SOI.soi_name.desc())
+    sois = SOI.query.order_by(SOI.soi_name.asc())
     return render_template("lists/soi_list.html", title="SOI", sois=sois)
 
 
@@ -125,11 +126,36 @@ def soi_view(soi_id):
     return render_template("view/soi_view.html", title=f"{soi.soi_name}", soi=soi)
 
 
+@app.route("/soi_view/<soi_id>/change_status", methods=["GET", "POST"])
+def soi_change_status(soi_id):
+    form = ChangeSoiStatus()
+    soi = SOI.query.get(soi_id)
+    status_list = ["Status 1B", "Status 2B", "Status 3B"]
+    form.soi_status.choices = status_list
+    if form.validate_on_submit():
+        soi.soi_status = form.soi_status.data
+        db.session.commit()
+        return redirect(url_for("soi_view", soi_id=soi_id))
+    return render_template(
+        "update/update_soi_status.html",
+        title=f"{soi.soi_name}",
+        form=form,
+    )
+
+
 @app.route("/soi_list/add_new_soi", methods=["GET", "POST"])
 def add_new_soi():
     form = AddSOI()
+
+    status_list = ["Status 1B", "Status 2B", "Status 3B"]
+    form.soi_status.choices = status_list
+
     if form.validate_on_submit():
-        new_soi = SOI(soi_name=form.soi_name.data, soi_status=form.soi_status.data)
+        new_soi = SOI(
+            soi_name=form.soi_name.data,
+            soi_description=form.soi_description.data,
+            soi_status=form.soi_status.data,
+        )
         db.session.add(new_soi)
         db.session.commit()
         flash(f"A new SOI has been added - {new_soi.soi_name}")

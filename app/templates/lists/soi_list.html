@@ -1,10 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
 
-<p>Place for SOI list</p>
 <a href="/soi_list/add_new_soi">Add new SOI</a>
-<br><b>SOI:</b>
-{% for soi in sois %}
-<br><a href="{{ url_for('soi_view', soi_id=soi.soi_id) }}">{{ soi.soi_name }}</a>, status: {{ soi.soi_status }}
-{% endfor %}
+<style type="text/css">
+    .tg  {border-collapse:collapse;border-spacing:0;}
+    .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+      overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+      font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg .tg-0lax{text-align:left;vertical-align:top}
+    </style>
+    <table class="tg">
+    <thead>
+      <tr>
+        <th class="tg-0lax"><b>ID</b></th>
+        <th class="tg-0lax"><b>Name</b></th>
+        <th class="tg-0lax"><b>Description</b></th>
+        <th class="tg-0lax"><b>Status</b></th>
+        <th class="tg-0lax"><b>Comment</b></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><b>SOI list:</b></tr>
+      {% for soi in sois %}
+      <tr>
+        <td class="tg-0lax">{{ soi.soi_id }}</td>
+        <td class="tg-0lax"><a href="{{ url_for('soi_view', soi_id=soi.soi_id) }}">{{ soi.soi_name }}</a> </td>
+        <td class="tg-0lax">{{ soi.soi_description }}</td>
+        <td class="tg-0lax">{{ soi.soi_status }}</td>
+        <td class="tg-0lax"> ADD COMMENTS </td>
+      </tr>
+      {% endfor %}
+
+    </tbody>
+    </table>
+
+
+
+
 {% endblock %}
+

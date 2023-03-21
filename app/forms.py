@@ -21,12 +21,24 @@ class AddSystem(FlaskForm):
 
 class AddSOI(FlaskForm):
     soi_name = TextAreaField(
-        "SOI name", validators=[DataRequired(message="SOI name can't be empty")]
+        "Name", validators=[DataRequired(message="SOI name can't be empty")]
     )
-    soi_status = TextAreaField(
-        "SOI Status", validators=[DataRequired(message="System status can't be empty")]
+    soi_description = TextAreaField(
+        "Description",
+        validators=[DataRequired(message="SOI Description can't be empty")],
+    )
+    soi_status = SelectField(
+        "Status", validators=[DataRequired(message="SOI status can't be empty")]
     )
     submit = SubmitField("Add new SOI")
+
+
+class ChangeSoiStatus(FlaskForm):
+    soi_status = SelectField(
+        "New status",
+        validators=[DataRequired(message="SOI status can't be empty")],
+    )
+    submit = SubmitField("Change SOI status")
 
 
 class AddComponent(FlaskForm):

@@ -4,7 +4,7 @@ from datetime import datetime
 
 class SOI(db.Model):
     soi_id = db.Column(db.Integer, primary_key=True)
-    soi_name = db.Column(db.String(160))
+    soi_name = db.Column(db.String(160), unique=True)
     soi_description = db.Column(db.String(160))
     soi_status = db.Column(db.String(160))
     soi_commentss = db.relationship("SoiComment", backref="soi", lazy=True)
@@ -22,7 +22,7 @@ class SoiComment(db.Model):
 
 class Component(db.Model):
     component_id = db.Column(db.Integer, primary_key=True)
-    component_name = db.Column(db.String(160))
+    component_name = db.Column(db.String(160), unique=True)
     component_description = db.Column(db.String(160))
     component_status = db.Column(db.String(160))
     component_comments = db.relationship(

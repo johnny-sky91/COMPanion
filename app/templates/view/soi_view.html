@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 
-<p>Place for single SOI info</p>
 <b>SOI info</b>
-<p><b>SOI name: </b>{{ soi.soi_name }}</p>
-<p><b>SOI status: </b>{{ soi.soi_status }}</p>
+<p>ID: {{ soi.soi_id }}</p>
+<p>Name: {{ soi.soi_name }}</p>
+<p>Description: {{ soi.soi_description}}</p>
+<p>Status: <a href="{{ url_for('soi_change_status', soi_id=soi.soi_id) }}">{{ soi.soi_status }}</a></p>
 
 {% endblock %}
