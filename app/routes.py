@@ -10,6 +10,9 @@ from app.forms import (
 )
 from app.models import System, SOI, Component, ComponentComment
 
+statuses_component = ["Status 1", "Status 2", "Status 3"]
+statuses_soi = ["Status 1B", "Status 2B", "Status 3B"]
+
 
 def comment_query(component_id):
     last_comment = (
@@ -46,10 +49,7 @@ def components_list():
 @app.route("/components_list/add_new_component", methods=["GET", "POST"])
 def add_new_component():
     form = AddComponent()
-
-    status_list = ["Status 1", "Status 2", "Status 3"]
-    form.component_status.choices = status_list
-
+    form.component_status.choices = statuses_component
     if form.validate_on_submit():
         new_component = Component(
             component_name=form.component_name.data,
@@ -83,8 +83,7 @@ def component_view(component_id):
 def component_change_status(component_id):
     form = ChangeComponentStatus()
     component = Component.query.get(component_id)
-    status_list = ["Status 1", "Status 2", "Status 3"]
-    form.component_status.choices = status_list
+    form.component_status.choices = statuses_component
     if form.validate_on_submit():
         component.component_status = form.component_status.data
         db.session.commit()
@@ -130,8 +129,7 @@ def soi_view(soi_id):
 def soi_change_status(soi_id):
     form = ChangeSoiStatus()
     soi = SOI.query.get(soi_id)
-    status_list = ["Status 1B", "Status 2B", "Status 3B"]
-    form.soi_status.choices = status_list
+    form.soi_status.choices = statuses_soi
     if form.validate_on_submit():
         soi.soi_status = form.soi_status.data
         db.session.commit()
@@ -146,10 +144,7 @@ def soi_change_status(soi_id):
 @app.route("/soi_list/add_new_soi", methods=["GET", "POST"])
 def add_new_soi():
     form = AddSOI()
-
-    status_list = ["Status 1B", "Status 2B", "Status 3B"]
-    form.soi_status.choices = status_list
-
+    form.soi_status.choices = statuses_soi
     if form.validate_on_submit():
         new_soi = SOI(
             soi_name=form.soi_name.data,
