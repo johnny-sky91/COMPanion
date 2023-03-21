@@ -4,11 +4,11 @@ from wtforms.validators import DataRequired, ValidationError, Length
 
 from app.models import (
     SOI,
-    SOI_Comment,
+    SoiComment,
     Component,
-    Component_Comment,
+    ComponentComment,
     System,
-    System_Comment,
+    SystemComment,
 )
 
 

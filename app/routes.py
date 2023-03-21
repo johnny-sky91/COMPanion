@@ -7,13 +7,13 @@ from app.forms import (
     AddComponentComment,
     ChangeComponentStatus,
 )
-from app.models import System, SOI, Component, Component_Comment
+from app.models import System, SOI, Component, ComponentComment
 
 
 def comment_query(component_id):
     last_comment = (
-        Component_Comment.query.filter_by(what_component_id=component_id)
-        .order_by(Component_Comment.component_comment_id.desc())
+        ComponentComment.query.filter_by(what_component_id=component_id)
+        .order_by(ComponentComment.component_comment_id.desc())
         .first()
     )
     return last_comment
@@ -67,9 +67,9 @@ def add_new_component():
 @app.route("/component_view/<component_id>", methods=["GET", "POST"])
 def component_view(component_id):
     component = Component.query.get(component_id)
-    comments_list = Component_Comment.query.filter_by(
+    comments_list = ComponentComment.query.filter_by(
         what_component_id=component_id
-    ).order_by(Component_Comment.component_comment_id.desc())
+    ).order_by(ComponentComment.component_comment_id.desc())
     return render_template(
         "view/component_view.html",
         title=f"{component.component_name}",
@@ -100,7 +100,7 @@ def add_component_comment(component_id):
     component = Component.query.get(component_id)
     form = AddComponentComment()
     if form.validate_on_submit():
-        new_comment = Component_Comment(
+        new_comment = ComponentComment(
             what_component_id=component_id,
             component_comment_text=form.component_comment_text.data,
         )
@@ -153,12 +153,3 @@ def add_new_system():
         flash(f"A new System has been added - {new_system.system_name}")
         return redirect(url_for("systems_list"))
     return render_template("add/add_new_system.html", title="Add new system", form=form)
-
-
-# TODO - view - components list
-# TODO - view - SOI list
-# TODO - view - group view - instert SOI, create matrix of usage
-# TODO glowne parametry, KOMPONENT & SOI
-# TODO component - id, name, description, supplier, comment, usage of SOI, status
-# TODO SOI - id, name(code), usage(system name),comment ,components, usage of components psc, status
-# TODOcomp
