@@ -7,8 +7,9 @@ from app.forms import (
     AddComponentComment,
     ChangeComponentStatus,
     ChangeSoiStatus,
+    AddSoiComment,
 )
-from app.models import System, SOI, Component, ComponentComment
+from app.models import System, SOI, Component, ComponentComment, SoiComment
 
 statuses_component = ["Status 1", "Status 2", "Status 3"]
 statuses_soi = ["Status 1B", "Status 2B", "Status 3B"]
@@ -122,7 +123,15 @@ def soi_list():
 @app.route("/soi_view/<soi_id>", methods=["GET", "POST"])
 def soi_view(soi_id):
     soi = SOI.query.get(soi_id)
-    return render_template("view/soi_view.html", title=f"{soi.soi_name}", soi=soi)
+    comments_list = SoiComment.query.filter_by(what_soi_id=soi_id).order_by(
+        SoiComment.soi_comment_id.desc()
+    )
+    return render_template(
+        "view/soi_view.html",
+        title=f"{soi.soi_name}",
+        soi=soi,
+        comments_list=comments_list,
+    )
 
 
 @app.route("/soi_view/<soi_id>/change_status", methods=["GET", "POST"])
@@ -156,6 +165,24 @@ def add_new_soi():
         flash(f"A new SOI has been added - {new_soi.soi_name}")
         return redirect(url_for("soi_list"))
     return render_template("add/add_new_soi.html", title="Add new SOI", form=form)
+
+
+@app.route("/soi_view/<soi_id>/add_comment", methods=["GET", "POST"])
+def add_soi_comment(soi_id):
+    soi = SOI.query.get(soi_id)
+    form = AddSoiComment()
+    if form.validate_on_submit():
+        new_comment = SoiComment(
+            what_soi_id=soi_id,
+            soi_comment_text=form.soi_comment_text.data,
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+        flash(f"New comment for SOI has been added")
+        return redirect(url_for("soi_view", soi_id=soi.soi_id))
+    return render_template(
+        "add/add_soi_comment.html", title=f"{soi.soi_name}", form=form
+    )
 
 
 @app.route("/systems_list")

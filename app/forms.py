@@ -41,6 +41,13 @@ class ChangeSoiStatus(FlaskForm):
     submit = SubmitField("Change SOI status")
 
 
+class AddSoiComment(FlaskForm):
+    soi_comment_text = TextAreaField(
+        "New comment", validators=[DataRequired(message="Comment text can't be empty")]
+    )
+    submit = SubmitField("Add new comment")
+
+
 class AddComponent(FlaskForm):
     component_name = TextAreaField(
         "Name", validators=[DataRequired(message="Component name can't be empty")]

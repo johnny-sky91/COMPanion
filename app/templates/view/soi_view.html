@@ -6,5 +6,11 @@
 <p>Name: {{ soi.soi_name }}</p>
 <p>Description: {{ soi.soi_description}}</p>
 <p>Status: <a href="{{ url_for('soi_change_status', soi_id=soi.soi_id) }}">{{ soi.soi_status }}</a></p>
+<p>Add used in system</p>
+<p>List of used in systems</p>
+<a href="{{ url_for('add_soi_comment', soi_id=soi.soi_id) }}">Add new comment</a>
+{% for comment in comments_list %}
+<br>{{ comment.soi_comment_text }}, {{ comment.timestamp_soi_comment.strftime("%d/%m/%Y, %H:%M:%S") }}
+{% endfor %}
 
 {% endblock %}
