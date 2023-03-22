@@ -2,30 +2,33 @@
 {% block content %}
 
 <a href="/soi_list/add_new_soi">Add new SOI</a>
-    <table class="tg">
-    <thead>
-      <tr>
-        <th class="tg-0lax"><b>ID</b></th>
-        <th class="tg-0lax"><b>Name</b></th>
-        <th class="tg-0lax"><b>Description</b></th>
-        <th class="tg-0lax"><b>Status</b></th>
-        <th class="tg-0lax"><b>Comment</b></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><b>SOI list:</b></tr>
+<head>
+	<title>My Nice Table</title>
+	<link rel="stylesheet" type="text/css" href="static/css/styles.css">
+</head>
+<body>
+	<table>
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>SOI</th>
+				<th>Description</th>
+        <th>Status</th>
+        <th>Comment</th>
+			</tr>
+		</thead>
+		<tbody>
       {% for soi in sois %}
-      <tr>
-        <td class="tg-0lax">{{ soi.soi_id }}</td>
-        <td class="tg-0lax"><a href="{{ url_for('soi_view', soi_id=soi.soi_id) }}">{{ soi.soi_name }}</a> </td>
-        <td class="tg-0lax">{{ soi.soi_description }}</td>
-        <td class="tg-0lax">{{ soi.soi_status }}</td>
-        <td class="tg-0lax">{{ comments_list[loop.index -1] }}</td>
-      </tr>
+			<tr>
+				<td>{{ soi.soi_id }}</td>
+				<td><a href="{{ url_for('soi_view', soi_id=soi.soi_id) }}">{{ soi.soi_name }}</a></td>
+				<td>{{ soi.soi_description }}</td>
+        <td>{{ soi.soi_status }}</td>
+        <td>{{ comments_list[loop.index -1] }}</td>
+			</tr>
       {% endfor %}
-
-    </tbody>
-    </table>
-
+		</tbody>
+	</table>
+</body>
 {% endblock %}
 
