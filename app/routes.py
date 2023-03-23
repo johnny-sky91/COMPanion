@@ -15,6 +15,11 @@ statuses_component = ["Status 1", "Status 2", "Status 3"]
 statuses_soi = ["Status 1B", "Status 2B", "Status 3B"]
 
 
+@app.route("/component_view/test_template")
+def test_template():
+    return render_template("test/test_template.html", title="Test")
+
+
 @app.route("/")
 def basic_view():
     return render_template("base.html", title="Base")

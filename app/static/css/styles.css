@@ -1,5 +1,10 @@
- table {
+ 
+ a, p, b {
   font-family: Arial, Helvetica, sans-serif;
+ }
+ 
+ table {
+  font-family: Helvetica;
   border-collapse: collapse;
   width: 100%;
 }
@@ -19,4 +24,22 @@ th {
   text-align: left;
   background-color: #7a7a7a;
   color: white;
+}
+
+.container2 {
+  font-family: Arial, Helvetica, sans-serif;
+  max-width: 200px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+  background-color:#000000;
+
+}
+.container{
+  max-width: 90%;
+}
+
+h1 {
+  font-size: 36px;
+  color: #333;
 }

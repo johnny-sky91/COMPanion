@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <title>COMPanion - {{ title }}</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
 </head>
 <body>
 <style>
@@ -11,8 +12,10 @@ b,a {font-size:20px;}
         <b><a href="/components_list">Components</a></b> ||
         <b><a href="/soi_list">SOI</a></b> ||
         <b><a href="/systems_list">Systems</a></b> ||
+        <b><a href="/component_view/test_template">Test template</a></b> ||
+
 </div>
-<div class="container" style="max-width: 90%">
+<div class="container">
     <div class="text-left mt-5">
         {% with messages = get_flashed_messages() %}
         {% if messages %}

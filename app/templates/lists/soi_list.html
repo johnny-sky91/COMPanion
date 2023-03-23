@@ -1,34 +1,32 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
 <a href="/soi_list/add_new_soi">Add new SOI</a>
-<head>
-	<title>My Nice Table</title>
-	<link rel="stylesheet" type="text/css" href="static/css/styles.css">
-</head>
 <body>
-	<table>
-		<thead>
-			<tr>
-				<th>ID</th>
-				<th>SOI</th>
-				<th>Description</th>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>SOI</th>
+        <th>Description</th>
         <th>Status</th>
         <th>Comment</th>
-			</tr>
-		</thead>
-		<tbody>
+      </tr>
+    </thead>
+    <tbody>
       {% for soi in sois %}
-			<tr>
-				<td>{{ soi.soi_id }}</td>
-				<td><a href="{{ url_for('soi_view', soi_id=soi.soi_id) }}">{{ soi.soi_name }}</a></td>
-				<td>{{ soi.soi_description }}</td>
+      <tr>
+        <td>{{ soi.soi_id }}</td>
+        <td>
+          <a href="{{ url_for('soi_view', soi_id=soi.soi_id) }}"
+            >{{ soi.soi_name }}</a
+          >
+        </td>
+        <td>{{ soi.soi_description }}</td>
         <td>{{ soi.soi_status }}</td>
         <td>{{ comments_list[loop.index -1] }}</td>
-			</tr>
+      </tr>
       {% endfor %}
-		</tbody>
-	</table>
+    </tbody>
+  </table>
 </body>
 {% endblock %}
-
