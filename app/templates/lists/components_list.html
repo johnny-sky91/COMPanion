@@ -2,38 +2,34 @@
 {% block content %}
 
 <a href="/components_list/add_new_component">Add new component</a>
-<style type="text/css">
-    .tg  {border-collapse:collapse;border-spacing:0;}
-    .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-      overflow:hidden;padding:10px 5px;word-break:normal;}
-    .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-      font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-    .tg .tg-0lax{text-align:left;vertical-align:top}
-    </style>
-    <table class="tg">
+<head>
+  <title>My Nice Table</title>
+  <link rel="stylesheet" type="text/css" href="static/css/styles.css">
+</head>
+<body>
+  <table>
     <thead>
       <tr>
-        <th class="tg-0lax"><b>ID</b></th>
-        <th class="tg-0lax"><b>Name</b></th>
-        <th class="tg-0lax"><b>Description</b></th>
-        <th class="tg-0lax"><b>Status</b></th>
-        <th class="tg-0lax"><b>Comment</b></th>
+        <th>ID</th>
+        <th>Component</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Comment</th>
       </tr>
     </thead>
     <tbody>
-      <tr><b>Components list:</b></tr>
       {% for component in components %}
       <tr>
-        <td class="tg-0lax">{{ component.component_id }}</td>
-        <td class="tg-0lax"><a href="{{ url_for('component_view', component_id=component.component_id) }}">{{ component.component_name }}</a> </td>
-        <td class="tg-0lax">{{ component.component_description }}</td>
-        <td class="tg-0lax">{{ component.component_status }}</td>
-        <td class="tg-0lax">{{ comments_list[loop.index -1] }}</td>
+        <td>{{ component.component_id }}</td>
+        <td><a href="{{ url_for('component_view', component_id=component.component_id) }}">{{ component.component_name }}</a></td>
+        <td>{{ component.component_description }}</td>
+        <td>{{ component.component_status }}</td>
+        <td>{{ comments_list[loop.index -1] }}</td>
       </tr>
       {% endfor %}
-
     </tbody>
-    </table>
-
+  </table>
+</body>
 {% endblock %}
+
 
