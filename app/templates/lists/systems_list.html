@@ -1,11 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
 
-<p>Place for systems list</p>
 <a href="/systems_list/add_new_system">Add new system</a>
-<br><b>Systems:</b>
-{% for system in systems %}
-<br>{{ system.system_name }}
-{% endfor %}
-</html>
+<body>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>System</th>
+        <th>Status</th>
+        <th>Comment</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for system in systems %}
+      <tr>
+        <td>{{ system.system_id }}</td>
+        <td><a href="{{ url_for('system_view', system_id=system.system_id) }}">{{ system.system_name }}</a></td>
+        <td>{{ system.system_status }}</td>
+        <td>{{ comments_list[loop.index -1] }}</td>
+
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
 {% endblock %}

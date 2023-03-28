@@ -43,6 +43,8 @@ class ComponentComment(db.Model):
 class System(db.Model):
     system_id = db.Column(db.Integer, primary_key=True)
     system_name = db.Column(db.String(160), unique=True)
+    system_status = db.Column(db.String(160))
+    system_comments = db.relationship("SystemComment", backref="system", lazy=True)
 
     def __repr__(self):
         return f"<System {self.system_name}>"
@@ -50,5 +52,8 @@ class System(db.Model):
 
 class SystemComment(db.Model):
     system_comment_id = db.Column(db.Integer, primary_key=True)
-    what_system_id = db.Column(db.Integer)
+    what_system_id = db.Column(db.Integer, db.ForeignKey("system.system_id"))
     system_comment_text = db.Column(db.String(160))
+    system_comment_timestamp = db.Column(
+        db.DateTime, index=True, default=datetime.utcnow
+    )

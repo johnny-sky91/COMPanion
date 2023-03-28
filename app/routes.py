@@ -8,16 +8,21 @@ from app.forms import (
     ChangeComponentStatus,
     ChangeSoiStatus,
     AddSoiComment,
+    ChangeSystemStatus,
+    AddSystemComment,
 )
-from app.models import System, SOI, Component, ComponentComment, SoiComment
+from app.models import (
+    System,
+    SOI,
+    Component,
+    ComponentComment,
+    SoiComment,
+    SystemComment,
+)
 
 statuses_component = ["Status 1", "Status 2", "Status 3"]
 statuses_soi = ["Status 1B", "Status 2B", "Status 3B"]
-
-
-@app.route("/component_view/test_template")
-def test_template():
-    return render_template("test/test_template.html", title="Test")
+statuses_system = ["Status 1C", "Status 2C", "Status 3C"]
 
 
 @app.route("/")
@@ -130,7 +135,7 @@ def soi_comment_query(soi_id):
 
 @app.route("/soi_list")
 def soi_list():
-    sois = SOI.query.order_by(SOI.soi_name.asc())
+    sois = SOI.query.order_by(SOI.soi_id.asc())
     soi_id = [x.soi_id for x in sois]
     comments_list = [
         soi_comment_query(x).soi_comment_text
@@ -209,19 +214,97 @@ def add_soi_comment(soi_id):
     )
 
 
+def system_comment_query(system_id):
+    last_comment = (
+        SystemComment.query.filter_by(what_system_id=system_id)
+        .order_by(SystemComment.system_comment_id.desc())
+        .first()
+    )
+    return last_comment
+
+
 @app.route("/systems_list")
 def systems_list():
-    systems = System.query.order_by(System.system_name.desc())
-    return render_template("lists/systems_list.html", title="Systems", systems=systems)
+    systems = System.query.order_by(System.system_name.asc())
+    system_id = [x.system_id for x in systems]
+    comments_list = [
+        system_comment_query(x).system_comment_text
+        if system_comment_query(x) is not None
+        else "No comment"
+        for x in system_id
+    ]
+
+    return render_template(
+        "lists/systems_list.html",
+        title="Systems",
+        systems=systems,
+        comments_list=comments_list,
+    )
+
+
+@app.route("/system_view/<system_id>", methods=["GET", "POST"])
+def system_view(system_id):
+    system = System.query.get(system_id)
+    comments_list = SystemComment.query.filter_by(what_system_id=system_id).order_by(
+        SystemComment.system_comment_id.desc()
+    )
+    return render_template(
+        "view/system_view.html",
+        title=f"{system.system_name}",
+        system=system,
+        comments_list=comments_list,
+    )
 
 
 @app.route("/systems_list/add_new_system", methods=["GET", "POST"])
 def add_new_system():
     form = AddSystem()
+    form.system_status.choices = statuses_system
     if form.validate_on_submit():
-        new_system = System(system_name=form.system_name.data)
+        new_system = System(
+            system_name=form.system_name.data,
+            system_status=form.system_status.data,
+        )
         db.session.add(new_system)
         db.session.commit()
         flash(f"A new System has been added - {new_system.system_name}")
         return redirect(url_for("systems_list"))
     return render_template("add/add_new_system.html", title="Add new system", form=form)
+
+
+@app.route("/system_view/<system_id>/change_status", methods=["GET", "POST"])
+def system_change_status(system_id):
+    form = ChangeSystemStatus()
+    system = System.query.get(system_id)
+    form.system_status.choices = statuses_system
+    if form.validate_on_submit():
+        system.system_status = form.system_status.data
+        db.session.commit()
+        return redirect(url_for("system_view", system_id=system_id))
+    return render_template(
+        "update/update_system_status.html",
+        title=f"{system.system_name}",
+        form=form,
+    )
+
+
+@app.route("/system_view/<system_id>/add_comment", methods=["GET", "POST"])
+def add_system_comment(system_id):
+    system = System.query.get(system_id)
+    form = AddSystemComment()
+    if form.validate_on_submit():
+        new_comment = SystemComment(
+            what_system_id=system_id,
+            system_comment_text=form.system_comment_text.data,
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+        flash(f"New comment for system has been added")
+        return redirect(url_for("system_view", system_id=system.system_id))
+    return render_template(
+        "add/add_system_comment.html", title=f"{system.system_name}", form=form
+    )
+
+
+# sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: system_comment.system_comment_id
+# [SQL: INSERT INTO system_comment (what_system_id, system_comment_text, system_comment_timestamp) VALUES (?, ?, ?)]

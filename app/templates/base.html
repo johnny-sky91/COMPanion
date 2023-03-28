@@ -1,33 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>COMPanion - {{ title }}</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
-</head>
-<body>
-<style>
-b,a {font-size:20px;}
-</style>
-<div>
-        <b><a href="/components_list">Components</a></b> ||
-        <b><a href="/soi_list">SOI</a></b> ||
-        <b><a href="/systems_list">Systems</a></b> ||
-        <b><a href="/component_view/test_template">Test template</a></b> ||
-
-</div>
-<div class="container">
-    <div class="text-left mt-5">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>{% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-        <hr>
-        <p class="lead">{% block content %}{% endblock %}</p>
-    </div>
-</div>
-</body>
+    <head>
+        <title>COMPanion - {{ title }}</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
+    </head>
+    <body>
+        <!-- menu -->
+        <div class="menu">
+            <div>
+                <a href="/components_list">Components</a></a>
+                <a href="/soi_list">SOI</a>
+                <a href="/systems_list">Systems</a>
+            </div>
+        </div>
+        <!-- content -->
+        <div class="container">
+            <div class="text-left mt-5">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <ul>{% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
+                <hr>
+                <p class="lead">{% block content %}{% endblock %}</p>
+            </div>
+        </div>
+    </body>
 </html>

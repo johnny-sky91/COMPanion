@@ -1,8 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-<head>
-  <link rel="stylesheet" type="text/css" href="static/css/styles.css">
-</head>
 <body>
     <b>Component info</b>
     <p>ID: {{ component.component_id }}</p>
@@ -12,9 +9,13 @@
     <p>Add SOI usage</p>
     <p>List of SOI that use that component</p>
     <a href="{{ url_for('add_component_comment', component_id=component.component_id) }}">Add new comment</a>
-    {% for comment in comments_list %}
-    <br />{{ comment.component_comment_text }}, {{
-    comment.timestamp.strftime("%d/%m/%Y, %H:%M:%S") }} {% endfor %}
+    <ul>
+      {% for comment in comments_list %}
+      <li>
+        {{ comment.component_comment_text }}&nbsp
+        {{ comment.timestamp.strftime("%d/%m/%Y, %H:%M") }}
+      </li>
+      {% endfor %}
+    </ul>
 </body>
-
 {% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+
+<p>Place for new system comment</p>
+<form action="" method="post" novalidate>
+    {{form.hidden_tag()}}
+    <p style="font-size:18px">
+        {{ form.system_comment_text.label }}:<br>{{ form.system_comment_text(style='height: 80px; width:300px') }}<br><br>
+        {{ form.submit() }} <br>
+        {% for error in form.system_comment_text.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}<br>
+    </p>
+</form>
+{% endblock %}

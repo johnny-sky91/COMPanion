@@ -16,7 +16,25 @@ class AddSystem(FlaskForm):
     system_name = TextAreaField(
         "System name", validators=[DataRequired(message="System name can't be empty")]
     )
+    system_status = SelectField(
+        "Status", validators=[DataRequired(message="System status can't be empty")]
+    )
     submit = SubmitField("Add new System")
+
+
+class ChangeSystemStatus(FlaskForm):
+    system_status = SelectField(
+        "New status",
+        validators=[DataRequired(message="System status can't be empty")],
+    )
+    submit = SubmitField("Change system status")
+
+
+class AddSystemComment(FlaskForm):
+    system_comment_text = TextAreaField(
+        "New comment", validators=[DataRequired(message="Comment text can't be empty")]
+    )
+    submit = SubmitField("Add new comment")
 
 
 class AddSOI(FlaskForm):

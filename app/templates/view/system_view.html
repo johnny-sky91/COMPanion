@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<body>
+    <b>System info</b>
+    <p>ID: {{ system.system_id }}</p>
+    <p>Name: {{ system.system_name }}</p>
+    <p>Status: <a href="{{ url_for('system_change_status', system_id=system.system_id) }}">{{ system.system_status }}</a></p>
+    <a href="{{ url_for('add_system_comment', system_id=system.system_id) }}">Add new comment</a>
+    <ul>
+        {% for comment in comments_list %}
+        <li>
+            {{ comment.system_comment_text }}&nbsp
+            {{ comment.system_comment_timestamp.strftime("%d/%m/%Y, %H:%M") }}
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+{% endblock %}
