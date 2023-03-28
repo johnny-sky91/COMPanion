@@ -1,11 +1,11 @@
 from app import db, models, app
-from app.models import Component, Component_Comment
+from app.models import Component, ComponentComment, SystemComment
 
 
 def comment_query(component_id):
     last_comment = (
-        Component_Comment.query.filter_by(what_component_id=component_id)
-        .order_by(Component_Comment.component_comment_id.desc())
+        ComponentComment.query.filter_by(what_component_id=component_id)
+        .order_by(ComponentComment.component_comment_id.desc())
         .first()
     )
     return last_comment
