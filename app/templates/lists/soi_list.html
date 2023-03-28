@@ -16,11 +16,7 @@
       {% for soi in sois %}
       <tr>
         <td>{{ soi.soi_id }}</td>
-        <td>
-          <a href="{{ url_for('soi_view', soi_id=soi.soi_id) }}"
-            >{{ soi.soi_name }}</a
-          >
-        </td>
+        <td><a href="{{ url_for('soi_view', soi_id=soi.soi_id) }}">{{ soi.soi_name }}</a></td>
         <td>{{ soi.soi_description }}</td>
         <td>{{ soi.soi_status }}</td>
         <td>{{ comments_list[loop.index -1] }}</td>
