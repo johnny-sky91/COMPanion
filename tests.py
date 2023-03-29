@@ -94,6 +94,6 @@ def clear_data():
         db.session.commit()
 
 
-clear_data()
-soi_add_test_data(sois=list2_soi, desc=list2_desc, stat=list2_status)
-comp_add_test_data(comps=list_comp, desc=list_desc, stat=list_status)
+# clear_data()
+# soi_add_test_data(sois=list2_soi, desc=list2_desc, stat=list2_status)
+# comp_add_test_data(comps=list_comp, desc=list_desc, stat=list_status)
