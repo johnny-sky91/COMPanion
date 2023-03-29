@@ -1,4 +1,4 @@
-from app import db, models, app
+from app import db, app
 from app.models import (
     Component,
     SoiComment,
@@ -6,6 +6,7 @@ from app.models import (
     SOI,
     ComponentComment,
     SystemComment,
+    ComponentSoi,
 )
 
 
@@ -91,6 +92,7 @@ def clear_data():
         db.session.query(SystemComment).delete()
         db.session.query(SOI).delete()
         db.session.query(SoiComment).delete()
+        db.session.query(ComponentSoi).delete()
         db.session.commit()
 
 
@@ -102,7 +104,7 @@ def get_list_of_comp():
             print(Component.query.filter_by(component_name=x).first().component_id)
 
 
-get_list_of_comp()
+# get_list_of_comp()
 # clear_data()
 # soi_add_test_data(sois=list2_soi, desc=list2_desc, stat=list2_status)
 # comp_add_test_data(comps=list_comp, desc=list_desc, stat=list_status)
