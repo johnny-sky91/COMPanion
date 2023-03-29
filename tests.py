@@ -94,6 +94,15 @@ def clear_data():
         db.session.commit()
 
 
+def get_list_of_comp():
+    with app.app_context():
+        components_list = [x.component_name for x in Component.query.all()]
+        for x in components_list:
+            print(x)
+            print(Component.query.filter_by(component_name=x).first().component_id)
+
+
+get_list_of_comp()
 # clear_data()
 # soi_add_test_data(sois=list2_soi, desc=list2_desc, stat=list2_status)
 # comp_add_test_data(comps=list_comp, desc=list_desc, stat=list_status)
