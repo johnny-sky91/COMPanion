@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 
-<p>Place for new SOI comment</p>
+<p>Join component to SOI: {{soi.soi_name}} </p>
 <form action="" method="post" novalidate>
     {{form.hidden_tag()}}
     <p style="font-size:18px">
-        {{ form.soi_comment_text.label }}:<br>{{ form.soi_comment_text(style='height: 80px; width:300px') }}<br><br>
+        {{ form.what_component.label }}:<br>{{ form.what_component() }}<br><br>
         {{ form.submit() }} <br>
-        {% for error in form.soi_comment_text.errors %}
+        {% for error in form.what_component.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}<br>
     </p>

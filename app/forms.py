@@ -93,3 +93,11 @@ class AddComponentComment(FlaskForm):
         "New comment", validators=[DataRequired(message="Comment text can't be empty")]
     )
     submit = SubmitField("Add new comment")
+
+
+class AddCompSoi(FlaskForm):
+    what_component = SelectField(
+        "What component",
+        validators=[DataRequired(message="Choose component")],
+    )
+    submit = SubmitField("Add component to SOI")

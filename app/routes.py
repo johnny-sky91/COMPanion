@@ -10,6 +10,7 @@ from app.forms import (
     AddSoiComment,
     ChangeSystemStatus,
     AddSystemComment,
+    AddCompSoi,
 )
 from app.models import (
     System,
@@ -18,6 +19,7 @@ from app.models import (
     ComponentComment,
     SoiComment,
     SystemComment,
+    ComponentSoi,
 )
 
 statuses_component = ["Status 1", "Status 2", "Status 3"]
@@ -306,5 +308,27 @@ def add_system_comment(system_id):
     )
 
 
-# sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: system_comment.system_comment_id
-# [SQL: INSERT INTO system_comment (what_system_id, system_comment_text, system_comment_timestamp) VALUES (?, ?, ?)]
+# TODO
+@app.route("/soi_view/<soi_id>/add_comp_soi", methods=["GET", "POST"])
+def add_comp_soi(soi_id):
+    soi = SOI.query.get(soi_id)
+    form = AddCompSoi()
+    form.what_component.choices = [x.component_name for x in Component.query.all()]
+    if form.validate_on_submit():
+        new_joint = ComponentSoi(
+            what_comp_joint=Component.query.filter_by(
+                component_name=form.what_component.data
+            )
+            .first()
+            .component_id,
+            what_soi_joint=soi_id,
+        )
+        db.session.add(new_joint)
+        db.session.commit()
+        flash(f"New component for SOI {soi.soi_name} has been added")
+        for x in ComponentSoi.query.all():
+            print(x.what_comp_joint, x.what_soi_joint)
+        return redirect(url_for("soi_view", soi_id=soi_id))
+    return render_template(
+        "add/add_comp_soi.html", title=f"Add comp to {soi.soi_name}", form=form, soi=soi
+    )

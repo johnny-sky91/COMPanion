@@ -8,6 +8,7 @@ class SOI(db.Model):
     soi_description = db.Column(db.String(160))
     soi_status = db.Column(db.String(160))
     soi_commentss = db.relationship("SoiComment", backref="soi", lazy=True)
+    component_joint = db.relationship("ComponentSoi", backref="soi", lazy=True)
 
     def __repr__(self):
         return f"<SOI {self.soi_name}>"
@@ -28,6 +29,7 @@ class Component(db.Model):
     component_comments = db.relationship(
         "ComponentComment", backref="component", lazy=True
     )
+    soi_joint = db.relationship("ComponentSoi", backref="component", lazy=True)
 
     def __repr__(self):
         return f"<Component {self.component_name}>"
@@ -57,3 +59,9 @@ class SystemComment(db.Model):
     system_comment_timestamp = db.Column(
         db.DateTime, index=True, default=datetime.utcnow
     )
+
+
+class ComponentSoi(db.Model):
+    comp_soi_id = db.Column(db.Integer, primary_key=True)
+    what_comp_joint = db.Column(db.Integer, db.ForeignKey("component.component_id"))
+    what_soi_joint = db.Column(db.Integer, db.ForeignKey("soi.soi_id"))
