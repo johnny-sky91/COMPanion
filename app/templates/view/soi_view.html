@@ -7,8 +7,17 @@
     <p>Description: {{ soi.soi_description}}</p>
     <p>Status: <a href="{{ url_for('soi_change_status', soi_id=soi.soi_id) }}">{{ soi.soi_status }}</a></p>
     <a href="{{ url_for('add_comp_soi', soi_id=soi.soi_id) }}">Add component</a>
+    <p>Components used:</p>
+    <ul>
+        {% for component in component_used %}
+        <li>
+            {{ component }}
+        </li>
+        {% endfor %}
+    </ul>
     <p>List of used in systems</p>
     <a href="{{ url_for('add_soi_comment', soi_id=soi.soi_id) }}">Add new comment</a>
+    <p>Comments:</p>
     <ul>
         {% for comment in comments_list %}
         <li>
