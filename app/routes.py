@@ -32,30 +32,23 @@ def basic_view():
     return render_template("base.html", title="Base")
 
 
-def component_comment_query(component_id):
-    last_comment = (
-        ComponentComment.query.filter_by(what_component_id=component_id)
-        .order_by(ComponentComment.component_comment_id.desc())
-        .first()
-    )
-    return last_comment
-
-
 @app.route("/components_list")
 def components_list():
     components = Component.query.order_by(Component.component_id.asc())
     components_id = [x.component_id for x in components]
-    comments_list = [
-        component_comment_query(x).component_comment_text
-        if component_comment_query(x) is not None
-        else "No comment"
+    all_comments = [
+        Component.query.filter_by(component_id=x).first().component_comments
         for x in components_id
     ]
+    last_comments = [
+        x[-1].component_comment_text if x else "No comment" for x in all_comments
+    ]
+
     return render_template(
         "lists/components_list.html",
         title="Components",
         components=components,
-        comments_list=comments_list,
+        last_comments=last_comments,
     )
 
 
