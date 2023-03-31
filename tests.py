@@ -8,6 +8,7 @@ from app.models import (
     SystemComment,
     ComponentSoi,
 )
+from sqlalchemy.orm import sessionmaker
 
 
 def comment_query(component_id):
@@ -108,3 +109,18 @@ def get_list_of_comp():
 # clear_data()
 # soi_add_test_data(sois=list2_soi, desc=list2_desc, stat=list2_status)
 # comp_add_test_data(comps=list_comp, desc=list_desc, stat=list_status)
+def test_query():
+
+    with app.app_context():
+        sois = SOI.query.order_by(SOI.soi_id.asc())
+        sois_id = [x.soi_id for x in sois]
+        all_comments = [
+            SOI.query.filter_by(soi_id=x).first().soi_commentss for x in sois_id
+        ]
+        last_comment = [
+            x[-1].soi_comment_text if x else "No comment" for x in all_comments
+        ]
+        print(last_comment)
+
+
+test_query()
