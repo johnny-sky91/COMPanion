@@ -126,28 +126,19 @@ def add_component_comment(component_id):
     )
 
 
-def soi_comment_query(soi_id):
-    last_comment = (
-        SoiComment.query.filter_by(what_soi_id=soi_id)
-        .order_by(SoiComment.soi_comment_id.desc())
-        .first()
-    )
-    return last_comment
-
-
 @app.route("/soi_list")
 def soi_list():
     sois = SOI.query.order_by(SOI.soi_id.asc())
-    soi_id = [x.soi_id for x in sois]
-    comments_list = [
-        soi_comment_query(x).soi_comment_text
-        if soi_comment_query(x) is not None
-        else "No comment"
-        for x in soi_id
+    sois_id = [x.soi_id for x in sois]
+    all_comments = [
+        SOI.query.filter_by(soi_id=x).first().soi_commentss for x in sois_id
+    ]
+    last_comments = [
+        x[-1].soi_comment_text if x else "No comment" for x in all_comments
     ]
 
     return render_template(
-        "lists/soi_list.html", title="SOI", sois=sois, comments_list=comments_list
+        "lists/soi_list.html", title="SOI", sois=sois, last_comments=last_comments
     )
 
 
@@ -157,11 +148,18 @@ def soi_view(soi_id):
     comments_list = SoiComment.query.filter_by(what_soi_id=soi_id).order_by(
         SoiComment.soi_comment_id.desc()
     )
+
+    component_used = ComponentSoi.query.filter_by(what_soi_joint=soi_id).all()
+    component_used = [
+        Component.query.filter_by(component_id=x.what_comp_joint).first().component_name
+        for x in component_used
+    ]
     return render_template(
         "view/soi_view.html",
         title=f"{soi.soi_name}",
         soi=soi,
         comments_list=comments_list,
+        component_used=component_used,
     )
 
 
@@ -326,8 +324,6 @@ def add_comp_soi(soi_id):
         db.session.add(new_joint)
         db.session.commit()
         flash(f"New component for SOI {soi.soi_name} has been added")
-        for x in ComponentSoi.query.all():
-            print(x.what_comp_joint, x.what_soi_joint)
         return redirect(url_for("soi_view", soi_id=soi_id))
     return render_template(
         "add/add_comp_soi.html", title=f"Add comp to {soi.soi_name}", form=form, soi=soi

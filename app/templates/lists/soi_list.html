@@ -10,6 +10,7 @@
         <th>Description</th>
         <th>Status</th>
         <th>Comment</th>
+        <th>Components</th>
       </tr>
     </thead>
     <tbody>
@@ -19,7 +20,8 @@
         <td><a href="{{ url_for('soi_view', soi_id=soi.soi_id) }}">{{ soi.soi_name }}</a></td>
         <td>{{ soi.soi_description }}</td>
         <td>{{ soi.soi_status }}</td>
-        <td>{{ comments_list[loop.index -1] }}</td>
+        <td>{{ last_comments[loop.index -1] }}</td>
+        <td>components</td>
       </tr>
       {% endfor %}
     </tbody>
