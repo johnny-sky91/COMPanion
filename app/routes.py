@@ -43,7 +43,7 @@ def components_list():
     last_comments = [
         x[-1].component_comment_text if x else "No comment" for x in all_comments
     ]
-
+ 
     return render_template(
         "lists/components_list.html",
         title="Components",
@@ -123,6 +123,7 @@ def add_component_comment(component_id):
 def soi_list():
     sois = SOI.query.order_by(SOI.soi_id.asc())
     sois_id = [x.soi_id for x in sois]
+    
     all_comments = [
         SOI.query.filter_by(soi_id=x).first().soi_commentss for x in sois_id
     ]
@@ -130,8 +131,15 @@ def soi_list():
         x[-1].soi_comment_text if x else "No comment" for x in all_comments
     ]
 
+    comps_joint = [ComponentSoi.query.join(SOI).filter_by(soi_id=soi).all() for soi in sois_id]
+    comps_id = [x.what_comp_joint for x in comps_joint]
+    comps_names = [
+        Component.query.filter_by(component_id=x).first().component_name
+        for x in comps_id
+    ]   
+
     return render_template(
-        "lists/soi_list.html", title="SOI", sois=sois, last_comments=last_comments
+        "lists/soi_list.html", title="SOI", sois=sois, last_comments=last_comments,comps_names=comps_names
     )
 
 

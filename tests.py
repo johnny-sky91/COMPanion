@@ -114,13 +114,9 @@ def test_query():
     with app.app_context():
         sois = SOI.query.order_by(SOI.soi_id.asc())
         sois_id = [x.soi_id for x in sois]
-        all_comments = [
-            SOI.query.filter_by(soi_id=x).first().soi_commentss for x in sois_id
+        comps_joint = [
+            ComponentSoi.query.join(SOI).filter_by(soi_id=soi).all() for soi in sois_id
         ]
-        last_comment = [
-            x[-1].soi_comment_text if x else "No comment" for x in all_comments
-        ]
-        print(last_comment)
 
 
 test_query()
