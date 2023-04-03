@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+
+<p>Join system to SOI: {{soi.soi_name}} </p>
+<form action="" method="post" novalidate>
+    {{form.hidden_tag()}}
+    <p style="font-size:18px">
+        {{ form.what_component.label }}:<br>{{ form.what_component() }}<br><br>
+        {{ form.submit() }} <br>
+        {% for error in form.what_component.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}<br>
+    </p>
+</form>
+{% endblock %}
