@@ -131,15 +131,15 @@ def soi_list():
         x[-1].soi_comment_text if x else "No comment" for x in all_comments
     ]
 
+    def what_comp(item):
+        comp = Component.query.filter_by(component_id=item).first().component_name
+        return comp
+
     comps_joint = [ComponentSoi.query.join(SOI).filter_by(soi_id=soi).all() for soi in sois_id]
-    comps_id = [x.what_comp_joint for x in comps_joint]
-    comps_names = [
-        Component.query.filter_by(component_id=x).first().component_name
-        for x in comps_id
-    ]   
+    used_components = [['No components'] if x ==[] else [', '.join(what_comp(item=y.what_comp_joint) for y in x)] for x in comps_joint]
 
     return render_template(
-        "lists/soi_list.html", title="SOI", sois=sois, last_comments=last_comments,comps_names=comps_names
+        "lists/soi_list.html", title="SOI", sois=sois, last_comments=last_comments,used_components=used_components
     )
 
 
