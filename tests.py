@@ -110,13 +110,20 @@ def get_list_of_comp():
 # soi_add_test_data(sois=list2_soi, desc=list2_desc, stat=list2_status)
 # comp_add_test_data(comps=list_comp, desc=list_desc, stat=list_status)
 def test_query():
+    def what_comp(item):
+        comp = Component.query.filter_by(component_id=item).first().component_name
+        return comp
 
     with app.app_context():
         sois = SOI.query.order_by(SOI.soi_id.asc())
         sois_id = [x.soi_id for x in sois]
-        comps_joint = [
-            ComponentSoi.query.join(SOI).filter_by(soi_id=soi).all() for soi in sois_id
-        ]
+        comps_joint = [ComponentSoi.query.join(SOI).filter_by(soi_id=soi).all() for soi in sois_id]
+        components_list = ['No components' if x ==[] else [', '.join(what_comp(item=y.what_comp_joint) for y in x)] for x in comps_joint]
+        print(components_list)
 
 
 test_query()
+
+# lista_list = [['A','B','C','D'],['1','2','3','4'],['a','b','c','d']]
+# neeew_lista = [[', '.join(x)] for x in lista_list]
+# print(neeew_lista)
