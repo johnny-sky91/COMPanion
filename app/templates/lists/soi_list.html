@@ -21,7 +21,7 @@
         <td>{{ soi.soi_description }}</td>
         <td>{{ soi.soi_status }}</td>
         <td>{{ last_comments[loop.index -1] }}</td>
-        <td>{{ comps_names }}</td>
+        <td>{{ used_components[loop.index -1][0] }}</td>
       </tr> 
       {% endfor %}
     </tbody>
