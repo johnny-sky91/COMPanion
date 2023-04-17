@@ -22,9 +22,9 @@ from app.models import (
     ComponentSoi,
 )
 
-statuses_component = ["Status 1", "Status 2", "Status 3"]
-statuses_soi = ["Status 1B", "Status 2B", "Status 3B"]
-statuses_system = ["Status 1C", "Status 2C", "Status 3C"]
+statuses_component = ["Active", "No active", "EOL"]
+statuses_soi = ["Active", "POE", "Not forecasted", "EOL"]
+statuses_system = ["Active", "EOL"]
 
 
 @app.route("/")
@@ -43,7 +43,7 @@ def components_list():
     last_comments = [
         x[-1].component_comment_text if x else "No comment" for x in all_comments
     ]
- 
+
     return render_template(
         "lists/components_list.html",
         title="Components",
@@ -123,7 +123,7 @@ def add_component_comment(component_id):
 def soi_list():
     sois = SOI.query.order_by(SOI.soi_id.asc())
     sois_id = [x.soi_id for x in sois]
-    
+
     all_comments = [
         SOI.query.filter_by(soi_id=x).first().soi_commentss for x in sois_id
     ]
@@ -135,11 +135,22 @@ def soi_list():
         comp = Component.query.filter_by(component_id=item).first().component_name
         return comp
 
-    comps_joint = [ComponentSoi.query.join(SOI).filter_by(soi_id=soi).all() for soi in sois_id]
-    used_components = [['No components'] if x ==[] else [', '.join(what_comp(item=y.what_comp_joint) for y in x)] for x in comps_joint]
+    comps_joint = [
+        ComponentSoi.query.join(SOI).filter_by(soi_id=soi).all() for soi in sois_id
+    ]
+    used_components = [
+        ["No components"]
+        if x == []
+        else [", ".join(what_comp(item=y.what_comp_joint) for y in x)]
+        for x in comps_joint
+    ]
 
     return render_template(
-        "lists/soi_list.html", title="SOI", sois=sois, last_comments=last_comments,used_components=used_components
+        "lists/soi_list.html",
+        title="SOI",
+        sois=sois,
+        last_comments=last_comments,
+        used_components=used_components,
     )
 
 

@@ -4,7 +4,8 @@
     <b>Component info</b>
     <p>ID: {{ component.component_id }}</p>
     <p>Name: {{ component.component_name }}</p>
-    <p>Description: {{ component.component_description}}</p>
+    <p>Description: {{ component.component_description }}</p>
+    <p>Check: {{ component.component_check }}</p>
     <p><a href="{{ url_for('component_change_status', component_id=component.component_id) }}">{{ component.component_status }}</a></p>
     <p>Add SOI usage</p>
     <p>List of SOI that use that component</p>

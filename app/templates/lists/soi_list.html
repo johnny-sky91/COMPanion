@@ -9,6 +9,7 @@
         <th>SOI</th>
         <th>Description</th>
         <th>Status</th>
+        <th>Check</th>
         <th>Comment</th>
         <th>Components</th>
       </tr>
@@ -20,6 +21,7 @@
         <td><a href="{{ url_for('soi_view', soi_id=soi.soi_id) }}">{{ soi.soi_name }}</a></td>
         <td>{{ soi.soi_description }}</td>
         <td>{{ soi.soi_status }}</td>
+        <td>{{ soi.soi_check }}</td>
         <td>{{ last_comments[loop.index -1] }}</td>
         <td>{{ used_components[loop.index -1][0] }}</td>
       </tr> 

@@ -9,6 +9,7 @@
         <th>ID</th>
         <th>System</th>
         <th>Status</th>
+        <th>Check</th>
         <th>Comment</th>
       </tr>
     </thead>
@@ -18,8 +19,8 @@
         <td>{{ system.system_id }}</td>
         <td><a href="{{ url_for('system_view', system_id=system.system_id) }}">{{ system.system_name }}</a></td>
         <td>{{ system.system_status }}</td>
+        <td>{{ system.system_check }}</td>
         <td>{{ comments_list[loop.index -1] }}</td>
-
       </tr>
       {% endfor %}
     </tbody>

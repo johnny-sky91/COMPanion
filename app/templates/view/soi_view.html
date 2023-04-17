@@ -4,7 +4,8 @@
     <b>SOI info</b>
     <p>ID: {{ soi.soi_id }}</p>
     <p>Name: {{ soi.soi_name }}</p>
-    <p>Description: {{ soi.soi_description}}</p>
+    <p>Description: {{ soi.soi_description }}</p>
+    <p>Check: {{ soi.soi_check }}</p>
     <p><a href="{{ url_for('soi_change_status', soi_id=soi.soi_id) }}">{{ soi.soi_status }}</a></p>
     <a href="{{ url_for('add_comp_soi', soi_id=soi.soi_id) }}">Components used:</a>
     <ul>

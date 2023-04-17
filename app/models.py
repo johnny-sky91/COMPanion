@@ -7,6 +7,7 @@ class SOI(db.Model):
     soi_name = db.Column(db.String(160), unique=True)
     soi_description = db.Column(db.String(160))
     soi_status = db.Column(db.String(160))
+    soi_check = db.Column(db.Boolean, default=False)
     soi_commentss = db.relationship("SoiComment", backref="soi", lazy=True)
     component_joint = db.relationship("ComponentSoi", backref="soi", lazy=True)
 
@@ -26,6 +27,7 @@ class Component(db.Model):
     component_name = db.Column(db.String(160), unique=True)
     component_description = db.Column(db.String(160))
     component_status = db.Column(db.String(160))
+    component_check = db.Column(db.Boolean, default=False)
     component_comments = db.relationship(
         "ComponentComment", backref="component", lazy=True
     )
@@ -46,6 +48,7 @@ class System(db.Model):
     system_id = db.Column(db.Integer, primary_key=True)
     system_name = db.Column(db.String(160), unique=True)
     system_status = db.Column(db.String(160))
+    system_check = db.Column(db.Boolean, default=False)
     system_comments = db.relationship("SystemComment", backref="system", lazy=True)
 
     def __repr__(self):
