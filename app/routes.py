@@ -191,6 +191,17 @@ def soi_change_status(soi_id):
     )
 
 
+@app.route("/soi_view/<soi_id>/change_check", methods=["GET", "POST"])
+def soi_change_check(soi_id):
+    soi = SOI.query.get(soi_id)
+    if soi.soi_check:
+        soi.soi_check = False
+    else:
+        soi.soi_check = True
+    db.session.commit()
+    return redirect(url_for("soi_list"))
+
+
 @app.route("/soi_list/add_new_soi", methods=["GET", "POST"])
 def add_new_soi():
     form = AddSOI()
