@@ -4,7 +4,7 @@
     <b>System info</b>
     <p>ID: {{ system.system_id }}</p>
     <p>Name: {{ system.system_name }}</p>
-    <p>Check: {{ system.system_check }}</p>
+    <p>Check: <a href="{{ url_for('system_change_check', system_id=system.system_id) }}">{{ system.system_check }}</a></p>
     <p>Status: <a href="{{ url_for('system_change_status', system_id=system.system_id) }}">{{ system.system_status }}</a></p>
     <a href="{{ url_for('add_system_comment', system_id=system.system_id) }}">Add new comment</a>
     <ul>
