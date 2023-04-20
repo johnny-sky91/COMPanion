@@ -1,5 +1,5 @@
 from app import app, db
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, request
 from app.forms import (
     AddSystem,
     AddSOI,
@@ -28,8 +28,32 @@ statuses_system = ["Active", "EOL"]
 
 
 @app.route("/")
+@app.route("/home")
 def basic_view():
-    return render_template("base.html", title="Base")
+    soi_to_check = SOI.query.filter_by(soi_check=True).all()
+    soi_last_comment = []
+    for x in soi_to_check:
+        try:
+            soi_last_comment.append(x.soi_commentss[-1].soi_comment_text)
+        except IndexError:
+            soi_last_comment.append("")
+    component_to_check = Component.query.filter_by(component_check=True).all()
+    component_last_comment = []
+    for x in component_to_check:
+        try:
+            component_last_comment.append(
+                x.component_comments[-1].component_comment_text
+            )
+        except IndexError:
+            component_last_comment.append("")
+    return render_template(
+        "home.html",
+        title="Home",
+        sois=soi_to_check,
+        components=component_to_check,
+        sois_comment=soi_last_comment,
+        components_comment=component_last_comment,
+    )
 
 
 @app.route("/components_list")
@@ -71,7 +95,7 @@ def add_new_component():
     )
 
 
-@app.route("/component_view/<component_id>", methods=["GET", "POST"])
+@app.route("/components_list/component_view/<component_id>", methods=["GET", "POST"])
 def component_view(component_id):
     component = Component.query.get(component_id)
     comments_list = ComponentComment.query.filter_by(
@@ -85,7 +109,24 @@ def component_view(component_id):
     )
 
 
-@app.route("/component_view/<component_id>/change_status", methods=["GET", "POST"])
+@app.route(
+    "/components_list/component_view/<component_id>/change_check",
+    methods=["GET", "POST"],
+)
+def component_change_check(component_id):
+    component = Component.query.get(component_id)
+    if component.component_check:
+        component.component_check = False
+    else:
+        component.component_check = True
+    db.session.commit()
+    return redirect(request.referrer)
+
+
+@app.route(
+    "/components_list/component_view/<component_id>/change_status",
+    methods=["GET", "POST"],
+)
 def component_change_status(component_id):
     form = ChangeComponentStatus()
     component = Component.query.get(component_id)
@@ -101,7 +142,10 @@ def component_change_status(component_id):
     )
 
 
-@app.route("/component_view/<component_id>/add_comment", methods=["GET", "POST"])
+@app.route(
+    "/components_list/component_view/<component_id>/add_comment",
+    methods=["GET", "POST"],
+)
 def add_component_comment(component_id):
     component = Component.query.get(component_id)
     form = AddComponentComment()
@@ -154,7 +198,7 @@ def soi_list():
     )
 
 
-@app.route("/soi_view/<soi_id>", methods=["GET", "POST"])
+@app.route("/soi_list/soi_view/<soi_id>", methods=["GET", "POST"])
 def soi_view(soi_id):
     soi = SOI.query.get(soi_id)
     comments_list = SoiComment.query.filter_by(what_soi_id=soi_id).order_by(
@@ -175,11 +219,12 @@ def soi_view(soi_id):
     )
 
 
-@app.route("/soi_view/<soi_id>/change_status", methods=["GET", "POST"])
+@app.route("/soi_list/soi_view/<soi_id>/change_status", methods=["GET", "POST"])
 def soi_change_status(soi_id):
     form = ChangeSoiStatus()
     soi = SOI.query.get(soi_id)
     form.soi_status.choices = statuses_soi
+
     if form.validate_on_submit():
         soi.soi_status = form.soi_status.data
         db.session.commit()
@@ -191,7 +236,7 @@ def soi_change_status(soi_id):
     )
 
 
-@app.route("/soi_view/<soi_id>/change_check", methods=["GET", "POST"])
+@app.route("/soi_list/soi_view/<soi_id>/change_check", methods=["GET", "POST"])
 def soi_change_check(soi_id):
     soi = SOI.query.get(soi_id)
     if soi.soi_check:
@@ -199,7 +244,7 @@ def soi_change_check(soi_id):
     else:
         soi.soi_check = True
     db.session.commit()
-    return redirect(url_for("soi_list"))
+    return redirect(request.referrer)
 
 
 @app.route("/soi_list/add_new_soi", methods=["GET", "POST"])
@@ -219,10 +264,12 @@ def add_new_soi():
     return render_template("add/add_new_soi.html", title="Add new SOI", form=form)
 
 
-@app.route("/soi_view/<soi_id>/add_comment", methods=["GET", "POST"])
+@app.route("/soi_list/soi_view/<soi_id>/add_comment", methods=["GET", "POST"])
 def add_soi_comment(soi_id):
     soi = SOI.query.get(soi_id)
     form = AddSoiComment()
+    prev = request.referrer
+    print(f"1 - add comment - {prev}")
     if form.validate_on_submit():
         new_comment = SoiComment(
             what_soi_id=soi_id,
@@ -231,6 +278,8 @@ def add_soi_comment(soi_id):
         db.session.add(new_comment)
         db.session.commit()
         flash(f"New comment for SOI has been added")
+        print(f"2 - addED comment - {prev}")
+        # return redirect(prev)
         return redirect(url_for("soi_view", soi_id=soi.soi_id))
     return render_template(
         "add/add_soi_comment.html", title=f"{soi.soi_name}", form=form
@@ -265,7 +314,7 @@ def systems_list():
     )
 
 
-@app.route("/system_view/<system_id>", methods=["GET", "POST"])
+@app.route("/systems_list/system_view/<system_id>", methods=["GET", "POST"])
 def system_view(system_id):
     system = System.query.get(system_id)
     comments_list = SystemComment.query.filter_by(what_system_id=system_id).order_by(
@@ -277,6 +326,19 @@ def system_view(system_id):
         system=system,
         comments_list=comments_list,
     )
+
+
+@app.route(
+    "/systems_list/system_view/<system_id>/change_check", methods=["GET", "POST"]
+)
+def system_change_check(system_id):
+    system = System.query.get(system_id)
+    if system.system_check:
+        system.system_check = False
+    else:
+        system.system_check = True
+    db.session.commit()
+    return redirect(request.referrer)
 
 
 @app.route("/systems_list/add_new_system", methods=["GET", "POST"])
@@ -295,7 +357,9 @@ def add_new_system():
     return render_template("add/add_new_system.html", title="Add new system", form=form)
 
 
-@app.route("/system_view/<system_id>/change_status", methods=["GET", "POST"])
+@app.route(
+    "/systems_list/system_view/<system_id>/change_status", methods=["GET", "POST"]
+)
 def system_change_status(system_id):
     form = ChangeSystemStatus()
     system = System.query.get(system_id)
@@ -311,7 +375,7 @@ def system_change_status(system_id):
     )
 
 
-@app.route("/system_view/<system_id>/add_comment", methods=["GET", "POST"])
+@app.route("/systems_list/system_view/<system_id>/add_comment", methods=["GET", "POST"])
 def add_system_comment(system_id):
     system = System.query.get(system_id)
     form = AddSystemComment()
@@ -330,7 +394,7 @@ def add_system_comment(system_id):
 
 
 # TODO
-@app.route("/soi_view/<soi_id>/add_comp_soi", methods=["GET", "POST"])
+@app.route("/soi_list/soi_view/<soi_id>/add_comp_soi", methods=["GET", "POST"])
 def add_comp_soi(soi_id):
     soi = SOI.query.get(soi_id)
     form = AddCompSoi()
