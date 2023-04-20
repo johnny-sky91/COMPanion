@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<body>
+    <table>
+        <thead>
+          <tr>
+            <th>Item to check</th>
+            <th>Description</th>
+            <th>Check</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for soi in sois %}
+            <tr>
+            <td><a href="{{ url_for('soi_view', soi_id=soi.soi_id) }}">{{ soi.soi_name }}</a></td>
+            <td>{{ soi.soi_description }}</td>
+            <td><a href="{{ url_for('soi_change_check', soi_id=soi.soi_id) }}">{{ soi.soi_check }}</a></td>
+            <td>{{ sois_comment[loop.index -1] }}</td>
+            </tr>
+            {% endfor %}
+            {% for component in components %}
+            <tr>
+            <td><a href="{{ url_for('component_view', component_id=component.component_id) }}">{{ component.component_name }}</a></td>
+            <td>{{ component.component_description }}</td>
+            <td><a href="{{ url_for('component_change_check', component_id=component.component_id) }}">{{ component.component_check }}</a></td>
+            <td>{{ components_comment[loop.index -1] }}</td>
+            </tr> 
+            {% endfor %}
+        </tbody>
+      </table>
+</body>
+{% endblock %}
