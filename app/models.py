@@ -3,6 +3,7 @@ from datetime import datetime
 
 
 class SOI(db.Model):
+    __tablename__ = "soi"
     soi_id = db.Column(db.Integer, primary_key=True)
     soi_name = db.Column(db.String(160), unique=True)
     soi_description = db.Column(db.String(160))
@@ -23,6 +24,7 @@ class SoiComment(db.Model):
 
 
 class Component(db.Model):
+    __tablename__ = "component"
     component_id = db.Column(db.Integer, primary_key=True)
     component_name = db.Column(db.String(160), unique=True)
     component_description = db.Column(db.String(160))
@@ -45,6 +47,7 @@ class ComponentComment(db.Model):
 
 
 class System(db.Model):
+    __tablename__ = "system"
     system_id = db.Column(db.Integer, primary_key=True)
     system_name = db.Column(db.String(160), unique=True)
     system_status = db.Column(db.String(160))
