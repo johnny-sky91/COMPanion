@@ -21,8 +21,8 @@
         <td><a href="{{ url_for('component_view', component_id=component.component_id) }}">{{ component.component_name }}</a></td>
         <td>{{ component.component_description }}</td>
         <td>{{ component.component_status }}</td>
-        <td>{{ component.component_check }}</td>
-        <td>{{ last_comments[loop.index -1] }}</td>
+        <td><a href="{{ url_for('component_change_check', component_id=component.component_id) }}">{{ component.component_check }}</a></td>
+        <td><a href="{{ url_for('add_component_comment', component_id=component.component_id) }}">{{ last_comments[loop.index -1] }}</a></td>
       </tr>
       {% endfor %}
     </tbody>
