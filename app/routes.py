@@ -1,14 +1,12 @@
 from app import app, db
 from flask import render_template, flash, redirect, url_for, request
 from app.forms import (
-    AddSystem,
-    AddSOI,
     AddComponent,
+    AddSOI,
+    AddSystem,
+    ChangeStatus,
     AddComponentComment,
-    ChangeComponentStatus,
-    ChangeSoiStatus,
     AddSoiComment,
-    ChangeSystemStatus,
     AddSystemComment,
     AddCompSoi,
 )
@@ -22,10 +20,6 @@ from app.models import (
     ComponentSoi,
     tables_dict,
 )
-
-statuses_component = ["Active", "No active", "EOL"]
-statuses_soi = ["Active", "POE", "Not forecasted", "EOL"]
-statuses_system = ["Active", "EOL"]
 
 
 @app.route("/")
@@ -229,38 +223,29 @@ def system_view(id):
     )
 
 
-@app.route(
-    "/component_list/component_view/<id>/change_status",
-    methods=["GET", "POST"],
-)
-def component_change_status(id):
-    form = ChangeComponentStatus()
-    component = Component.query.get(id)
-    form.status.choices = statuses_component
+statuses_component = ["Active", "No active", "EOL"]
+statuses_soi = ["Active", "POE", "Not forecasted", "EOL"]
+statuses_system = ["Active", "EOL"]
+
+
+@app.route("/<table>_view/<id>/change_status", methods=["GET", "POST"])
+def product_change_status(table, id):
+    form = ChangeStatus()
+    product = db.session.query(tables_dict.get(table)).get(id)
+    if table == "component":
+        chosen_statuses = statuses_component
+    elif table == "soi":
+        chosen_statuses = statuses_soi
+    else:
+        chosen_statuses = statuses_system
+    form.status.choices = chosen_statuses
     if form.validate_on_submit():
-        component.status = form.status.data
+        product.status = form.status.data
         db.session.commit()
-        return redirect(url_for("component_view", id=id))
+        return redirect(url_for(f"{table}_view", id=id))
     return render_template(
-        "update/update_component_status.html",
-        title=f"{component.name}",
-        form=form,
-    )
-
-
-@app.route("/soi_list/soi_view/<id>/change_status", methods=["GET", "POST"])
-def soi_change_status(id):
-    form = ChangeSoiStatus()
-    soi = SOI.query.get(id)
-    form.status.choices = statuses_soi
-
-    if form.validate_on_submit():
-        soi.status = form.status.data
-        db.session.commit()
-        return redirect(url_for("soi_view", id=id))
-    return render_template(
-        "update/update_soi_status.html",
-        title=f"{soi.name}",
+        f"update/update_{table}_status.html",
+        title=f"{product.name}",
         form=form,
     )
 

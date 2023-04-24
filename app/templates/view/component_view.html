@@ -6,7 +6,7 @@
     <p>Name: {{ component.name }}</p>
     <p>Description: {{ component.description }}</p>
     <p>Check: <a href="{{ url_for('change_check',table_name='component', id=component.id) }}">{{ component.check }}</a></p>
-    <p>Status: <a href="{{ url_for('component_change_status', id=component.id) }}">{{ component.status }}</a></p>
+    <p>Status: <a href="{{ url_for('product_change_status', table='component', id=component.id) }}">{{ component.status }}</a></p>
     <p>Add SOI usage</p>
     <p>List of SOI that use that component</p>
     <a href="{{ url_for('add_component_comment', id=component.id) }}">Comments:</a>

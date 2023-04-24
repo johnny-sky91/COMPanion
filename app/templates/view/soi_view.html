@@ -6,7 +6,7 @@
     <p>Name: {{ soi.name }}</p>
     <p>Description: {{ soi.description }}</p>
     <p>Check: <a href="{{ url_for('change_check',table_name='soi', id=soi.id) }}">{{ soi.check }}</a></p>
-    <p>Status: <a href="{{ url_for('soi_change_status', id=soi.id) }}">{{ soi.status }}</a></p>
+    <p>Status: <a href="{{ url_for('product_change_status', table='soi', id=soi.id) }}">{{ soi.status }}</a></p>
     <a href="{{ url_for('add_comp_soi', id=soi.id) }}">Components used:</a>
     <ul>
         {% for component in component_used %}

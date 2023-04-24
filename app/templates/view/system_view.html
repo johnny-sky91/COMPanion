@@ -5,7 +5,7 @@
     <p>ID: {{ system.id }}</p>
     <p>Name: {{ system.name }}</p>
     <p>Check: <a href="{{ url_for('change_check',table_name='system', id=system.id) }}">{{ system.check }}</a></p>
-    <p>Status: <a href="{{ url_for('system_change_status', id=system.id) }}">{{ system.status }}</a></p>
+    <p>Status: <a href="{{ url_for('product_change_status', table='system', id=system.id) }}">{{ system.status }}</a></p>
     <a href="{{ url_for('add_system_comment', id=system.id) }}">Add new comment</a>
     <ul>
         {% for comment in comments_list %}
