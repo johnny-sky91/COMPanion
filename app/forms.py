@@ -12,29 +12,18 @@ from app.models import (
 )
 
 
-class AddSystem(FlaskForm):
+class AddComponent(FlaskForm):
     name = TextAreaField(
-        "System name", validators=[DataRequired(message="System name can't be empty")]
+        "Name", validators=[DataRequired(message="Component name can't be empty")]
+    )
+    description = TextAreaField(
+        "Description",
+        validators=[DataRequired(message="Component Description can't be empty")],
     )
     status = SelectField(
-        "Status", validators=[DataRequired(message="System status can't be empty")]
+        "Status", validators=[DataRequired(message="Component status can't be empty")]
     )
-    submit = SubmitField("Add new System")
-
-
-class ChangeSystemStatus(FlaskForm):
-    status = SelectField(
-        "New status",
-        validators=[DataRequired(message="System status can't be empty")],
-    )
-    submit = SubmitField("Change system status")
-
-
-class AddSystemComment(FlaskForm):
-    text = TextAreaField(
-        "New comment", validators=[DataRequired(message="Comment text can't be empty")]
-    )
-    submit = SubmitField("Add new comment")
+    submit = SubmitField("Add new component")
 
 
 class AddSOI(FlaskForm):
@@ -51,44 +40,39 @@ class AddSOI(FlaskForm):
     submit = SubmitField("Add new SOI")
 
 
-class ChangeSoiStatus(FlaskForm):
+class AddSystem(FlaskForm):
+    name = TextAreaField(
+        "System name", validators=[DataRequired(message="System name can't be empty")]
+    )
+    status = SelectField(
+        "Status", validators=[DataRequired(message="System status can't be empty")]
+    )
+    submit = SubmitField("Add new System")
+
+
+class ChangeStatus(FlaskForm):
     status = SelectField(
         "New status",
-        validators=[DataRequired(message="SOI status can't be empty")],
+        validators=[DataRequired(message="Status can't be empty")],
     )
-    submit = SubmitField("Change SOI status")
+    submit = SubmitField("Change status")
 
 
-class AddSoiComment(FlaskForm):
+class AddComponentComment(FlaskForm):
     text = TextAreaField(
         "New comment", validators=[DataRequired(message="Comment text can't be empty")]
     )
     submit = SubmitField("Add new comment")
 
 
-class AddComponent(FlaskForm):
-    name = TextAreaField(
-        "Name", validators=[DataRequired(message="Component name can't be empty")]
+class AddSystemComment(FlaskForm):
+    text = TextAreaField(
+        "New comment", validators=[DataRequired(message="Comment text can't be empty")]
     )
-    description = TextAreaField(
-        "Description",
-        validators=[DataRequired(message="Component Description can't be empty")],
-    )
-    status = SelectField(
-        "Status", validators=[DataRequired(message="Component status can't be empty")]
-    )
-    submit = SubmitField("Add new component")
+    submit = SubmitField("Add new comment")
 
 
-class ChangeComponentStatus(FlaskForm):
-    status = SelectField(
-        "New status",
-        validators=[DataRequired(message="Component status can't be empty")],
-    )
-    submit = SubmitField("Change component status")
-
-
-class AddComponentComment(FlaskForm):
+class AddSoiComment(FlaskForm):
     text = TextAreaField(
         "New comment", validators=[DataRequired(message="Comment text can't be empty")]
     )
