@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 231ce09a3d27
+Revision ID: 860e37af2e23
 Revises: 
-Create Date: 2023-04-24 09:28:12.634720
+Create Date: 2023-04-24 14:02:23.025720
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '231ce09a3d27'
+revision = '860e37af2e23'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -46,10 +46,10 @@ def upgrade():
     )
     op.create_table('component_comment',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('component_id', sa.Integer(), nullable=True),
+    sa.Column('product_id', sa.Integer(), nullable=True),
     sa.Column('text', sa.String(length=160), nullable=True),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['component_id'], ['component.id'], ),
+    sa.ForeignKeyConstraint(['product_id'], ['component.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('component_comment', schema=None) as batch_op:
@@ -65,10 +65,10 @@ def upgrade():
     )
     op.create_table('soi_comment',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('soi_id', sa.Integer(), nullable=True),
+    sa.Column('product_id', sa.Integer(), nullable=True),
     sa.Column('text', sa.String(length=160), nullable=True),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['soi_id'], ['soi.id'], ),
+    sa.ForeignKeyConstraint(['product_id'], ['soi.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('soi_comment', schema=None) as batch_op:
@@ -76,10 +76,10 @@ def upgrade():
 
     op.create_table('system_comment',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('system_id', sa.Integer(), nullable=True),
+    sa.Column('product_id', sa.Integer(), nullable=True),
     sa.Column('text', sa.String(length=160), nullable=True),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['system_id'], ['system.id'], ),
+    sa.ForeignKeyConstraint(['product_id'], ['system.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('system_comment', schema=None) as batch_op:
