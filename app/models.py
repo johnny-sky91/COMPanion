@@ -2,27 +2,6 @@ from app import db
 from datetime import datetime
 
 
-class SOI(db.Model):
-    __tablename__ = "soi"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(160), unique=True)
-    description = db.Column(db.String(160))
-    status = db.Column(db.String(160))
-    check = db.Column(db.Boolean, default=False)
-    comments = db.relationship("SoiComment", backref="soi", lazy=True)
-    component_joint = db.relationship("ComponentSoi", backref="soi", lazy=True)
-
-    def __repr__(self):
-        return f"<SOI {self.name}>"
-
-
-class SoiComment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    soi_id = db.Column(db.Integer, db.ForeignKey("soi.id"))
-    text = db.Column(db.String(160))
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-
-
 class Component(db.Model):
     __tablename__ = "component"
     id = db.Column(db.Integer, primary_key=True)
@@ -37,11 +16,18 @@ class Component(db.Model):
         return f"<Component {self.name}>"
 
 
-class ComponentComment(db.Model):
+class SOI(db.Model):
+    __tablename__ = "soi"
     id = db.Column(db.Integer, primary_key=True)
-    component_id = db.Column(db.Integer, db.ForeignKey("component.id"))
-    text = db.Column(db.String(160))
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    name = db.Column(db.String(160), unique=True)
+    description = db.Column(db.String(160))
+    status = db.Column(db.String(160))
+    check = db.Column(db.Boolean, default=False)
+    comments = db.relationship("SoiComment", backref="soi", lazy=True)
+    component_joint = db.relationship("ComponentSoi", backref="soi", lazy=True)
+
+    def __repr__(self):
+        return f"<SOI {self.name}>"
 
 
 class System(db.Model):
@@ -54,6 +40,20 @@ class System(db.Model):
 
     def __repr__(self):
         return f"<System {self.name}>"
+
+
+class ComponentComment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    component_id = db.Column(db.Integer, db.ForeignKey("component.id"))
+    text = db.Column(db.String(160))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+
+class SoiComment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    soi_id = db.Column(db.Integer, db.ForeignKey("soi.id"))
+    text = db.Column(db.String(160))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
 
 class SystemComment(db.Model):
