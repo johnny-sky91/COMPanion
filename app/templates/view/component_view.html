@@ -9,7 +9,7 @@
     <p>Status: <a href="{{ url_for('product_change_status', table='component', id=component.id) }}">{{ component.status }}</a></p>
     <p>Add SOI usage</p>
     <p>List of SOI that use that component</p>
-    <a href="{{ url_for('add_component_comment', id=component.id) }}">Comments:</a>
+    <a href="{{ url_for('add_product_comment', table='component', id=component.id) }}">Comments:</a>
     <ul>
       {% for comment in comments_list %}
       <li>

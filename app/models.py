@@ -44,21 +44,21 @@ class System(db.Model):
 
 class ComponentComment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    component_id = db.Column(db.Integer, db.ForeignKey("component.id"))
+    product_id = db.Column(db.Integer, db.ForeignKey("component.id"))
     text = db.Column(db.String(160))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
 
 class SoiComment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    soi_id = db.Column(db.Integer, db.ForeignKey("soi.id"))
+    product_id = db.Column(db.Integer, db.ForeignKey("soi.id"))
     text = db.Column(db.String(160))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
 
 class SystemComment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    system_id = db.Column(db.Integer, db.ForeignKey("system.id"))
+    product_id = db.Column(db.Integer, db.ForeignKey("system.id"))
     text = db.Column(db.String(160))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 

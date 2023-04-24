@@ -16,7 +16,7 @@
         {% endfor %}
     </ul>
     <p>List of used in systems</p>
-    <a href="{{ url_for('add_soi_comment', id=soi.id) }}">Comments:</a>
+    <a href="{{ url_for('add_product_comment', table='soi', id=soi.id) }}">Comments:</a>
     <ul>
         {% for comment in comments_list %}
         <li>

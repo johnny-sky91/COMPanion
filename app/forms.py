@@ -58,21 +58,7 @@ class ChangeStatus(FlaskForm):
     submit = SubmitField("Change status")
 
 
-class AddComponentComment(FlaskForm):
-    text = TextAreaField(
-        "New comment", validators=[DataRequired(message="Comment text can't be empty")]
-    )
-    submit = SubmitField("Add new comment")
-
-
-class AddSystemComment(FlaskForm):
-    text = TextAreaField(
-        "New comment", validators=[DataRequired(message="Comment text can't be empty")]
-    )
-    submit = SubmitField("Add new comment")
-
-
-class AddSoiComment(FlaskForm):
+class AddProductComment(FlaskForm):
     text = TextAreaField(
         "New comment", validators=[DataRequired(message="Comment text can't be empty")]
     )
