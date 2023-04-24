@@ -4,7 +4,7 @@
     <b>System info</b>
     <p>ID: {{ system.id }}</p>
     <p>Name: {{ system.name }}</p>
-    <p>Check: <a href="{{ url_for('system_change_check', id=system.id) }}">{{ system.check }}</a></p>
+    <p>Check: <a href="{{ url_for('change_check',table_name='system', id=system.id) }}">{{ system.check }}</a></p>
     <p>Status: <a href="{{ url_for('system_change_status', id=system.id) }}">{{ system.status }}</a></p>
     <a href="{{ url_for('add_system_comment', id=system.id) }}">Add new comment</a>
     <ul>
