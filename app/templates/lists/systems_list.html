@@ -16,10 +16,10 @@
     <tbody>
       {% for system in systems %}
       <tr>
-        <td>{{ system.system_id }}</td>
-        <td><a href="{{ url_for('system_view', system_id=system.system_id) }}">{{ system.system_name }}</a></td>
-        <td>{{ system.system_status }}</td>
-        <td><a href="{{ url_for('system_change_check', system_id=system.system_id) }}">{{ system.system_check }}</a></td>
+        <td>{{ system.id }}</td>
+        <td><a href="{{ url_for('system_view', id=system.id) }}">{{ system.name }}</a></td>
+        <td>{{ system.status }}</td>
+        <td><a href="{{ url_for('system_change_check', id=system.id) }}">{{ system.check }}</a></td>
         <td>{{ comments_list[loop.index -1] }}</a></td>
       </tr>
       {% endfor %}

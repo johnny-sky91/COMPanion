@@ -5,11 +5,11 @@
 <form action="" method="post" novalidate>
     {{form.hidden_tag()}}
     <p style="font-size:18px">
-        1. {{ form.component_name.label }}:<br>{{ form.component_name(style='height: 20px; width:200px') }}<br><br>
-        2. {{ form.component_description.label }}:<br>{{ form.component_description(style='height: 20px; width:200px') }}<br><br>
-        3. {{ form.component_status.label }}:<br>{{ form.component_status(style='height: 20px; width:200px') }}<br><br>
+        1. {{ form.name.label }}:<br>{{ form.name(style='height: 20px; width:200px') }}<br><br>
+        2. {{ form.description.label }}:<br>{{ form.description(style='height: 20px; width:200px') }}<br><br>
+        3. {{ form.status.label }}:<br>{{ form.status(style='height: 20px; width:200px') }}<br><br>
         {{ form.submit() }} <br>
-        {% for error in form.component_name.errors %}
+        {% for error in form.name.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}<br>
     </p>

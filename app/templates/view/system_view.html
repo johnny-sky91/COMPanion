@@ -2,16 +2,16 @@
 {% block content %}
 <body>
     <b>System info</b>
-    <p>ID: {{ system.system_id }}</p>
-    <p>Name: {{ system.system_name }}</p>
-    <p>Check: <a href="{{ url_for('system_change_check', system_id=system.system_id) }}">{{ system.system_check }}</a></p>
-    <p>Status: <a href="{{ url_for('system_change_status', system_id=system.system_id) }}">{{ system.system_status }}</a></p>
-    <a href="{{ url_for('add_system_comment', system_id=system.system_id) }}">Add new comment</a>
+    <p>ID: {{ system.id }}</p>
+    <p>Name: {{ system.name }}</p>
+    <p>Check: <a href="{{ url_for('system_change_check', id=system.id) }}">{{ system.check }}</a></p>
+    <p>Status: <a href="{{ url_for('system_change_status', id=system.id) }}">{{ system.status }}</a></p>
+    <a href="{{ url_for('add_system_comment', id=system.id) }}">Add new comment</a>
     <ul>
         {% for comment in comments_list %}
         <li>
-            {{ comment.system_comment_text }}&nbsp
-            {{ comment.system_comment_timestamp.strftime("%d/%m/%Y, %H:%M") }}
+            {{ comment.text }}&nbsp
+            {{ comment.timestamp.strftime("%d/%m/%Y, %H:%M") }}
         </li>
         {% endfor %}
     </ul>

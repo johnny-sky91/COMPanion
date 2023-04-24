@@ -5,10 +5,10 @@
 <form action="" method="post" novalidate>
     {{form.hidden_tag()}}
     <p style="font-size:18px">
-        1. {{ form.system_name.label }}<br>{{ form.system_name() }}<br>
-        2. {{ form.system_status.label }}<br>{{ form.system_status() }}<br>
+        1. {{ form.name.label }}<br>{{ form.name() }}<br>
+        2. {{ form.status.label }}<br>{{ form.status() }}<br>
         <br>{{ form.submit() }}<br>
-        {% for error in form.system_name.errors %}
+        {% for error in form.name.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}<br>
     </p>

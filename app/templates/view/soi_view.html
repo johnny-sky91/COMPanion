@@ -2,12 +2,12 @@
 {% block content %}
 <body>
     <b>SOI info</b>
-    <p>ID: {{ soi.soi_id }}</p>
-    <p>Name: {{ soi.soi_name }}</p>
-    <p>Description: {{ soi.soi_description }}</p>
-    <p>Check: <a href="{{ url_for('soi_change_check', soi_id=soi.soi_id) }}">{{ soi.soi_check }}</a></p>
-    <p>Status: <a href="{{ url_for('soi_change_status', soi_id=soi.soi_id) }}">{{ soi.soi_status }}</a></p>
-    <a href="{{ url_for('add_comp_soi', soi_id=soi.soi_id) }}">Components used:</a>
+    <p>ID: {{ soi.id }}</p>
+    <p>Name: {{ soi.name }}</p>
+    <p>Description: {{ soi.description }}</p>
+    <p>Check: <a href="{{ url_for('soi_change_check', id=soi.id) }}">{{ soi.check }}</a></p>
+    <p>Status: <a href="{{ url_for('soi_change_status', id=soi.id) }}">{{ soi.status }}</a></p>
+    <a href="{{ url_for('add_comp_soi', id=soi.id) }}">Components used:</a>
     <ul>
         {% for component in component_used %}
         <li>
@@ -16,12 +16,12 @@
         {% endfor %}
     </ul>
     <p>List of used in systems</p>
-    <a href="{{ url_for('add_soi_comment', soi_id=soi.soi_id) }}">Comments:</a>
+    <a href="{{ url_for('add_soi_comment', id=soi.id) }}">Comments:</a>
     <ul>
         {% for comment in comments_list %}
         <li>
-            {{ comment.soi_comment_text }}&nbsp
-            {{ comment.timestamp_soi_comment.strftime("%d/%m/%Y, %H:%M") }}
+            {{ comment.text }}&nbsp
+            {{ comment.timestamp.strftime("%d/%m/%Y, %H:%M") }}
         </li>
         {% endfor %}
     </ul>

@@ -17,12 +17,12 @@
     <tbody>
       {% for soi in sois %}
       <tr>
-        <td>{{ soi.soi_id }}</td>
-        <td><a href="{{ url_for('soi_view', soi_id=soi.soi_id) }}">{{ soi.soi_name }}</a></td>
-        <td>{{ soi.soi_description }}</td>
-        <td>{{ soi.soi_status }}</td>
-        <td><a href="{{ url_for('soi_change_check', soi_id=soi.soi_id) }}">{{ soi.soi_check }}</a></td>
-        <td><a href="{{ url_for('add_soi_comment', soi_id=soi.soi_id) }}">{{ last_comments[loop.index -1] }}</a></td>
+        <td>{{ soi.id }}</td>
+        <td><a href="{{ url_for('soi_view', id=soi.id) }}">{{ soi.name }}</a></td>
+        <td>{{ soi.description }}</td>
+        <td>{{ soi.status }}</td>
+        <td><a href="{{ url_for('soi_change_check', id=soi.id) }}">{{ soi.check }}</a></td>
+        <td><a href="{{ url_for('add_soi_comment', id=soi.id) }}">{{ last_comments[loop.index -1] }}</a></td>
         <td>{{ used_components[loop.index -1][0] }}</td>
       </tr> 
       {% endfor %}
