@@ -21,7 +21,7 @@
         <td><a href="{{ url_for('soi_view', id=soi.id) }}">{{ soi.name }}</a></td>
         <td>{{ soi.description }}</td>
         <td>{{ soi.status }}</td>
-        <td><a href="{{ url_for('soi_change_check', id=soi.id) }}">{{ soi.check }}</a></td>
+        <td><a href="{{ url_for('change_check', table_name='soi', id=soi.id) }}">{{ soi.check }}</a></td>
         <td><a href="{{ url_for('add_soi_comment', id=soi.id) }}">{{ last_comments[loop.index -1] }}</a></td>
         <td>{{ used_components[loop.index -1][0] }}</td>
       </tr> 
