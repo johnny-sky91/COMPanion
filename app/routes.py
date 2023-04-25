@@ -47,20 +47,37 @@ def basic_view():
     )
 
 
+def last_comment(table):
+    table_name = tables_dict.get(table)
+    product = db.session.query(table_name).order_by(table_name.id.asc())
+    product_id = [x.id for x in product]
+    all_comments = [
+        db.session.query(table_name).filter_by(id=x).first().comments
+        for x in product_id
+    ]
+    last_comments = [x[-1].text if x else None for x in all_comments]
+    return last_comments
+
+
 @app.route("/component_list")
 def component_list():
     components = Component.query.order_by(Component.id.asc())
-    components_id = [x.id for x in components]
-    all_comments = [
-        Component.query.filter_by(id=x).first().comments for x in components_id
-    ]
-    last_comments = [x[-1].text if x else "No comment" for x in all_comments]
-
     return render_template(
-        "lists/component_list.html",
+        f"lists/component_list.html",
         title="Components",
         components=components,
-        last_comments=last_comments,
+        last_comments=last_comment(table="component"),
+    )
+
+
+@app.route("/system_list")
+def system_list():
+    systems = System.query.order_by(System.name.asc())
+    return render_template(
+        f"lists/system_list.html",
+        title="Systems",
+        systems=systems,
+        last_comments=last_comment(table="system"),
     )
 
 
@@ -68,8 +85,6 @@ def component_list():
 def soi_list():
     sois = SOI.query.order_by(SOI.id.asc())
     sois_id = [x.id for x in sois]
-    all_comments = [SOI.query.filter_by(id=x).first().comments for x in sois_id]
-    last_comments = [x[-1].text if x else "No comment" for x in all_comments]
 
     def what_comp(item):
         comp = Component.query.filter_by(id=item).first().name
@@ -79,32 +94,16 @@ def soi_list():
         ComponentSoi.query.join(SOI).filter_by(id=soi).all() for soi in sois_id
     ]
     used_components = [
-        ["No components"]
-        if x == []
-        else [", ".join(what_comp(item=y.comp_joint) for y in x)]
+        [""] if x == [] else [", ".join(what_comp(item=y.comp_joint) for y in x)]
         for x in comps_joint
     ]
 
     return render_template(
-        "lists/soi_list.html",
+        f"lists/soi_list.html",
         title="SOI",
         sois=sois,
-        last_comments=last_comments,
+        last_comments=last_comment(table="soi"),
         used_components=used_components,
-    )
-
-
-@app.route("/system_list")
-def system_list():
-    systems = System.query.order_by(System.name.asc())
-    sois_id = [x.id for x in systems]
-    all_comments = [SOI.query.filter_by(id=x).first().comments for x in sois_id]
-    last_comments = [x[-1].text if x else "No comment" for x in all_comments]
-    return render_template(
-        "lists/system_list.html",
-        title="Systems",
-        systems=systems,
-        last_comments=last_comments,
     )
 
 
