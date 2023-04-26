@@ -8,6 +8,7 @@
         <th>ID</th>
         <th>SOI</th>
         <th>Description</th>
+        <th>Dummy</th>
         <th>Status</th>
         <th>Check</th>
         <th>Comment</th>
@@ -20,6 +21,7 @@
         <td>{{ soi.id }}</td>
         <td><a href="{{ url_for('soi_view', id=soi.id) }}">{{ soi.name }}</a></td>
         <td>{{ soi.description }}</td>
+        <td>{{ soi.dummy }}</td>
         <td>{{ soi.status }}</td>
         <td><a href="{{ url_for('change_check', table_name='soi', id=soi.id) }}">{{ soi.check }}</a></td>
         <td><a href="{{ url_for('add_product_comment', table='soi', id=soi.id) }}">{{ last_comments[loop.index -1] }}</a></td>

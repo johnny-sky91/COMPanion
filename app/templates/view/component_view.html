@@ -5,6 +5,7 @@
     <p>ID: {{ component.id }}</p>
     <p>Name: {{ component.name }}</p>
     <p>Description: {{ component.description }}</p>
+    <p>Supplier: {{ component.supplier }}</p>
     <p>Check: <a href="{{ url_for('change_check',table_name='component', id=component.id) }}">{{ component.check }}</a></p>
     <p>Status: <a href="{{ url_for('product_change_status', table='component', id=component.id) }}">{{ component.status }}</a></p>
     <p>Add SOI usage</p>

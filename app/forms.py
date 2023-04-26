@@ -20,6 +20,10 @@ class AddComponent(FlaskForm):
         "Description",
         validators=[DataRequired(message="Component Description can't be empty")],
     )
+    supplier = TextAreaField(
+        "Supplier",
+        validators=[DataRequired(message="Component Supplier can't be empty")],
+    )
     status = SelectField(
         "Status", validators=[DataRequired(message="Component status can't be empty")]
     )

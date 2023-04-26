@@ -7,6 +7,7 @@ class Component(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(160), unique=True)
     description = db.Column(db.String(160))
+    supplier = db.Column(db.String(160))
     status = db.Column(db.String(160))
     check = db.Column(db.Boolean, default=False)
     comments = db.relationship("ComponentComment", backref="component", lazy=True)
@@ -23,6 +24,7 @@ class SOI(db.Model):
     description = db.Column(db.String(160))
     status = db.Column(db.String(160))
     check = db.Column(db.Boolean, default=False)
+    dummy = db.Column(db.Boolean, default=False)
     comments = db.relationship("SoiComment", backref="soi", lazy=True)
     component_joint = db.relationship("ComponentSoi", backref="soi", lazy=True)
 
@@ -67,6 +69,8 @@ class ComponentSoi(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     comp_joint = db.Column(db.Integer, db.ForeignKey("component.id"))
     soi_joint = db.Column(db.Integer, db.ForeignKey("soi.id"))
+    main = db.Column(db.Boolean, default=False)
+    usage = db.Column(db.Integer)
 
 
 tables_dict = {table.__tablename__: table for table in db.Model.__subclasses__()}

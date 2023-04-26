@@ -115,6 +115,7 @@ def add_new_component():
         new_component = Component(
             name=form.name.data,
             description=form.description.data,
+            supplier=form.supplier.data,
             status=form.status.data,
         )
         db.session.add(new_component)
