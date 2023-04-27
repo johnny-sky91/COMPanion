@@ -20,7 +20,7 @@
         <td><a href="{{ url_for('system_view', id=system.id) }}">{{ system.name }}</a></td>
         <td>{{ system.status }}</td>
         <td><a href="{{ url_for('change_check', table_name='system', id=system.id) }}">{{ system.check }}</a></td>
-        <td><a href="{{ url_for('add_product_comment', table='system', id=system.id) }}">{{ last_comments[loop.index -1] }}</a></td>
+        <td><a href="{{ url_for('add_product_comment', table='system', table2 = 'system_comment', id=system.id) }}">{{ last_comments[loop.index -1] }}</a></td>
       </tr>
       {% endfor %}
     </tbody>

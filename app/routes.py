@@ -244,16 +244,11 @@ def product_change_status(table, id):
     )
 
 
-@app.route("/<table>_view/<id>/add_comment", methods=["GET", "POST"])
-def add_product_comment(table, id):
+@app.route("/<table>_view/<id>/add_<table2>", methods=["GET", "POST"])
+def add_product_comment(table, table2, id):
     product = db.session.query(tables_dict.get(table)).get(id)
     form = AddProductComment()
-    if table == "component":
-        what_comment = ComponentComment
-    elif table == "soi":
-        what_comment = SoiComment
-    else:
-        what_comment = SystemComment
+    what_comment = tables_dict.get(table2)
     if form.validate_on_submit():
         new_comment = what_comment(
             product_id=id,
@@ -307,7 +302,3 @@ def add_comp_soi(id):
     return render_template(
         "add/add_comp_soi.html", title=f"Add comp to {soi.name}", form=form, soi=soi
     )
-
-
-def search_product():
-    pass
