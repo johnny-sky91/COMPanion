@@ -50,7 +50,6 @@ def basic_view():
 
 def last_comment(table, products):
     table_name = tables_dict.get(table)
-    # product = db.session.query(table_name).order_by(table_name.id.asc())
     product_id = [x.id for x in products]
     all_comments = [
         db.session.query(table_name).filter_by(id=x).first().comments
@@ -82,18 +81,20 @@ def system_list():
     )
 
 
-def get_used_components(sois_id):
-    def what_comp(item):
-        comp = Component.query.filter_by(id=item).first().name
-        return comp
+def get_used_components(products):
+    def components_names(product):
+        component_name = (
+            Component.query.join(ComponentSoi)
+            .join(SOI)
+            .filter(SOI.id == product.id)
+            .with_entities(Component.name)
+            .all()
+        )
 
-    comps_joint = [
-        ComponentSoi.query.join(SOI).filter_by(id=soi).all() for soi in sois_id
-    ]
-    used_components = [
-        [""] if x == [] else [", ".join(what_comp(item=y.comp_joint) for y in x)]
-        for x in comps_joint
-    ]
+        return ", ".join([r for (r,) in component_name])
+        # return [r for (r,) in component_name]
+
+    used_components = [components_names(product) for product in products]
     return used_components
 
 
@@ -111,7 +112,7 @@ def soi_list():
         title="SOI",
         sois=sois,
         last_comments=last_comment(table="soi", products=sois),
-        used_components=get_used_components(sois_id=[x.id for x in sois]),
+        used_components=get_used_components(products=sois),
         form=form,
     )
 
