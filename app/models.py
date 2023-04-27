@@ -45,6 +45,7 @@ class System(db.Model):
 
 
 class ComponentComment(db.Model):
+    __tablename__ = "component_comment"
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey("component.id"))
     text = db.Column(db.String(160))
@@ -52,6 +53,7 @@ class ComponentComment(db.Model):
 
 
 class SoiComment(db.Model):
+    __tablename__ = "soi_comment"
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey("soi.id"))
     text = db.Column(db.String(160))
@@ -59,6 +61,7 @@ class SoiComment(db.Model):
 
 
 class SystemComment(db.Model):
+    __tablename__ = "system_comment"
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey("system.id"))
     text = db.Column(db.String(160))
@@ -66,6 +69,7 @@ class SystemComment(db.Model):
 
 
 class ComponentSoi(db.Model):
+    __tablename__ = "component_soi"
     id = db.Column(db.Integer, primary_key=True)
     comp_joint = db.Column(db.Integer, db.ForeignKey("component.id"))
     soi_joint = db.Column(db.Integer, db.ForeignKey("soi.id"))
