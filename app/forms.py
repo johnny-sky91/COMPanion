@@ -75,3 +75,8 @@ class AddCompSoi(FlaskForm):
         validators=[DataRequired(message="Choose component")],
     )
     submit = SubmitField("Add component to SOI")
+
+
+class SearchProduct(FlaskForm):
+    product = StringField("Search product", validators=[DataRequired()])
+    submit = SubmitField("Search")

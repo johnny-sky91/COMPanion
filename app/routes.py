@@ -7,6 +7,7 @@ from app.forms import (
     ChangeStatus,
     AddProductComment,
     AddCompSoi,
+    SearchProduct,
 )
 from app.models import (
     System,
@@ -47,10 +48,10 @@ def basic_view():
     )
 
 
-def last_comment(table):
+def last_comment(table, products):
     table_name = tables_dict.get(table)
-    product = db.session.query(table_name).order_by(table_name.id.asc())
-    product_id = [x.id for x in product]
+    # product = db.session.query(table_name).order_by(table_name.id.asc())
+    product_id = [x.id for x in products]
     all_comments = [
         db.session.query(table_name).filter_by(id=x).first().comments
         for x in product_id
@@ -59,33 +60,29 @@ def last_comment(table):
     return last_comments
 
 
-@app.route("/component_list")
+@app.route("/component_list", methods=["GET", "POST"])
 def component_list():
     components = Component.query.order_by(Component.id.asc())
     return render_template(
         f"lists/component_list.html",
         title="Components",
         components=components,
-        last_comments=last_comment(table="component"),
+        last_comments=last_comment(table="component", products=components),
     )
 
 
-@app.route("/system_list")
+@app.route("/system_list", methods=["GET", "POST"])
 def system_list():
     systems = System.query.order_by(System.name.asc())
     return render_template(
         f"lists/system_list.html",
         title="Systems",
         systems=systems,
-        last_comments=last_comment(table="system"),
+        last_comments=last_comment(table="system", products=systems),
     )
 
 
-@app.route("/soi_list")
-def soi_list():
-    sois = SOI.query.order_by(SOI.id.asc())
-    sois_id = [x.id for x in sois]
-
+def get_used_components(sois_id):
     def what_comp(item):
         comp = Component.query.filter_by(id=item).first().name
         return comp
@@ -97,13 +94,25 @@ def soi_list():
         [""] if x == [] else [", ".join(what_comp(item=y.comp_joint) for y in x)]
         for x in comps_joint
     ]
+    return used_components
+
+
+@app.route("/soi_list", methods=["GET", "POST"])
+def soi_list():
+    form = SearchProduct()
+
+    if form.validate_on_submit():
+        sois = SOI.query.filter((SOI.name.like(f"%{form.product.data}%"))).all()
+    else:
+        sois = SOI.query.order_by(SOI.id.asc())
 
     return render_template(
         f"lists/soi_list.html",
         title="SOI",
         sois=sois,
-        last_comments=last_comment(table="soi"),
-        used_components=used_components,
+        last_comments=last_comment(table="soi", products=sois),
+        used_components=get_used_components(sois_id=[x.id for x in sois]),
+        form=form,
     )
 
 
@@ -270,6 +279,17 @@ def change_check(table_name, id):
     return redirect(request.referrer)
 
 
+# @app.route("/<table_name>_view/<id>/change_dummy", methods=["GET", "POST"])
+# def change_check(table_name, id):
+#     to_change = db.session.query(tables_dict.get(table_name)).get(id)
+#     if to_change.check:
+#         to_change.check = False
+#     else:
+#         to_change.check = True
+#     db.session.commit()
+#     return redirect(request.referrer)
+
+
 @app.route("/soi_list/soi_view/<id>/add_comp_soi", methods=["GET", "POST"])
 def add_comp_soi(id):
     soi = SOI.query.get(id)
@@ -287,3 +307,7 @@ def add_comp_soi(id):
     return render_template(
         "add/add_comp_soi.html", title=f"Add comp to {soi.name}", form=form, soi=soi
     )
+
+
+def search_product():
+    pass

@@ -1,7 +1,18 @@
 {% extends "base.html" %} {% block content %}
 
-<a href="/soi_list/add_new_soi">Add new SOI</a>
 <body>
+  <a href="/soi_list/add_new_soi">Add new SOI</a><br>
+  <form action="" method="post" novalidate>
+    {{form.hidden_tag()}}
+    <p style="font-size:18px">
+      {{ form.product.label }}:
+      {{ form.product(style='height: 20px; width:200px') }}
+      {{ form.submit() }}
+      {% for error in form.product.errors %}
+      <span style="color: red;">{{ error }}</span>
+      {% endfor %}<br>
+    </p>
+  </form>
   <table>
     <thead>
       <tr>
