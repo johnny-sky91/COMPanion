@@ -279,15 +279,15 @@ def change_check(table_name, id):
     return redirect(request.referrer)
 
 
-# @app.route("/<table_name>_view/<id>/change_dummy", methods=["GET", "POST"])
-# def change_check(table_name, id):
-#     to_change = db.session.query(tables_dict.get(table_name)).get(id)
-#     if to_change.check:
-#         to_change.check = False
-#     else:
-#         to_change.check = True
-#     db.session.commit()
-#     return redirect(request.referrer)
+@app.route("/soi_view/<id>/change_dummy", methods=["GET", "POST"])
+def change_dummy(id):
+    to_change = db.session.query(tables_dict.get("soi")).get(id)
+    if to_change.dummy:
+        to_change.dummy = False
+    else:
+        to_change.dummy = True
+    db.session.commit()
+    return redirect(request.referrer)
 
 
 @app.route("/soi_list/soi_view/<id>/add_comp_soi", methods=["GET", "POST"])
