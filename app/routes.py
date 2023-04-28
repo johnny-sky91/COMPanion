@@ -245,6 +245,7 @@ def product_change_status(table, id):
     )
 
 
+# TODO - get current comment in new comment field
 @app.route("/<table>_view/<id>/add_<table2>", methods=["GET", "POST"])
 def add_product_comment(table, table2, id):
     product = db.session.query(tables_dict.get(table)).get(id)
