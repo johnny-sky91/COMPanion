@@ -304,3 +304,8 @@ def add_comp_soi(id):
     return render_template(
         "add/add_comp_soi.html", title=f"Add comp to {soi.name}", form=form, soi=soi
     )
+
+
+@app.route("/other", methods=["GET", "POST"])
+def other_view():
+    return render_template("other.html")
