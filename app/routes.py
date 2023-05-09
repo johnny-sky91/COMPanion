@@ -245,11 +245,16 @@ def product_change_status(table, id):
     )
 
 
-# TODO - get current comment in new comment field
 @app.route("/<table>_view/<id>/add_<table2>", methods=["GET", "POST"])
 def add_product_comment(table, table2, id):
     product = db.session.query(tables_dict.get(table)).get(id)
-    form = AddProductComment()
+    current_comment = (
+        db.session.query(tables_dict.get(table))
+        .filter_by(id=product.id)
+        .first()
+        .comments
+    )[-1].text
+    form = AddProductComment(text=current_comment)
     what_comment = tables_dict.get(table2)
     if form.validate_on_submit():
         new_comment = what_comment(
@@ -261,7 +266,10 @@ def add_product_comment(table, table2, id):
         flash(f"New comment has been added")
         return redirect(url_for(f"{table}_view", id=id))
     return render_template(
-        f"add/add_product_comment.html", title=f"{product.name}", form=form
+        f"add/add_product_comment.html",
+        title=f"{product.name}",
+        form=form,
+        current_comment=current_comment,
     )
 
 
