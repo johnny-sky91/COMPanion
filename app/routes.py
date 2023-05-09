@@ -98,21 +98,26 @@ def get_used_components(products):
     return used_components
 
 
-@app.route("/soi_list", methods=["GET", "POST"])
-def soi_list():
+@app.route("/soi_list/<dummy>", methods=["GET", "POST"])
+def soi_list(dummy):
     form = SearchProduct()
+
+    if dummy.lower() == "true":
+        sois = SOI.query.order_by(SOI.id.asc()).filter_by(dummy=True)
+    elif dummy.lower() == "both":
+        sois = SOI.query.order_by(SOI.id.asc())
 
     if form.validate_on_submit():
         sois = SOI.query.filter((SOI.name.like(f"%{form.product.data}%"))).all()
-    else:
-        sois = SOI.query.order_by(SOI.id.asc())
 
+    last_comments = last_comment(table="soi", products=sois)
+    used_components = get_used_components(products=sois)
     return render_template(
         f"lists/soi_list.html",
         title="SOI",
         sois=sois,
-        last_comments=last_comment(table="soi", products=sois),
-        used_components=get_used_components(products=sois),
+        last_comments=last_comments,
+        used_components=used_components,
         form=form,
     )
 

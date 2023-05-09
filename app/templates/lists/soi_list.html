@@ -1,6 +1,6 @@
 {% extends "base.html" %} {% block content %}
 <body>
-  <a href="/soi_list/add_new_soi">Add new SOI</a><br><a href="/soi_list/dummy">SOI with dummy</a><br>
+  <a href="/soi_list/add_new_soi">Add new SOI</a><br>
   <form action="" method="post" novalidate>
     {{form.hidden_tag()}}
     <p style="font-size:18px">
@@ -18,7 +18,7 @@
         <th>ID</th>
         <th>SOI</th>
         <th>Description</th>
-        <th>Dummy</th>
+        <th><a href="/soi_list/true">Dummy</a></th>
         <th>Status</th>
         <th>Check</th>
         <th>Comment</th>
