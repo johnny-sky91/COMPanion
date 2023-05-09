@@ -19,6 +19,7 @@ from app.models import (
     ComponentSoi,
     tables_dict,
 )
+import pyperclip
 
 
 @app.route("/")
@@ -68,6 +69,14 @@ def component_list():
         components=components,
         last_comments=last_comment(table="component", products=components),
     )
+
+
+@app.route("/get_component_list", methods=["GET", "POST"])
+def get_component_list():
+    components = Component.query.with_entities(Component.name)
+    components = "\n".join([x[0] for x in components])
+    pyperclip.copy(components)
+    return redirect(url_for("component_list"))
 
 
 @app.route("/system_list", methods=["GET", "POST"])
