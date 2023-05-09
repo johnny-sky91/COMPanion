@@ -12,8 +12,7 @@
     <ul>
         {% for component in component_used %}
         <li>
-            {{ component }}
-        </li>
+            <a>{{ component.name }}</a><a href="{{ url_for('remove_component_soi',id =soi.id, component_id=component.id) }}">Remove</a>
         {% endfor %}
     </ul>
     <p>List of used in systems</p>

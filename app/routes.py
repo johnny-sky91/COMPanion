@@ -73,7 +73,7 @@ def component_list():
 
 @app.route("/get_component_list", methods=["GET", "POST"])
 def get_component_list():
-    components = Component.query.with_entities(Component.name)
+    components = Component.query.filter_by(check=True).with_entities(Component.name)
     components = "\n".join([x[0] for x in components])
     pyperclip.copy(components)
     return redirect(url_for("component_list"))
@@ -207,7 +207,7 @@ def soi_view(id):
 
     component_used = ComponentSoi.query.filter_by(soi_joint=id).all()
     component_used = [
-        Component.query.filter_by(id=x.comp_joint).first().name for x in component_used
+        Component.query.filter_by(id=x.comp_joint).first() for x in component_used
     ]
     return render_template(
         "view/soi_view.html",
@@ -216,6 +216,16 @@ def soi_view(id):
         comments_list=comments_list,
         component_used=component_used,
     )
+
+
+@app.route(
+    "/soi_list/soi_view/<id>/remove_component/<component_id>",
+    methods=["GET", "POST", "DELETE"],
+)
+def remove_component_soi(id, component_id):
+    ComponentSoi.query.filter_by(soi_joint=id, comp_joint=component_id).delete()
+    db.session.commit()
+    return redirect(request.referrer)
 
 
 @app.route("/system_list/system_view/<id>", methods=["GET", "POST"])
