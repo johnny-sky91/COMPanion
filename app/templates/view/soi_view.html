@@ -44,8 +44,7 @@
             <th><a href="{{ url_for('add_product_comment', table='soi', table2 = 'soi_comment', id=soi.id) }}">Comments</a></th>
             <td><ul>
                 {% for comment in comments_list %}
-                <li>            {{ comment.text }}&nbsp
-                    {{ comment.timestamp.strftime("%d/%m/%Y, %H:%M") }}</li>
+                <li>{{ comment.text }}&nbsp{{ comment.timestamp.strftime("%d/%m/%Y, %H:%M") }}</li>
                 {% endfor %}
             </ul></td>
         </tr>
