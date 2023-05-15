@@ -32,12 +32,12 @@
             <th><a href="{{ url_for('add_comp_soi', id=soi.id) }}">Components used</a></th>
             <td><ul>
                 {% for component in component_used %}
-                <li><a>{{ component.name }}</a><a href="{{ url_for('remove_component_soi',id =soi.id, component_id=component.id) }}">Remove</a></li>
+                <li><a>{{ component.name }}</a><a href="{{ url_for('remove_component_soi',id=soi.id, component_id=component.id) }}">Remove</a></li>
                 {% endfor %}
             </ul></td>
         </tr>
         <tr>
-            <th>List of used in systems</th>
+            <th><a href="{{ url_for('add_system_soi',id=soi.id) }}">Used in systems</a></th>
             <td>Place for systems</td>
         </tr>
         <tr>

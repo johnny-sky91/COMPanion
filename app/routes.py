@@ -8,6 +8,7 @@ from app.forms import (
     AddProductComment,
     AddCompSoi,
     SearchProduct,
+    AddSystemSOI,
 )
 from app.models import (
     System,
@@ -213,6 +214,12 @@ def soi_view(id):
     )
 
 
+@app.route("/soi_list/soi_view/<id>/add_system", methods=["GET", "POST"])
+def add_system_soi(soi_id):
+    form = AddSystemSOI()
+    return render_template("add/add_system_soi.html.html", form=form)
+
+
 @app.route(
     "/soi_list/soi_view/<id>/remove_component/<component_id>",
     methods=["GET", "POST", "DELETE"],
@@ -264,15 +271,23 @@ def product_change_status(table, id):
     )
 
 
+def get_current_comment(table, product_id):
+    try:
+        current_comment = (
+            db.session.query(tables_dict.get(table))
+            .filter_by(id=product_id)
+            .first()
+            .comments
+        )[-1].text
+    except IndexError:
+        current_comment = None
+    return current_comment
+
+
 @app.route("/<table>_view/<id>/add_<table2>", methods=["GET", "POST"])
 def add_product_comment(table, table2, id):
     product = db.session.query(tables_dict.get(table)).get(id)
-    current_comment = (
-        db.session.query(tables_dict.get(table))
-        .filter_by(id=product.id)
-        .first()
-        .comments
-    )[-1].text
+    current_comment = get_current_comment(table=table, product_id=product.id)
     form = AddProductComment(text=current_comment)
     what_comment = tables_dict.get(table2)
     if form.validate_on_submit():
