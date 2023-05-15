@@ -18,6 +18,7 @@ td, th {
   border: 1px solid #ddd;
   padding: 8px;
 }
+
 thead th {
   position: sticky;
   top: 0;
