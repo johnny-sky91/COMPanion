@@ -35,7 +35,6 @@
         <td>{{ component.status }}</td>
         <td><a href="{{ url_for('change_check', table_name='component', id=component.id) }}">{{ component.check }}</a></td>
         <td><a href="{{ url_for('add_product_comment', table='component', table2 = 'component_comment', id=component.id) }}">{{ last_comments[loop.index -1] }}</a></td>
-
       </tr>
       {% endfor %}
     </tbody>
