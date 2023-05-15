@@ -1,29 +1,54 @@
 {% extends "base.html" %}
 {% block content %}
+<head><style>th { width: 220px; }</style></head>
 <body>
     <b>SOI info</b>
-    <p>ID: {{ soi.id }}</p>
-    <p>Name: {{ soi.name }}</p>
-    <p>Description: {{ soi.description }}</p>
-    <p>Dummy: <a href="{{ url_for('change_dummy', id=soi.id) }}">{{ soi.dummy }}</a></p>
-    <p>Check: <a href="{{ url_for('change_check',table_name='soi', id=soi.id) }}">{{ soi.check }}</a></p>
-    <p>Status: <a href="{{ url_for('product_change_status', table='soi', id=soi.id) }}">{{ soi.status }}</a></p>
-    <a href="{{ url_for('add_comp_soi', id=soi.id) }}">Components used:</a>
-    <ul>
-        {% for component in component_used %}
-        <li>
-            <a>{{ component.name }}</a><a href="{{ url_for('remove_component_soi',id =soi.id, component_id=component.id) }}">Remove</a>
-        {% endfor %}
-    </ul>
-    <p>List of used in systems</p>
-    <a href="{{ url_for('add_product_comment', table='soi', table2 = 'soi_comment', id=soi.id) }}">Comments:</a>
-    <ul>
-        {% for comment in comments_list %}
-        <li>
-            {{ comment.text }}&nbsp
-            {{ comment.timestamp.strftime("%d/%m/%Y, %H:%M") }}
-        </li>
-        {% endfor %}
-    </ul>
+    <table>
+        <tr>
+            <th>ID</th>
+            <td>{{ soi.id }}</td>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <td>{{ soi.name }}</td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td>{{ soi.description }}</td>
+        </tr>
+        <tr>
+            <th>Dummy</th>
+            <td><a href="{{ url_for('change_dummy', id=soi.id) }}">{{ soi.dummy }}</a></td>
+        </tr>
+        <tr>
+            <th>Check</th>
+            <td><a href="{{ url_for('change_check',table_name='soi', id=soi.id) }}">{{ soi.check }}</a></td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td><a href="{{ url_for('product_change_status', table='soi', id=soi.id) }}">{{ soi.status }}</a></td>
+        </tr>
+        <tr>
+            <th><a href="{{ url_for('add_comp_soi', id=soi.id) }}">Components used</a></th>
+            <td><ul>
+                {% for component in component_used %}
+                <li><a>{{ component.name }}</a><a href="{{ url_for('remove_component_soi',id =soi.id, component_id=component.id) }}">Remove</a></li>
+                {% endfor %}
+            </ul></td>
+        </tr>
+        <tr>
+            <th>List of used in systems</th>
+            <td>Place for systems</td>
+        </tr>
+        <tr>
+            <th><a href="{{ url_for('add_product_comment', table='soi', table2 = 'soi_comment', id=soi.id) }}">Comments</a></th>
+            <td><ul>
+                {% for comment in comments_list %}
+                <li>            {{ comment.text }}&nbsp
+                    {{ comment.timestamp.strftime("%d/%m/%Y, %H:%M") }}</li>
+                {% endfor %}
+            </ul></td>
+        </tr>
+      </table>
 </body>
 {% endblock %}
