@@ -60,11 +60,14 @@ def last_comment(table, products):
     return last_comments
 
 
-@app.route("/component_list", methods=["GET", "POST"])
-def component_list():
+@app.route("/component_list/<what_view>", methods=["GET", "POST"])
+def component_list(what_view):
     form = SearchProduct()
 
     components = Component.query.order_by(Component.id.asc())
+
+    if what_view.lower() == "check_true":
+        components = Component.query.order_by(Component.id.asc()).filter_by(check=True)
 
     if form.validate_on_submit():
         components = Component.query.filter(
@@ -118,14 +121,17 @@ def get_used_components(products):
     return used_components
 
 
-@app.route("/soi_list/<dummy>", methods=["GET", "POST"])
-def soi_list(dummy):
+@app.route("/soi_list/<what_view>", methods=["GET", "POST"])
+def soi_list(what_view):
     form = SearchProduct()
+    sois = SOI.query.order_by(SOI.id.asc())
 
-    if dummy.lower() == "true":
+    if what_view.lower() == "dummy_true":
         sois = SOI.query.order_by(SOI.id.asc()).filter_by(dummy=True)
-    elif dummy.lower() == "both":
-        sois = SOI.query.order_by(SOI.id.asc())
+    if what_view.lower() == "check_true":
+        sois = SOI.query.order_by(SOI.id.asc()).filter_by(check=True)
+    if what_view.lower() == "poe":
+        sois = SOI.query.order_by(SOI.id.asc()).filter_by(status="POE")
 
     if form.validate_on_submit():
         sois = SOI.query.filter((SOI.name.like(f"%{form.product.data}%"))).all()
