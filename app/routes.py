@@ -25,28 +25,7 @@ import pyperclip
 @app.route("/")
 @app.route("/home")
 def basic_view():
-    soi_to_check = SOI.query.filter_by(check=True).all()
-    soi_last_comment = []
-    for x in soi_to_check:
-        try:
-            soi_last_comment.append(x.comments[-1].text)
-        except IndexError:
-            soi_last_comment.append("")
-    component_to_check = Component.query.filter_by(check=True).all()
-    component_last_comment = []
-    for x in component_to_check:
-        try:
-            component_last_comment.append(x.comments[-1].text)
-        except IndexError:
-            component_last_comment.append("")
-    return render_template(
-        "home.html",
-        title="Home",
-        sois=soi_to_check,
-        components=component_to_check,
-        sois_comment=soi_last_comment,
-        components_comment=component_last_comment,
-    )
+    return render_template("home.html", title="Home")
 
 
 def last_comment(table, products):
