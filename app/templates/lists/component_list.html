@@ -1,8 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-
-<a href="/component_list/add_new_component">Add new component</a><a href="/get_component_list">Get to clipboard</a>
 <body>
+  <a href="/component_list/add_new_component">Add new component</a><a href="/get_component_list">Get to clipboard</a>
+  <form action="" method="post" novalidate>
+    {{form.hidden_tag()}}
+    <p style="font-size:18px">
+      {{ form.product.label }}:
+      {{ form.product(style='height: 20px; width:200px') }}
+      {{ form.submit() }}
+      {% for error in form.product.errors %}
+      <span style="color: red;">{{ error }}</span>
+      {% endfor %}<br>
+    </p>
+  </form>
   <table>
     <thead>
       <tr>

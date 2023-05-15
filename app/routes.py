@@ -62,10 +62,19 @@ def last_comment(table, products):
 
 @app.route("/component_list", methods=["GET", "POST"])
 def component_list():
+    form = SearchProduct()
+
     components = Component.query.order_by(Component.id.asc())
+
+    if form.validate_on_submit():
+        components = Component.query.filter(
+            (Component.name.like(f"%{form.product.data}%"))
+        ).all()
+
     return render_template(
         f"lists/component_list.html",
         title="Components",
+        form=form,
         components=components,
         last_comments=last_comment(table="component", products=components),
     )
