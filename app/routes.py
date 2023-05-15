@@ -73,7 +73,9 @@ def component_list():
 
 @app.route("/get_component_list", methods=["GET", "POST"])
 def get_component_list():
-    components = Component.query.filter_by(check=True).with_entities(Component.name)
+    components = Component.query.filter_by(status="Active").with_entities(
+        Component.name
+    )
     components = "\n".join([x[0] for x in components])
     pyperclip.copy(components)
     return redirect(url_for("component_list"))
