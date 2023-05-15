@@ -1,19 +1,31 @@
 {% extends "base.html" %}
 {% block content %}
+<head><style>th { width: 220px; }</style></head>
 <body>
     <b>System info</b>
-    <p>ID: {{ system.id }}</p>
-    <p>Name: {{ system.name }}</p>
-    <p>Check: <a href="{{ url_for('change_check',table_name='system', id=system.id) }}">{{ system.check }}</a></p>
-    <p>Status: <a href="{{ url_for('product_change_status', table='system', id=system.id) }}">{{ system.status }}</a></p>
-    <a href="{{ url_for('add_product_comment', table='system', table2 = 'system_comment', id=system.id) }}">Comments:</a>
-    <ul>
-        {% for comment in comments_list %}
-        <li>
-            {{ comment.text }}&nbsp
-            {{ comment.timestamp.strftime("%d/%m/%Y, %H:%M") }}
-        </li>
-        {% endfor %}
-    </ul>
+    <table>
+        <tr>
+            <th>ID</th>
+            <td>{{ system.id }}</td>
+        </tr>
+        <tr>
+          <th>Name</th>
+          <td>{{ system.name }}</td>
+        </tr>
+        <tr>
+          <th>Check</th>
+          <td><a href="{{ url_for('change_check',table_name='system', id=system.id) }}">{{ system.check }}</a></td>
+        </tr>
+        <tr>
+          <th>Status</th>
+          <td><a href="{{ url_for('product_change_status', table='system', id=system.id) }}">{{ system.status }}</a></td>
+        </tr>
+        <th><a href="{{ url_for('add_product_comment', table='system', table2 = 'system_comment', id=system.id) }}">Comments</a></th>
+        <td><ul>
+            {% for comment in comments_list %}
+            <li>{{ comment.text }}&nbsp{{ comment.timestamp.strftime("%d/%m/%Y, %H:%M") }}</li>
+            {% endfor %}
+        </ul></td>
+      </table>
 </body>
 {% endblock %}
