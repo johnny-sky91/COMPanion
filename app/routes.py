@@ -94,7 +94,6 @@ def get_used_components(products):
         )
 
         return ", ".join([r for (r,) in component_name])
-        # return [r for (r,) in component_name]
 
     used_components = [components_names(product) for product in products]
     return used_components
@@ -291,6 +290,18 @@ def add_product_comment(table, table2, id):
         form=form,
         current_comment=current_comment,
     )
+
+
+@app.route(
+    "/<table>_list/<table2>_view/<product_id>/remove_comment/<comment_id>",
+    methods=["GET", "POST", "DELETE"],
+)
+def remove_product_comment(table, table2, product_id, comment_id):
+    db.session.query(tables_dict.get(f"{table}_comment")).filter_by(
+        product_id=product_id, id=comment_id
+    ).delete()
+    db.session.commit()
+    return redirect(request.referrer)
 
 
 @app.route("/<table_name>_view/<id>/change_check", methods=["GET", "POST"])

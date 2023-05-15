@@ -31,7 +31,10 @@
     <th><a href="{{ url_for('add_product_comment', table='component', table2 = 'component_comment', id=component.id) }}">Comments</a></th>
     <td><ul>
         {% for comment in comments_list %}
-        <li>{{ comment.text }}&nbsp{{ comment.timestamp.strftime("%d/%m/%Y, %H:%M") }}</li>
+        <li>
+        {{ comment.text }}&nbsp{{ comment.timestamp.strftime("%d/%m/%Y, %H:%M") }}
+        <a href="{{ url_for('remove_product_comment', table='component', table2='component', product_id=component.id, comment_id=comment.id) }}">Remove</a>
+        </li>
         {% endfor %}
     </ul></td>
   </table>
