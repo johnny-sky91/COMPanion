@@ -17,6 +17,10 @@
       <td>{{ component.description }}</td>
     </tr>
     <tr>
+      <th>Check</th>
+      <td><a href="{{ url_for('change_check',table_name='component', id=component.id) }}">{{ component.check }}</a></td>
+    </tr>
+    <tr>
       <th>Supplier</th>
       <td>{{ component.supplier }}</td>
     </tr>
