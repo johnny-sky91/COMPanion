@@ -27,6 +27,7 @@ class SOI(db.Model):
     dummy = db.Column(db.Boolean, default=False)
     comments = db.relationship("SoiComment", backref="soi", lazy=True)
     component_joint = db.relationship("ComponentSoi", backref="soi", lazy=True)
+    system_joint = db.relationship("SystemSoi", backref="soi", lazy=True)
 
     def __repr__(self):
         return f"<SOI {self.name}>"
@@ -39,6 +40,7 @@ class System(db.Model):
     status = db.Column(db.String(160))
     check = db.Column(db.Boolean, default=False)
     comments = db.relationship("SystemComment", backref="system", lazy=True)
+    soi_joint = db.relationship("SystemSoi", backref="system", lazy=True)
 
     def __repr__(self):
         return f"<System {self.name}>"
@@ -75,6 +77,13 @@ class ComponentSoi(db.Model):
     soi_joint = db.Column(db.Integer, db.ForeignKey("soi.id"))
     main = db.Column(db.Boolean, default=False)
     usage = db.Column(db.Integer)
+
+
+class SystemSoi(db.Model):
+    __tablename__ = "system_soi"
+    id = db.Column(db.Integer, primary_key=True)
+    system_joint = db.Column(db.Integer, db.ForeignKey("system.id"))
+    soi_joint = db.Column(db.Integer, db.ForeignKey("soi.id"))
 
 
 tables_dict = {table.__tablename__: table for table in db.Model.__subclasses__()}
