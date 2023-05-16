@@ -37,8 +37,12 @@
             </ul></td>
         </tr>
         <tr>
-            <th><a href="{{ url_for('add_system_soi',id=soi.id) }}">Used in systems</a></th>
-            <td>Place for systems</td>
+            <th><a href="{{ url_for('add_system_soi', id=soi.id) }}">Used in systems</a></th>
+            <td><ul>
+                {% for system in used_in_systems %}
+                <li>{{ system }}</li>
+                {% endfor %}
+            </ul></td>
         </tr>
         <tr>
             <th><a href="{{ url_for('add_product_comment', table='soi', table2 = 'soi_comment', id=soi.id) }}">Comments</a></th>

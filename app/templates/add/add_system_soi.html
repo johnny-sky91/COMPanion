@@ -5,9 +5,9 @@
 <form action="" method="post" novalidate>
     {{form.hidden_tag()}}
     <p style="font-size:18px">
-        {{ form.what_system.label }}:<br>{{ form.what_system() }}<br><br>
+        {{ form.system.label }}:<br>{{ form.system() }}<br><br>
         {{ form.submit() }} <br>
-        {% for error in form.what_system.errors %}
+        {% for error in form.system.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}<br>
     </p>

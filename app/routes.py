@@ -18,6 +18,7 @@ from app.models import (
     SoiComment,
     SystemComment,
     ComponentSoi,
+    SystemSoi,
     tables_dict,
 )
 import pyperclip
@@ -70,7 +71,7 @@ def get_component_list():
     )
     components = "\n".join([x[0] for x in components])
     pyperclip.copy(components)
-    return redirect(url_for("component_list"))
+    return redirect(request.referrer)
 
 
 @app.route("/system_list", methods=["GET", "POST"])
@@ -205,19 +206,45 @@ def soi_view(id):
     component_used = [
         Component.query.filter_by(id=x.comp_joint).first() for x in component_used
     ]
+
+    used_in_systems = SystemSoi.query.filter_by(soi_joint=id).all()
+    used_in_systems = [
+        System.query.filter_by(id=x.system.id).first().name for x in used_in_systems
+    ]
+
     return render_template(
         "view/soi_view.html",
         title=f"{soi.name}",
         soi=soi,
         comments_list=comments_list,
         component_used=component_used,
+        used_in_systems=used_in_systems,
     )
 
 
+#  TODO
 @app.route("/soi_list/soi_view/<id>/add_system", methods=["GET", "POST"])
-def add_system_soi(soi_id):
+def add_system_soi(id):
+    soi = SOI.query.get(id)
+    systems = System.query.all()
+    systems = [system.name for system in systems]
     form = AddSystemSOI()
-    return render_template("add/add_system_soi.html.html", form=form)
+    form.system.choices = systems
+    if form.validate_on_submit():
+        new_system_soi = SystemSoi(
+            system_joint=System.query.filter_by(name=form.system.data).first().id,
+            soi_joint=id,
+        )
+        db.session.add(new_system_soi)
+        db.session.commit()
+        flash(f"{soi.name} has been added to system {form.system.data}")
+        return redirect(url_for("soi_view", id=id))
+    return render_template(
+        "add/add_system_soi.html",
+        title=f"Add system to SOI {soi.name}",
+        form=form,
+        soi=soi,
+    )
 
 
 @app.route(
