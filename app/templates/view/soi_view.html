@@ -40,7 +40,7 @@
             <th><a href="{{ url_for('add_system_soi', id=soi.id) }}">Used in systems</a></th>
             <td><ul>
                 {% for system in used_in_systems %}
-                <li>{{ system }}</li>
+                <li><a>{{ system }}</a><a href="{{ url_for('remove_system_soi',id=soi.id, system=system) }}">Remove</a></li>
                 {% endfor %}
             </ul></td>
         </tr>

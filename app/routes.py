@@ -257,6 +257,17 @@ def remove_component_soi(id, component_id):
     return redirect(request.referrer)
 
 
+@app.route(
+    "/soi_list/soi_view/<id>/remove_system/<system>",
+    methods=["GET", "POST", "DELETE"],
+)
+def remove_system_soi(id, system):
+    system_id = System.query.filter_by(name=system).first().id
+    SystemSoi.query.filter_by(soi_joint=id, system_joint=system_id).delete()
+    db.session.commit()
+    return redirect(request.referrer)
+
+
 @app.route("/system_list/system_view/<id>", methods=["GET", "POST"])
 def system_view(id):
     system = System.query.get(id)
