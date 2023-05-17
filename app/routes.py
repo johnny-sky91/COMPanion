@@ -30,6 +30,66 @@ def basic_view():
     return render_template("home.html", title="Home")
 
 
+@app.route("/component_list/component_view/<id>", methods=["GET", "POST"])
+def component_view(id):
+    component = Component.query.get(id)
+    comments_list = ComponentComment.query.filter_by(product_id=id).order_by(
+        ComponentComment.id.desc()
+    )
+    return render_template(
+        "view/component_view.html",
+        title=f"{component.name}",
+        component=component,
+        comments_list=comments_list,
+    )
+
+
+@app.route("/soi_list/soi_view/<id>", methods=["GET", "POST"])
+def soi_view(id):
+    soi = SOI.query.get(id)
+    comments_list = SoiComment.query.filter_by(product_id=id).order_by(
+        SoiComment.id.desc()
+    )
+
+    component_used = ComponentSoi.query.filter_by(soi_joint=id).all()
+    component_used = [
+        Component.query.filter_by(id=x.comp_joint).first() for x in component_used
+    ]
+
+    used_in_systems = SystemSoi.query.filter_by(soi_joint=id).all()
+    used_in_systems = [
+        System.query.filter_by(id=x.system.id).first().name for x in used_in_systems
+    ]
+
+    return render_template(
+        "view/soi_view.html",
+        title=f"{soi.name}",
+        soi=soi,
+        comments_list=comments_list,
+        component_used=component_used,
+        used_in_systems=used_in_systems,
+    )
+
+
+@app.route("/system_list/system_view/<id>", methods=["GET", "POST"])
+def system_view(id):
+    system = System.query.get(id)
+    comments_list = SystemComment.query.filter_by(product_id=id).order_by(
+        SystemComment.id.desc()
+    )
+    return render_template(
+        "view/system_view.html",
+        title=f"{system.name}",
+        system=system,
+        comments_list=comments_list,
+    )
+
+
+@app.route("/other", methods=["GET", "POST"])
+def other_view():
+    return render_template("other.html")
+
+
 def last_comment(table, products):
     table_name = tables_dict.get(table)
     product_id = [x.id for x in products]
@@ -64,43 +124,6 @@ def component_list(what_view):
     )
 
 
-@app.route("/get_component_list", methods=["GET", "POST"])
-def get_component_list():
-    components = Component.query.filter_by(status="Active").with_entities(
-        Component.name
-    )
-    components = "\n".join([x[0] for x in components])
-    pyperclip.copy(components)
-    return redirect(request.referrer)
-
-
-@app.route("/system_list", methods=["GET", "POST"])
-def system_list():
-    systems = System.query.order_by(System.name.asc())
-    return render_template(
-        f"lists/system_list.html",
-        title="Systems",
-        systems=systems,
-        last_comments=last_comment(table="system", products=systems),
-    )
-
-
-def get_used_components(products):
-    def components_names(product):
-        component_name = (
-            Component.query.join(ComponentSoi)
-            .join(SOI)
-            .filter(SOI.id == product.id)
-            .with_entities(Component.name)
-            .all()
-        )
-
-        return ", ".join([r for (r,) in component_name])
-
-    used_components = [components_names(product) for product in products]
-    return used_components
-
-
 @app.route("/soi_list/<what_view>", methods=["GET", "POST"])
 def soi_list(what_view):
     form = SearchProduct()
@@ -126,6 +149,43 @@ def soi_list(what_view):
         used_components=used_components,
         form=form,
     )
+
+
+@app.route("/system_list", methods=["GET", "POST"])
+def system_list():
+    systems = System.query.order_by(System.name.asc())
+    return render_template(
+        f"lists/system_list.html",
+        title="Systems",
+        systems=systems,
+        last_comments=last_comment(table="system", products=systems),
+    )
+
+
+@app.route("/get_component_list", methods=["GET", "POST"])
+def get_component_list():
+    components = Component.query.filter_by(status="Active").with_entities(
+        Component.name
+    )
+    components = "\n".join([x[0] for x in components])
+    pyperclip.copy(components)
+    return redirect(request.referrer)
+
+
+def get_used_components(products):
+    def components_names(product):
+        component_name = (
+            Component.query.join(ComponentSoi)
+            .join(SOI)
+            .filter(SOI.id == product.id)
+            .with_entities(Component.name)
+            .all()
+        )
+
+        return ", ".join([r for (r,) in component_name])
+
+    used_components = [components_names(product) for product in products]
+    return used_components
 
 
 @app.route("/component_list/add_new_component", methods=["GET", "POST"])
@@ -181,48 +241,25 @@ def add_new_system():
     return render_template("add/add_new_system.html", title="Add new system", form=form)
 
 
-@app.route("/component_list/component_view/<id>", methods=["GET", "POST"])
-def component_view(id):
-    component = Component.query.get(id)
-    comments_list = ComponentComment.query.filter_by(product_id=id).order_by(
-        ComponentComment.id.desc()
-    )
-    return render_template(
-        "view/component_view.html",
-        title=f"{component.name}",
-        component=component,
-        comments_list=comments_list,
-    )
-
-
-@app.route("/soi_list/soi_view/<id>", methods=["GET", "POST"])
-def soi_view(id):
+@app.route("/soi_list/soi_view/<id>/add_comp_soi", methods=["GET", "POST"])
+def add_comp_soi(id):
     soi = SOI.query.get(id)
-    comments_list = SoiComment.query.filter_by(product_id=id).order_by(
-        SoiComment.id.desc()
-    )
-
-    component_used = ComponentSoi.query.filter_by(soi_joint=id).all()
-    component_used = [
-        Component.query.filter_by(id=x.comp_joint).first() for x in component_used
-    ]
-
-    used_in_systems = SystemSoi.query.filter_by(soi_joint=id).all()
-    used_in_systems = [
-        System.query.filter_by(id=x.system.id).first().name for x in used_in_systems
-    ]
-
+    form = AddCompSoi()
+    form.component.choices = [x.name for x in Component.query.all()]
+    if form.validate_on_submit():
+        new_joint = ComponentSoi(
+            comp_joint=Component.query.filter_by(name=form.component.data).first().id,
+            soi_joint=id,
+        )
+        db.session.add(new_joint)
+        db.session.commit()
+        flash(f"New component for SOI {soi.name} has been added")
+        return redirect(url_for("soi_view", id=id))
     return render_template(
-        "view/soi_view.html",
-        title=f"{soi.name}",
-        soi=soi,
-        comments_list=comments_list,
-        component_used=component_used,
-        used_in_systems=used_in_systems,
+        "add/add_comp_soi.html", title=f"Add comp to {soi.name}", form=form, soi=soi
     )
 
 
-#  TODO
 @app.route("/soi_list/soi_view/<id>/add_system", methods=["GET", "POST"])
 def add_system_soi(id):
     soi = SOI.query.get(id)
@@ -247,6 +284,29 @@ def add_system_soi(id):
     )
 
 
+@app.route("/<table>_view/<id>/add_<table2>", methods=["GET", "POST"])
+def add_product_comment(table, table2, id):
+    product = db.session.query(tables_dict.get(table)).get(id)
+    current_comment = get_current_comment(table=table, product_id=product.id)
+    form = AddProductComment(text=current_comment)
+    what_comment = tables_dict.get(table2)
+    if form.validate_on_submit():
+        new_comment = what_comment(
+            product_id=id,
+            text=form.text.data,
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+        flash(f"New comment has been added")
+        return redirect(url_for(f"{table}_view", id=id))
+    return render_template(
+        f"add/add_product_comment.html",
+        title=f"{product.name}",
+        form=form,
+        current_comment=current_comment,
+    )
+
+
 @app.route(
     "/soi_list/soi_view/<id>/remove_component/<component_id>",
     methods=["GET", "POST", "DELETE"],
@@ -266,20 +326,6 @@ def remove_system_soi(id, system):
     SystemSoi.query.filter_by(soi_joint=id, system_joint=system_id).delete()
     db.session.commit()
     return redirect(request.referrer)
-
-
-@app.route("/system_list/system_view/<id>", methods=["GET", "POST"])
-def system_view(id):
-    system = System.query.get(id)
-    comments_list = SystemComment.query.filter_by(product_id=id).order_by(
-        SystemComment.id.desc()
-    )
-    return render_template(
-        "view/system_view.html",
-        title=f"{system.name}",
-        system=system,
-        comments_list=comments_list,
-    )
 
 
 statuses_component = ["Active", "No active", "EOL"]
@@ -322,41 +368,6 @@ def get_current_comment(table, product_id):
     return current_comment
 
 
-@app.route("/<table>_view/<id>/add_<table2>", methods=["GET", "POST"])
-def add_product_comment(table, table2, id):
-    product = db.session.query(tables_dict.get(table)).get(id)
-    current_comment = get_current_comment(table=table, product_id=product.id)
-    form = AddProductComment(text=current_comment)
-    what_comment = tables_dict.get(table2)
-    if form.validate_on_submit():
-        new_comment = what_comment(
-            product_id=id,
-            text=form.text.data,
-        )
-        db.session.add(new_comment)
-        db.session.commit()
-        flash(f"New comment has been added")
-        return redirect(url_for(f"{table}_view", id=id))
-    return render_template(
-        f"add/add_product_comment.html",
-        title=f"{product.name}",
-        form=form,
-        current_comment=current_comment,
-    )
-
-
-@app.route(
-    "/<table>_list/<table2>_view/<product_id>/remove_comment/<comment_id>",
-    methods=["GET", "POST", "DELETE"],
-)
-def remove_product_comment(table, table2, product_id, comment_id):
-    db.session.query(tables_dict.get(f"{table}_comment")).filter_by(
-        product_id=product_id, id=comment_id
-    ).delete()
-    db.session.commit()
-    return redirect(request.referrer)
-
-
 @app.route("/<table_name>_view/<id>/change_check", methods=["GET", "POST"])
 def change_check(table_name, id):
     to_change = db.session.query(tables_dict.get(table_name)).get(id)
@@ -379,25 +390,13 @@ def change_dummy(id):
     return redirect(request.referrer)
 
 
-@app.route("/soi_list/soi_view/<id>/add_comp_soi", methods=["GET", "POST"])
-def add_comp_soi(id):
-    soi = SOI.query.get(id)
-    form = AddCompSoi()
-    form.component.choices = [x.name for x in Component.query.all()]
-    if form.validate_on_submit():
-        new_joint = ComponentSoi(
-            comp_joint=Component.query.filter_by(name=form.component.data).first().id,
-            soi_joint=id,
-        )
-        db.session.add(new_joint)
-        db.session.commit()
-        flash(f"New component for SOI {soi.name} has been added")
-        return redirect(url_for("soi_view", id=id))
-    return render_template(
-        "add/add_comp_soi.html", title=f"Add comp to {soi.name}", form=form, soi=soi
-    )
-
-
-@app.route("/other", methods=["GET", "POST"])
-def other_view():
-    return render_template("other.html")
+@app.route(
+    "/<table>_list/<table2>_view/<product_id>/remove_comment/<comment_id>",
+    methods=["GET", "POST", "DELETE"],
+)
+def remove_product_comment(table, table2, product_id, comment_id):
+    db.session.query(tables_dict.get(f"{table}_comment")).filter_by(
+        product_id=product_id, id=comment_id
+    ).delete()
+    db.session.commit()
+    return redirect(request.referrer)
