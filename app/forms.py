@@ -71,7 +71,7 @@ class AddProductComment(FlaskForm):
 
 
 class AddCompSoi(FlaskForm):
-    component = SelectField(
+    component = TextAreaField(
         "What component",
         validators=[DataRequired(message="Choose component")],
     )

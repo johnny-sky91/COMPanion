@@ -241,19 +241,27 @@ def add_new_system():
     return render_template("add/add_new_system.html", title="Add new system", form=form)
 
 
+def prepare_products_list(products_string):
+    products = products_string.split("\n")
+    products = [x.replace("\r", "") for x in products]
+    products = [x for x in products if x != ""]
+    return products
+
+
 @app.route("/soi_list/soi_view/<id>/add_comp_soi", methods=["GET", "POST"])
 def add_comp_soi(id):
     soi = SOI.query.get(id)
     form = AddCompSoi()
-    form.component.choices = [x.name for x in Component.query.all()]
     if form.validate_on_submit():
-        new_joint = ComponentSoi(
-            comp_joint=Component.query.filter_by(name=form.component.data).first().id,
-            soi_joint=id,
-        )
-        db.session.add(new_joint)
+        products = prepare_products_list(form.component.data)
+        for product in products:
+            new_component_soi = ComponentSoi(
+                comp_joint=Component.query.filter_by(name=product).first().id,
+                soi_joint=id,
+            )
+            db.session.add(new_component_soi)
         db.session.commit()
-        flash(f"New component for SOI {soi.name} has been added")
+        flash(f"New components for SOI {soi.name} has been added")
         return redirect(url_for("soi_view", id=id))
     return render_template(
         "add/add_comp_soi.html", title=f"Add comp to {soi.name}", form=form, soi=soi
