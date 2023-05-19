@@ -133,8 +133,10 @@ def soi_list(what_view):
         sois = SOI.query.order_by(SOI.id.asc()).filter_by(dummy=True)
     if what_view.lower() == "check_true":
         sois = SOI.query.order_by(SOI.id.asc()).filter_by(check=True)
-    if what_view.lower() == "poe":
+    if what_view.lower() == "status_poe":
         sois = SOI.query.order_by(SOI.id.asc()).filter_by(status="POE")
+    if what_view.lower() == "status_active":
+        sois = SOI.query.order_by(SOI.id.asc()).filter_by(status="Active")
 
     if form.validate_on_submit():
         sois = SOI.query.filter((SOI.name.like(f"%{form.product.data}%"))).all()
