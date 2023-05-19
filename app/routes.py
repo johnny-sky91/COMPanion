@@ -336,8 +336,8 @@ def remove_system_soi(id, system):
     return redirect(request.referrer)
 
 
-statuses_component = ["Active", "No active", "EOL"]
-statuses_soi = ["Active", "POE", "Not forecasted", "EOL"]
+statuses_component = ["Active", "EOL"]
+statuses_soi = ["Active", "POE", "EOL"]
 statuses_system = ["Active", "EOL"]
 
 
