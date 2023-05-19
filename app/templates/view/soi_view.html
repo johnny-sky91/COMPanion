@@ -35,14 +35,13 @@
         <tr>
             <th><a href="{{ url_for('add_comp_soi', id=soi.id) }}">Components used</a></th>
             <td><ul>
-                <div style="text-align:start;">
+                <a>Name</a><a>Usage</a><a>Main</a>
                 {% for component in components %}
                 <li>
                 <a>{{ component.name }}</a><a>{{ components_details[loop.index-1].usage }}</a><a>{{ components_details[loop.index-1].main }}</a>
                 <a href="{{ url_for('remove_component_soi', id=soi.id, component_id=component.id) }}">Remove</a>
                 </li>
                 {% endfor %}
-                </div>
             </ul></td>
         </tr>
         <tr>
