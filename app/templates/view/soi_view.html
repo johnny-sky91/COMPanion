@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-<head><style>th { width: 220px; }</style></head>
+<head><style>th { width: 220px; }
+.component-link {
+        margin-right: 10px; /* Adjust the value to increase or decrease the spacing */
+    }</style></head>
 <body>
     <b>SOI info</b>
     <table>
@@ -28,28 +31,34 @@
             <th>Status</th>
             <td><a href="{{ url_for('product_change_status', table='soi', id=soi.id) }}">{{ soi.status }}</a></td>
         </tr>
+
         <tr>
             <th><a href="{{ url_for('add_comp_soi', id=soi.id) }}">Components used</a></th>
             <td><ul>
-                {% for component in component_used %}
-                <li><a>{{ component.name }}</a><a href="{{ url_for('remove_component_soi',id=soi.id, component_id=component.id) }}">Remove</a></li>
+                <div style="text-align:start;">
+                {% for component in components %}
+                <li>
+                <a>{{ component.name }}</a><a>{{ components_details[loop.index-1].usage }}</a><a>{{ components_details[loop.index-1].main }}</a>
+                <a href="{{ url_for('remove_component_soi', id=soi.id, component_id=component.id) }}">Remove</a>
+                </li>
                 {% endfor %}
+                </div>
             </ul></td>
         </tr>
         <tr>
             <th><a href="{{ url_for('add_system_soi', id=soi.id) }}">Used in systems</a></th>
             <td><ul>
-                {% for system in used_in_systems %}
-                <li><a>{{ system }}</a><a href="{{ url_for('remove_system_soi',id=soi.id, system=system) }}">Remove</a></li>
+                {% for system in systems %}
+                <li><a>{{ system.name }}</a><a>{{ system.status }}</a><a href="{{ url_for('remove_system_soi', id=soi.id, system=system) }}">Remove</a></li>
                 {% endfor %}
             </ul></td>
         </tr>
         <tr>
             <th><a href="{{ url_for('add_product_comment', table='soi', table2 = 'soi_comment', id=soi.id) }}">Comments</a></th>
             <td><ul>
-                {% for comment in comments_list %}
+                {% for comment in comments %}
                 <li>
-                {{ comment.text }} - {{ comment.id }} &nbsp - {{ comment.timestamp.strftime("%d/%m/%Y, %H:%M") }}
+                {{ comment.text }} - {{ comment.timestamp.strftime("%d/%m/%Y, %H:%M") }}
                 <a href="{{ url_for('remove_product_comment', table='soi', table2='soi', product_id=soi.id, comment_id=comment.id) }}">Remove</a>
                 </li>
                 {% endfor %}

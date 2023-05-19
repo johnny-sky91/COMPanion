@@ -47,27 +47,21 @@ def component_view(id):
 @app.route("/soi_list/soi_view/<id>", methods=["GET", "POST"])
 def soi_view(id):
     soi = SOI.query.get(id)
-    comments_list = SoiComment.query.filter_by(product_id=id).order_by(
-        SoiComment.id.desc()
+    comments = SoiComment.query.filter_by(product_id=id).order_by(SoiComment.id.desc())
+    components = (
+        Component.query.join(ComponentSoi).filter(ComponentSoi.soi_joint == id).all()
     )
-
-    component_used = ComponentSoi.query.filter_by(soi_joint=id).all()
-    component_used = [
-        Component.query.filter_by(id=x.comp_joint).first() for x in component_used
-    ]
-
-    used_in_systems = SystemSoi.query.filter_by(soi_joint=id).all()
-    used_in_systems = [
-        System.query.filter_by(id=x.system.id).first().name for x in used_in_systems
-    ]
+    components_details = ComponentSoi.query.filter_by(soi_joint=id).all()
+    systems = System.query.join(SystemSoi).filter(SystemSoi.soi_joint == id).all()
 
     return render_template(
         "view/soi_view.html",
         title=f"{soi.name}",
         soi=soi,
-        comments_list=comments_list,
-        component_used=component_used,
-        used_in_systems=used_in_systems,
+        comments=comments,
+        components=components,
+        components_details=components_details,
+        systems=systems,
     )
 
 
