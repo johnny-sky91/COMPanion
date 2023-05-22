@@ -4,26 +4,10 @@ from wtforms import (
     SubmitField,
     SelectField,
     TextAreaField,
-    HiddenField,
     BooleanField,
     IntegerField,
 )
-from wtforms.validators import (
-    DataRequired,
-    ValidationError,
-    Length,
-    InputRequired,
-    NumberRange,
-)
-
-from app.models import (
-    SOI,
-    SoiComment,
-    Component,
-    ComponentComment,
-    System,
-    SystemComment,
-)
+from wtforms.validators import DataRequired, InputRequired, NumberRange
 
 
 class AddComponent(FlaskForm):
@@ -90,7 +74,8 @@ class AddCompSoi(FlaskForm):
         validators=[DataRequired(message="Choose component")],
     )
     usage = IntegerField(
-        "Usage", validators=[InputRequired(), NumberRange(min=1, max=12)]
+        "Usage",
+        validators=[InputRequired(message="Choose usage"), NumberRange(min=1, max=12)],
     )
     main = BooleanField(
         "Main?",
