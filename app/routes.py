@@ -30,7 +30,6 @@ from app.models import (
 )
 import pyperclip, datetime, os
 import pandas as pd
-from io import BytesIO
 
 
 @app.route("/")
@@ -56,7 +55,9 @@ def component_view(id):
 @app.route("/soi_list/soi_view/<id>", methods=["GET", "POST"])
 def soi_view(id):
     soi = SOI.query.get(id)
-    comments = SoiComment.query.filter_by(product_id=id).order_by(SoiComment.id.desc())
+    comments = (
+        SoiComment.query.filter_by(product_id=id).order_by(SoiComment.id.desc()).all()
+    )
     components = (
         Component.query.join(ComponentSoi).filter(ComponentSoi.soi_joint == id).all()
     )
