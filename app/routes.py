@@ -1,5 +1,5 @@
 from app import app, db
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, send_file
 from app.forms import (
     AddComponent,
     AddSOI,
@@ -21,7 +21,8 @@ from app.models import (
     SystemSoi,
     tables_dict,
 )
-import pyperclip
+import pyperclip, datetime, time
+import pandas as pd
 
 
 @app.route("/")
@@ -406,3 +407,39 @@ def remove_product_comment(table, table2, product_id, comment_id):
     ).delete()
     db.session.commit()
     return redirect(request.referrer)
+
+
+@app.route("/other/download_data", methods=["GET", "POST"])
+def download_app_data():
+    soi = SOI.query.all()
+    soi_table = pd.DataFrame(
+        {
+            "SOI": [x.name for x in soi],
+            "Description": [x.description for x in soi],
+            "Status": [x.status for x in soi],
+            "Dummy": [x.dummy for x in soi],
+            "Check": [x.check for x in soi],
+            "Last_comment": last_comment(table="soi", products=soi),
+        }
+    )
+
+    component = Component.query.all()
+    component_table = pd.DataFrame(
+        {
+            "Component": [x.name for x in component],
+            "Description": [x.description for x in component],
+            "Status": [x.status for x in component],
+            "Check": [x.check for x in component],
+            "Last_comment": last_comment(table="component", products=component),
+        }
+    )
+
+    now = datetime.datetime.now()
+    timestamp = now.strftime("%d-%m-%H%M")
+    filename = f"app_downloads/COMPanion_data_{timestamp}.xlsx"
+    writer = pd.ExcelWriter(filename, engine="xlsxwriter")
+    soi_table.to_excel(writer, sheet_name="SOI_info", index=False)
+    component_table.to_excel(writer, sheet_name="Component_info", index=False)
+    writer._save()
+    return redirect(request.referrer)
+    # return send_file(filename, as_attachment=False)
