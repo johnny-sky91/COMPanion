@@ -249,13 +249,15 @@ def add_comp_soi(id):
     soi = SOI.query.get(id)
     form = AddCompSoi()
     if form.validate_on_submit():
-        products = prepare_products_list(form.component.data)
-        for product in products:
-            new_component_soi = ComponentSoi(
-                comp_joint=Component.query.filter_by(name=product).first().id,
-                soi_joint=id,
-            )
-            db.session.add(new_component_soi)
+        # products = prepare_products_list(form.component.data)
+        # for product in products:
+        new_component_soi = ComponentSoi(
+            comp_joint=Component.query.filter_by(name=form.component.data).first().id,
+            soi_joint=id,
+            usage=form.usage.data,
+            main=form.main.data,
+        )
+        db.session.add(new_component_soi)
         db.session.commit()
         flash(f"New components for SOI {soi.name} has been added")
         return redirect(url_for("soi_view", id=id))

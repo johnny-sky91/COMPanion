@@ -1,6 +1,20 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField, TextAreaField, HiddenField
-from wtforms.validators import DataRequired, ValidationError, Length
+from wtforms import (
+    StringField,
+    SubmitField,
+    SelectField,
+    TextAreaField,
+    HiddenField,
+    BooleanField,
+    IntegerField,
+)
+from wtforms.validators import (
+    DataRequired,
+    ValidationError,
+    Length,
+    InputRequired,
+    NumberRange,
+)
 
 from app.models import (
     SOI,
@@ -72,8 +86,15 @@ class AddProductComment(FlaskForm):
 
 class AddCompSoi(FlaskForm):
     component = TextAreaField(
-        "What component",
+        "Component",
         validators=[DataRequired(message="Choose component")],
+    )
+    usage = IntegerField(
+        "Usage", validators=[InputRequired(), NumberRange(min=1, max=12)]
+    )
+    main = BooleanField(
+        "Main?",
+        validators=[],
     )
     submit = SubmitField("Add component to SOI")
 
