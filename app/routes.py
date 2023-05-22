@@ -198,7 +198,7 @@ def add_new_component():
         db.session.add(new_component)
         db.session.commit()
         flash(f"A new component has been added - {new_component.name}")
-        return redirect(url_for("component_list"))
+        return redirect(url_for("component_list", what_view="all"))
     return render_template(
         "add/add_new_component.html", title="Add new Component", form=form
     )
@@ -217,7 +217,7 @@ def add_new_soi():
         db.session.add(new_soi)
         db.session.commit()
         flash(f"A new SOI has been added - {new_soi.name}")
-        return redirect(url_for("soi_list"))
+        return redirect(url_for("soi_list", what_view="all"))
     return render_template("add/add_new_soi.html", title="Add new SOI", form=form)
 
 
