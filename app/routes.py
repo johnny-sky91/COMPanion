@@ -1,5 +1,12 @@
 from app import app, db
-from flask import render_template, flash, redirect, url_for, request, send_file
+from flask import (
+    render_template,
+    flash,
+    redirect,
+    url_for,
+    request,
+    send_file,
+)
 from app.forms import (
     AddComponent,
     AddSOI,
@@ -21,8 +28,9 @@ from app.models import (
     SystemSoi,
     tables_dict,
 )
-import pyperclip, datetime, time
+import pyperclip, datetime, os
 import pandas as pd
+from io import BytesIO
 
 
 @app.route("/")
@@ -437,9 +445,10 @@ def download_app_data():
     now = datetime.datetime.now()
     timestamp = now.strftime("%d-%m-%H%M")
     filename = f"app_downloads/COMPanion_data_{timestamp}.xlsx"
+
     writer = pd.ExcelWriter(filename, engine="xlsxwriter")
     soi_table.to_excel(writer, sheet_name="SOI_info", index=False)
     component_table.to_excel(writer, sheet_name="Component_info", index=False)
     writer._save()
-    return redirect(request.referrer)
-    # return send_file(filename, as_attachment=False)
+    path_report = os.path.join(os.getcwd(), filename)
+    return send_file(path_or_file=path_report, as_attachment=True)
