@@ -1,46 +1,67 @@
 {% extends "base.html" %}
 {% block content %}
-<head><style>th { width: 220px; }</style></head>
-<body>
-  <b>Component info</b>
-  <table>
-    <tr>
+<head>
+  <style>
+    th { 
+      width: 10%; 
+    }
+      .component-link {
+      margin-right: 10px; 
+    }
+  </style>
+</head>
+<table>
+    <tbody>
+      <tr>
         <th>ID</th>
-        <td>{{ component.id }}</td>
-    </tr>
-    <tr>
-      <th>Name</th>
-      <td>{{ component.name }}</td>
-    </tr>
-    <tr>
-      <th>Description</th>
-      <td>{{ component.description }}</td>
-    </tr>
-    <tr>
-      <th>Check</th>
-      <td><a href="{{ url_for('change_check',table_name='component', id=component.id) }}">{{ component.check }}</a></td>
-    </tr>
-    <tr>
-      <th>Supplier</th>
-      <td>{{ component.supplier }}</td>
-    </tr>
-    <tr>
-      <th>Status</th>
-      <td><a href="{{ url_for('product_change_status', table='component', id=component.id) }}">{{ component.status }}</a></td>
-    </tr>
-    <tr>
-      <th>Used in SOI</th>
-      <td>soi list todo</td>
-    </tr>
-    <th><a href="{{ url_for('add_product_comment', table='component', table2 = 'component_comment', id=component.id) }}">Comments</a></th>
-    <td><ul>
-        {% for comment in comments_list %}
-        <li>
-        {{ comment.text }}&nbsp{{ comment.timestamp.strftime("%d/%m/%Y, %H:%M") }}
-        <a href="{{ url_for('remove_product_comment', table='component', table2='component', product_id=component.id, comment_id=comment.id) }}">Remove</a>
-        </li>
-        {% endfor %}
-    </ul></td>
-  </table>
-</body>
+        <td colspan="4">{{ component.id }}</td>
+      </tr>
+      <tr>
+        <th>Name</th>
+        <td class="tg-0lax" colspan="4">{{ component.name }}</td>
+      </tr>
+      <tr>
+        <th>Description</th>
+        <td colspan="4">{{ component.description }}</td>
+      </tr>
+      <tr>
+        <th>Check</th>
+        <td colspan="4"><a href="{{ url_for('change_check',table_name='component', id=component.id) }}">{{ component.check }}</a></td>
+      </tr>
+      <tr>
+        <th>Supplier</th>
+        <td colspan="4">{{ component.supplier }}</td>
+      </tr>
+      <tr>
+        <th>Status</th>
+        <td colspan="4"><a href="{{ url_for('product_change_status', table='component', id=component.id) }}">{{ component.status }}</a></td>
+      </tr>
+      <tr>
+        <th rowspan="{{ sois|length + 1 }}">Used in SOI</th>
+        <th>SOI</th>
+        <th>Status</th>
+        <th>Last comment</th>
+      </tr>
+      {% for soi in sois %}
+      <tr>
+        <td><a href="{{ url_for('soi_view', id=soi.id) }}">{{ soi.name }}</a></td>
+        <td>{{ soi.status }}</td>
+        <td>{{ sois_last_comment[loop.index-1] }}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <th rowspan="{{ comments|length + 1 }}"><a href="{{ url_for('add_product_comment', table='component', table2 = 'component_comment', id=component.id) }}">Comments</a</th>
+        <th>Comment</th>
+        <th>Date</th>
+        <th colspan="2">Action</th>
+      </tr>
+      {% for comment in comments %}
+      <tr>
+        <td>{{ comment.text }}</td>
+        <td>{{ comment.timestamp.strftime("%d/%m/%Y, %H:%M")}}</td>
+        <td colspan="2"><a href="{{ url_for('remove_product_comment', table='component', table2='component', product_id=component.id, comment_id=comment.id) }}">Remove</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

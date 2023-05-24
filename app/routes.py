@@ -41,14 +41,21 @@ def basic_view():
 @app.route("/component_list/component_view/<id>", methods=["GET", "POST"])
 def component_view(id):
     component = Component.query.get(id)
-    comments_list = ComponentComment.query.filter_by(product_id=id).order_by(
-        ComponentComment.id.desc()
+    comments = (
+        ComponentComment.query.filter_by(product_id=id)
+        .order_by(ComponentComment.id.desc())
+        .all()
     )
+    sois = SOI.query.join(ComponentSoi).filter(ComponentSoi.comp_joint == id).all()
+    sois_last_comment = last_comment(table="soi", products=sois)
+
     return render_template(
         "view/component_view.html",
         title=f"{component.name}",
         component=component,
-        comments_list=comments_list,
+        comments=comments,
+        sois=sois,
+        sois_last_comment=sois_last_comment,
     )
 
 
@@ -61,6 +68,7 @@ def soi_view(id):
     components = (
         Component.query.join(ComponentSoi).filter(ComponentSoi.soi_joint == id).all()
     )
+    components_last_comment = last_comment(table="component", products=components)
     components_details = ComponentSoi.query.filter_by(soi_joint=id).all()
     systems = System.query.join(SystemSoi).filter(SystemSoi.soi_joint == id).all()
 
@@ -70,6 +78,7 @@ def soi_view(id):
         soi=soi,
         comments=comments,
         components=components,
+        components_last_comment=components_last_comment,
         components_details=components_details,
         systems=systems,
     )
@@ -146,13 +155,11 @@ def soi_list(what_view):
         sois = SOI.query.filter((SOI.name.like(f"%{form.product.data}%"))).all()
 
     last_comments = last_comment(table="soi", products=sois)
-    used_components = get_used_components(products=sois)
     return render_template(
         f"lists/soi_list.html",
         title="SOI",
         sois=sois,
         last_comments=last_comments,
-        used_components=used_components,
         form=form,
     )
 
