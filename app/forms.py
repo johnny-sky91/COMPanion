@@ -7,7 +7,8 @@ from wtforms import (
     BooleanField,
     IntegerField,
 )
-from wtforms.validators import DataRequired, InputRequired, NumberRange
+from wtforms.validators import DataRequired, InputRequired, NumberRange, ValidationError
+from app.models import Component, SOI, System
 
 
 class AddComponent(FlaskForm):
@@ -27,6 +28,12 @@ class AddComponent(FlaskForm):
     )
     submit = SubmitField("Add new component")
 
+    def validate_name(self, field):
+        name = field.data
+        component = Component.query.filter_by(name=name).first()
+        if component:
+            raise ValidationError("Component is already registered")
+
 
 class AddSOI(FlaskForm):
     name = TextAreaField(
@@ -41,15 +48,29 @@ class AddSOI(FlaskForm):
     )
     submit = SubmitField("Add new SOI")
 
+    def validate_name(self, field):
+        name = field.data
+        soi = SOI.query.filter_by(name=name).first()
+        if soi:
+            raise ValidationError("SOI is already registered")
+
 
 class AddSystem(FlaskForm):
     name = TextAreaField(
-        "System name", validators=[DataRequired(message="System name can't be empty")]
+        "System name",
+        validators=[DataRequired(message="System name can't be empty")],
     )
     status = SelectField(
         "Status", validators=[DataRequired(message="System status can't be empty")]
     )
     submit = SubmitField("Add new System")
+
+    # TODO fix validator
+    def validate_name(self, field):
+        name = field.data
+        system = System.query.filter_by(name=name).first()
+        if system:
+            raise ValidationError("System is already registered")
 
 
 class ChangeStatus(FlaskForm):
