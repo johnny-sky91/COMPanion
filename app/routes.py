@@ -175,13 +175,22 @@ def system_list():
     )
 
 
-@app.route("/get_component_list", methods=["GET", "POST"])
-def get_component_list():
-    components = Component.query.filter_by(status="Active").with_entities(
-        Component.name
-    )
-    components = "\n".join([x[0] for x in components])
-    pyperclip.copy(components)
+@app.route("/product_list_to_clipboard/<what_data>", methods=["GET", "POST"])
+def product_list_to_clipboard(what_data):
+    data = []
+    if what_data.lower() == "active_components":
+        data = Component.query.filter_by(status="Active").with_entities(Component.name)
+    if what_data.lower() == "all_components":
+        data = Component.query.with_entities(Component.name)
+    if what_data.lower() == "all_soi_poe":
+        data = SOI.query.filter_by(status="POE").with_entities(SOI.name)
+    if what_data.lower() == "all_soi_active":
+        data = SOI.query.filter_by(status="Active").with_entities(SOI.name)
+
+    # all_soi_poe
+    # #all_soi_active
+    data = "\n".join([x[0] for x in data])
+    pyperclip.copy(data)
     return redirect(request.referrer)
 
 
