@@ -8,7 +8,6 @@
         {{ form.component.label }}:<br>{{ form.component(style='height: 50px; width:300px') }}<br><br>
         {{ form.usage.label }}:<br>{{ form.usage() }}<br><br>
         {{ form.main.label }}<br>{{ form.main(style='height: 20px; width:20px') }}<br><br>
-
         {{ form.submit() }}<br>
         {% for error in form.component.errors %}
         <span style="color: red;">{{ error }}</span>

@@ -7,8 +7,13 @@ from wtforms import (
     BooleanField,
     IntegerField,
 )
-from wtforms.validators import DataRequired, InputRequired, NumberRange, ValidationError
-from app.models import Component, SOI, System
+from wtforms.validators import (
+    DataRequired,
+    InputRequired,
+    NumberRange,
+    ValidationError,
+)
+from app.models import Component, SOI, System, ComponentSoi, SystemSoi
 
 
 class AddComponent(FlaskForm):
@@ -65,7 +70,6 @@ class AddSystem(FlaskForm):
     )
     submit = SubmitField("Add new System")
 
-    # TODO fix validator
     def validate_name(self, field):
         name = field.data
         system = System.query.filter_by(name=name).first()
@@ -104,6 +108,19 @@ class AddCompSoi(FlaskForm):
     )
     submit = SubmitField("Add component to SOI")
 
+    def __init__(self, what_soi=None, *args, **kwargs):
+        super(AddCompSoi, self).__init__(*args, **kwargs)
+        self.what_soi = what_soi
+
+    def validate_component(self, field):
+        component = Component.query.filter_by(name=field.data).first()
+        soi = self.what_soi
+        comp_soi = ComponentSoi.query.filter_by(
+            comp_joint=component.id, soi_joint=soi.id
+        ).first()
+        if comp_soi:
+            raise ValidationError("Component is already registered to this SOI")
+
 
 class AddSystemSOI(FlaskForm):
     system = SelectField(
@@ -111,6 +128,19 @@ class AddSystemSOI(FlaskForm):
         validators=[DataRequired(message="Choose system")],
     )
     submit = SubmitField("Add system to SOI")
+
+    def __init__(self, what_soi=None, *args, **kwargs):
+        super(AddSystemSOI, self).__init__(*args, **kwargs)
+        self.what_soi = what_soi
+
+    def validate_system(self, field):
+        system = System.query.filter_by(name=field.data).first()
+        soi = self.what_soi
+        system_soi = SystemSoi.query.filter_by(
+            system_joint=system.id, soi_joint=soi.id
+        ).first()
+        if system_soi:
+            raise ValidationError("SOI is already registered to this system")
 
 
 class SearchProduct(FlaskForm):

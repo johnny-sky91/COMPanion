@@ -264,10 +264,8 @@ def prepare_products_list(products_string):
 @app.route("/soi_list/soi_view/<id>/add_comp_soi", methods=["GET", "POST"])
 def add_comp_soi(id):
     soi = SOI.query.get(id)
-    form = AddCompSoi()
+    form = AddCompSoi(what_soi=soi)
     if form.validate_on_submit():
-        # products = prepare_products_list(form.component.data)
-        # for product in products:
         new_component_soi = ComponentSoi(
             comp_joint=Component.query.filter_by(name=form.component.data).first().id,
             soi_joint=id,
@@ -288,7 +286,7 @@ def add_system_soi(id):
     soi = SOI.query.get(id)
     systems = System.query.all()
     systems = [system.name for system in systems]
-    form = AddSystemSOI()
+    form = AddSystemSOI(what_soi=soi)
     form.system.choices = systems
     if form.validate_on_submit():
         new_system_soi = SystemSoi(
