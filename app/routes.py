@@ -186,9 +186,6 @@ def product_list_to_clipboard(what_data):
         data = SOI.query.filter_by(status="POE").with_entities(SOI.name)
     if what_data.lower() == "all_soi_active":
         data = SOI.query.filter_by(status="Active").with_entities(SOI.name)
-
-    # all_soi_poe
-    # #all_soi_active
     data = "\n".join([x[0] for x in data])
     pyperclip.copy(data)
     return redirect(request.referrer)
