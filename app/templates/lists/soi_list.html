@@ -21,6 +21,7 @@
   <table>
     <thead>
       <tr>
+        <th>No</th>
         <th>ID</th>
         <th>SOI</th>
         <th>Description</th>
@@ -33,6 +34,7 @@
     <tbody>
       {% for soi in sois %}
       <tr>
+        <td>{{ loop.index }}</td>
         <td>{{ soi.id }}</td>
         <td><a href="{{ url_for('soi_view', id=soi.id) }}">{{ soi.name }}</a></td>
         <td>{{ soi.description }}</td>
