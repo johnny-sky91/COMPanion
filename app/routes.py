@@ -122,6 +122,14 @@ def component_list(what_view):
 
     if what_view.lower() == "check_true":
         components = Component.query.order_by(Component.id.asc()).filter_by(check=True)
+    if what_view.lower() == "active_components":
+        components = Component.query.order_by(Component.id.asc()).filter_by(
+            status="Active"
+        )
+    if what_view.lower() == "eol_components":
+        components = Component.query.order_by(Component.id.asc()).filter_by(
+            status="EOL"
+        )
 
     if form.validate_on_submit():
         components = Component.query.filter(
