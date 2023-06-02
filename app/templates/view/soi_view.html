@@ -41,7 +41,7 @@
         <td>{{ component.status }}</td>
         <td>{{ components_details[loop.index-1].usage }}</td>
         <td>{{ components_details[loop.index-1].main }}</td>
-        <td>{{ components_last_comment[loop.index-1] }}</td>
+        <td>{{ components_last_comment[loop.index-1].text }}</td>
         <td><a href="{{ url_for('remove_component_soi', id=soi.id, component_id=component.id) }}">Remove</a></td>
       </tr>
       {% endfor %}

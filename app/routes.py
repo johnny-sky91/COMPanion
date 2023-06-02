@@ -110,7 +110,7 @@ def last_comment(table, products):
         db.session.query(table_name).filter_by(id=x).first().comments
         for x in product_id
     ]
-    last_comments = [x[-1].text if x else None for x in all_comments]
+    last_comments = [x[-1] if x else None for x in all_comments]
     return last_comments
 
 
