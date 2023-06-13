@@ -1,5 +1,6 @@
 from app import db
 from datetime import datetime
+from enum import Enum
 
 
 class Component(db.Model):
@@ -84,6 +85,22 @@ class SystemSoi(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     system_joint = db.Column(db.Integer, db.ForeignKey("system.id"))
     soi_joint = db.Column(db.Integer, db.ForeignKey("soi.id"))
+
+
+class TodoPriority(Enum):
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+
+
+class Todo(db.Model):
+    __tablename__ = "todo"
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(160), nullable=False)
+    completed = db.Column(db.Boolean, default=False)
+    priority = db.Column(db.Enum(TodoPriority))
+    deadline = db.Column(db.Date)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
 
 tables_dict = {table.__tablename__: table for table in db.Model.__subclasses__()}

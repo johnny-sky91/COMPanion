@@ -33,9 +33,21 @@ import pandas as pd
 
 
 @app.route("/")
-@app.route("/home")
+@app.route("/todo")
 def basic_view():
-    return render_template("home.html", title="Home")
+    return render_template("todo.html", title="Todo")
+
+
+def add_todo():
+    pass
+
+
+def change_todo_status():
+    pass
+
+
+def remove_todo():
+    pass
 
 
 @app.route("/component_list/component_view/<id>", methods=["GET", "POST"])
