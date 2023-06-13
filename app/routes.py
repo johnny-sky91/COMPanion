@@ -87,14 +87,16 @@ def soi_view(id):
 @app.route("/system_list/system_view/<id>", methods=["GET", "POST"])
 def system_view(id):
     system = System.query.get(id)
-    comments_list = SystemComment.query.filter_by(product_id=id).order_by(
-        SystemComment.id.desc()
+    comments = (
+        SystemComment.query.filter_by(product_id=id)
+        .order_by(SystemComment.id.desc())
+        .all()
     )
     return render_template(
         "view/system_view.html",
         title=f"{system.name}",
         system=system,
-        comments_list=comments_list,
+        comments=comments,
     )
 
 
