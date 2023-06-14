@@ -461,7 +461,10 @@ def download_app_data():
             "Status": [x.status for x in soi],
             "Dummy": [x.dummy for x in soi],
             "Check": [x.check for x in soi],
-            "Last_comment": last_comment(table="soi", products=soi),
+            "Last_comment": [
+                x.text if x is not None else ""
+                for x in last_comment(table="soi", products=soi)
+            ],
         }
     )
 
@@ -472,7 +475,10 @@ def download_app_data():
             "Description": [x.description for x in component],
             "Status": [x.status for x in component],
             "Check": [x.check for x in component],
-            "Last_comment": last_comment(table="component", products=component),
+            "Last_comment": [
+                x.text if x is not None else ""
+                for x in last_comment(table="component", products=component)
+            ],
         }
     )
 
