@@ -87,18 +87,12 @@ class SystemSoi(db.Model):
     soi_joint = db.Column(db.Integer, db.ForeignKey("soi.id"))
 
 
-class TodoPriority(Enum):
-    HIGH = "high"
-    MEDIUM = "medium"
-    LOW = "low"
-
-
 class Todo(db.Model):
     __tablename__ = "todo"
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(160), nullable=False)
     completed = db.Column(db.Boolean, default=False)
-    priority = db.Column(db.Enum(TodoPriority))
+    priority = db.Column(db.String(16), nullable=False)
     deadline = db.Column(db.Date)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
