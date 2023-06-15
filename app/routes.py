@@ -16,6 +16,7 @@ from app.forms import (
     AddCompSoi,
     SearchProduct,
     AddSystemSOI,
+    AddTodo,
 )
 from app.models import (
     System,
@@ -26,16 +27,29 @@ from app.models import (
     SystemComment,
     ComponentSoi,
     SystemSoi,
+    Todo,
     tables_dict,
 )
 import pyperclip, datetime, os
 import pandas as pd
 
 
-@app.route("/")
-@app.route("/todo")
-def basic_view():
-    return render_template("todo.html", title="Todo")
+@app.route("/todo", methods=["GET", "POST"])
+def todo_view():
+    todos = Todo.query.all()
+    form = AddTodo()
+    print(form.validate_on_submit())
+    if form.validate_on_submit():
+        new_todo = Todo(
+            text=form.text.data,
+            priority=form.priority.data,
+            deadline=form.deadline.data,
+        )
+        db.session.add(new_todo)
+        db.session.commit()
+        flash(f"New TODO has been added")
+        return redirect(request.referrer)
+    return render_template("todo.html", title="Todo", todos=todos, form=form)
 
 
 def add_todo():
