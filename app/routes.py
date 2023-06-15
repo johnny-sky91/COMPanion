@@ -38,7 +38,6 @@ import pandas as pd
 def todo_view():
     todos = Todo.query.all()
     form = AddTodo()
-    print(form.validate_on_submit())
     if form.validate_on_submit():
         new_todo = Todo(
             text=form.text.data,
@@ -52,16 +51,20 @@ def todo_view():
     return render_template("todo.html", title="Todo", todos=todos, form=form)
 
 
-def add_todo():
-    pass
+@app.route("/todo/<id>/change_status", methods=["GET", "POST"])
+def change_status_todo(id):
+    todo = Todo.query.get(id)
+    if not todo.completed:
+        todo.completed = True
+        db.session.commit()
+    return redirect(request.referrer)
 
 
-def change_todo_status():
-    pass
-
-
-def remove_todo():
-    pass
+@app.route("/todo/<id>/remove", methods=["GET", "POST"])
+def remove_todo(id):
+    db.session.query(Todo).filter_by(id=id).delete()
+    db.session.commit()
+    return redirect(request.referrer)
 
 
 @app.route("/component_list/component_view/<id>", methods=["GET", "POST"])
