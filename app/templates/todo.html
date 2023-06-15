@@ -1,6 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
-<body>
-  <p>Place for TODOs</p>
+<body><p>Add new TODO</p>
+  <form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p style="font-size:18px">
+        1. {{ form.text.label }}:<br>{{ form.text() }}<br><br>
+        2. {{ form.priority.label }}:<br>{{ form.priority() }}<br><br>
+        3. {{ form.deadline.label }}:<br>{{ form.deadline() }}<br><br>
+        {{ form.submit() }} <br>
+        {% for error in form.text.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}<br>
+    </p>
+  </form>
+{% for todo in todos %}
+<p>{{ todo.text }}</p>
+{% endfor %}
 </body>
 {% endblock %}
