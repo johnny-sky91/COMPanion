@@ -13,6 +13,7 @@ from wtforms.validators import (
     InputRequired,
     NumberRange,
     ValidationError,
+    Optional,
 )
 from app.models import Component, SOI, System, ComponentSoi, SystemSoi
 
@@ -156,5 +157,5 @@ class AddTodo(FlaskForm):
         choices=["Low", "Medium", "High"],
         validators=[DataRequired()],
     )
-    deadline = DateField("Deadline", validators=[])
+    deadline = DateField("Deadline", validators=[Optional()])
     submit = SubmitField("Add TODO")
