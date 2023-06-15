@@ -1,20 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
+<script src="{{ url_for('static', filename='scripts.js') }}"></script>
 <body><p>Add new TODO</p>
   <form action="" method="post" novalidate>
-    {{ form.hidden_tag() }}
-    <p style="font-size:18px">
-        1. {{ form.text.label }}:<br>{{ form.text() }}<br><br>
-        2. {{ form.priority.label }}:<br>{{ form.priority() }}<br><br>
-        3. {{ form.deadline.label }}:<br>{{ form.deadline() }}<br><br>
-        {{ form.submit() }} <br>
-        {% for error in form.text.errors %}
-        <span style="color: red;">{{ error }}</span>
-        {% endfor %}<br>
-    </p>
+    <p>{{ form.hidden_tag() }}
+    {{ form.text.label }}:{{ form.text() }}
+    {{ form.priority.label }}:{{ form.priority() }}
+    {{ form.deadline.label }}:{{ form.deadline() }}
+    {{ form.submit() }} <br>
+    {% for error in form.text.errors %}
+    <span style="color: red;">{{ error }}</span>
+    {% endfor %}<br></p>
   </form>
+  
+<button id="myButton">Test button</button>
+
 {% for todo in todos %}
-<p>{{ todo.text }}</p>
+  <p>
+  {{ loop.index }}. {{ todo.text }} - {{ todo.priority }} - {{ todo.deadline }} - {{ todo.timestamp.strftime('%d-%m-%Y %H:%M') }}
+  <a href="{{ url_for('change_status_todo',  id=todo.id) }}">{{ todo.completed }}</a>
+  <a href="{{ url_for('remove_todo',  id=todo.id) }}">Remove</a>
+  </p>
 {% endfor %}
 </body>
 {% endblock %}
