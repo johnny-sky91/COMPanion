@@ -6,6 +6,7 @@ from wtforms import (
     TextAreaField,
     BooleanField,
     IntegerField,
+    DateField,
 )
 from wtforms.validators import (
     DataRequired,
@@ -146,3 +147,14 @@ class AddSystemSOI(FlaskForm):
 class SearchProduct(FlaskForm):
     product = StringField("Search product", validators=[DataRequired()])
     submit = SubmitField("Search")
+
+
+class AddTodo(FlaskForm):
+    text = StringField("TODO", validators=[DataRequired(message="Add text")])
+    priority = SelectField(
+        "Priority",
+        choices=["Low", "Medium", "High"],
+        validators=[DataRequired()],
+    )
+    deadline = DateField("Deadline", validators=[])
+    submit = SubmitField("Add TODO")
