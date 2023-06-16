@@ -54,9 +54,8 @@ def todo_view():
 @app.route("/todo/<id>/change_status", methods=["GET", "POST"])
 def change_status_todo(id):
     todo = Todo.query.get(id)
-    if not todo.completed:
-        todo.completed = True
-        db.session.commit()
+    todo.completed = not todo.completed
+    db.session.commit()
     return redirect(request.referrer)
 
 
