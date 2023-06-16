@@ -10,17 +10,34 @@
     {{ form.submit() }} <br>
     {% for error in form.text.errors %}
     <span style="color: red;">{{ error }}</span>
-    {% endfor %}<br></p>
+    {% endfor %}</p>
   </form>
-  
-<button id="myButton">Test button</button>
-
-{% for todo in todos %}
-  <p>
-  {{ loop.index }}. {{ todo.text }} - {{ todo.priority }} - {{ todo.deadline }} - {{ todo.timestamp.strftime('%d-%m-%Y %H:%M') }}
-  <a href="{{ url_for('change_status_todo',  id=todo.id) }}">{{ todo.completed }}</a>
-  <a href="{{ url_for('remove_todo',  id=todo.id) }}">Remove</a>
-  </p>
-{% endfor %}
+  <button id="myButton">Test button</button>
+<table>
+  <thead>
+    <tr>
+      <th>No</th>
+      <th>TODO</th>
+      <th>Priority</th>
+      <th>Deadline</th>
+      <th>Created</th>
+      <th>Completed?</th>
+      <th>Remove</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for todo in todos %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>{{ todo.text }}</td>
+      <td>{{ todo.priority }}</td>
+      <td>{{ todo.deadline }}</td>      
+      <td>{{ todo.timestamp.strftime('%d-%m-%Y') }}</td>      
+      <td><a href="{{ url_for('change_status_todo',  id=todo.id) }}">{{ todo.completed }}</a></td>
+      <td><a href="{{ url_for('remove_todo',  id=todo.id) }}">Remove</a></td>
+    </tr> 
+    {% endfor %}
+  </tbody>
+</table>
 </body>
 {% endblock %}
