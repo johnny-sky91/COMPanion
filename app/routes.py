@@ -30,13 +30,16 @@ from app.models import (
     Todo,
     tables_dict,
 )
-import pyperclip, datetime, os
+import pyperclip, os
 import pandas as pd
+from datetime import datetime
 
 
 @app.route("/todo", methods=["GET", "POST"])
 def todo_view():
+    current_date = datetime.now().strftime("%d-%m-%Y")
     todos = Todo.query.all()
+    # todos = [todo.deadline.strftime("%d-%m-%Y") for todo in todos]
     form = AddTodo()
     if form.validate_on_submit():
         new_todo = Todo(
@@ -48,7 +51,9 @@ def todo_view():
         db.session.commit()
         flash(f"New TODO has been added")
         return redirect(request.referrer)
-    return render_template("todo.html", title="Todo", todos=todos, form=form)
+    return render_template(
+        "todo.html", title="Todo", todos=todos, form=form, current_date=current_date
+    )
 
 
 @app.route("/todo/<id>/change_status", methods=["GET", "POST"])
@@ -498,7 +503,7 @@ def download_app_data():
         }
     )
 
-    now = datetime.datetime.now()
+    now = datetime.now()
     timestamp = now.strftime("%d-%m-%H%M")
     filename = f"app_downloads/COMPanion_data_{timestamp}.xlsx"
 

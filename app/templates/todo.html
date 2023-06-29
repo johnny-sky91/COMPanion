@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
 <script src="{{ url_for('static', filename='scripts.js') }}"></script>
-<body><p>Add new TODO</p>
+<body><p>Date: {{ current_date }}</p>
   <form action="" method="post" novalidate>
     <p>{{ form.hidden_tag() }}
-    {{ form.text.label }}:{{ form.text() }}
-    {{ form.priority.label }}:{{ form.priority() }}
+    {{ form.text.label }}:{{ form.text(style='width:400px') }}
+    {{ form.priority.label }}:{{ form.priority(style='height: 20px; width:100px') }}
     {{ form.deadline.label }}:{{ form.deadline() }}
     {{ form.submit() }} <br>
     {% for error in form.text.errors %}
@@ -31,7 +31,7 @@
       <td>{{ loop.index }}</td>
       <td>{{ todo.text }}</td>
       <td>{{ todo.priority }}</td>
-      <td>{{ todo.deadline }}</td>      
+      <td>{{ todo.deadline }}</td>
       <td>{{ todo.timestamp.strftime('%d-%m-%Y') }}</td>      
       <td><a href="{{ url_for('change_status_todo',  id=todo.id) }}">{{ todo.completed }}</a></td>
       <td><a href="{{ url_for('remove_todo',  id=todo.id) }}">Remove</a></td>
