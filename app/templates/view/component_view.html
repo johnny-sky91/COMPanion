@@ -36,7 +36,7 @@
       <tr>
         <td><a href="{{ url_for('soi_view', id=soi.id) }}">{{ soi.name }}</a></td>
         <td>{{ soi.status }}</td>
-        <td>{{ sois_last_comment[loop.index-1] }}</td>
+        <td>{{ sois_last_comment[loop.index-1].text }}</td>
       </tr>
       {% endfor %}
       <tr>
