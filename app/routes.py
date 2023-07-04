@@ -35,11 +35,19 @@ import pandas as pd
 from datetime import datetime
 
 
-@app.route("/todo", methods=["GET", "POST"])
-def todo_view():
+@app.route("/todo/<what_view>", methods=["GET", "POST"])
+def todo_view(what_view):
     current_date = datetime.now().date()
     todos = Todo.query.filter_by(completed=False).all()
     form = AddTodo()
+
+    components = Component.query.order_by(Component.id.asc())
+
+    if what_view.lower() == "completed_false":
+        todos = Todo.query.filter_by(completed=False).all()
+    if what_view.lower() == "completed_true":
+        todos = Todo.query.filter_by(completed=True).all()
+
     if form.validate_on_submit():
         new_todo = Todo(
             text=form.text.data,
