@@ -37,9 +37,8 @@ from datetime import datetime
 
 @app.route("/todo", methods=["GET", "POST"])
 def todo_view():
-    current_date = datetime.now().strftime("%d-%m-%Y")
-    todos = Todo.query.all()
-    # todos = [todo.deadline.strftime("%d-%m-%Y") for todo in todos]
+    current_date = datetime.now().date()
+    todos = Todo.query.filter_by(completed=False).all()
     form = AddTodo()
     if form.validate_on_submit():
         new_todo = Todo(
