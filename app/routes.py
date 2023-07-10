@@ -41,8 +41,6 @@ def todo_view(what_view):
     todos = Todo.query.filter_by(completed=False).all()
     form = AddTodo()
 
-    components = Component.query.order_by(Component.id.asc())
-
     if what_view.lower() == "completed_false":
         todos = Todo.query.filter_by(completed=False).all()
     if what_view.lower() == "completed_true":
