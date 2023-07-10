@@ -27,7 +27,7 @@
     {% for comment in comments %}
     <tr>
       <td>{{ comment.text }}</td>
-      <td>{{ comment.timestamp.strftime("%d/%m/%Y, %H:%M")}}</td>
+      <td>{{ moment(comment.timestamp).format('DD/MM/YYYY hh:mm') }}</td>
       <td colspan="4"><a href="{{ url_for('remove_product_comment', table='system', table2='system', product_id=system.id, comment_id=comment.id) }}">Remove</a></td>
     </tr>
     {% endfor %}
