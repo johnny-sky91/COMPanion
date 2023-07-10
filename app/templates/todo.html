@@ -39,7 +39,7 @@
           <td>{{ todo.text }}</td>
           <td>{{ todo.priority }}</td>
           <td>{{ todo.deadline }}</td>
-          <td>{{ todo.timestamp.date() }}</td>      
+          <td>{{ moment(todo.timestamp).format('DD/MM/YYYY') }}</td>      
           <td><a href="{{ url_for('change_status_todo', id=todo.id) }}">{{ todo.completed }}</a></td>
           <td><a href="{{ url_for('remove_todo', id=todo.id) }}">Remove</a></td>
         </tr> 
