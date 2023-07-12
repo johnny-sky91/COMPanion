@@ -195,10 +195,15 @@ def soi_list(what_view):
     if what_view.lower() == "check_true":
         sois = SOI.query.order_by(SOI.id.asc()).filter_by(check=True)
     if what_view.lower() == "status_poe":
-        sois = SOI.query.order_by(SOI.id.asc()).filter_by(status="POE")
-    if what_view.lower() == "status_active":
-        sois = SOI.query.order_by(SOI.id.asc()).filter_by(status="Active")
-
+        sois = SOI.query.order_by(SOI.id.asc()).filter_by(status="Active - POE")
+    if what_view.lower() == "status_active_forecasted":
+        sois = SOI.query.order_by(SOI.id.asc()).filter_by(status="Active - forecasted")
+    if what_view.lower() == "status_active_not_forecasted":
+        sois = SOI.query.order_by(SOI.id.asc()).filter_by(
+            status="Active - not forecasted"
+        )
+    if what_view.lower() == "status_eol":
+        sois = SOI.query.order_by(SOI.id.asc()).filter_by(status="Not active - EOL")
     if form.validate_on_submit():
         sois = SOI.query.filter((SOI.name.like(f"%{form.product.data}%"))).all()
 
@@ -231,9 +236,13 @@ def product_list_to_clipboard(what_data):
     if what_data.lower() == "all_components":
         data = Component.query.with_entities(Component.name)
     if what_data.lower() == "all_soi_poe":
-        data = SOI.query.filter_by(status="POE").with_entities(SOI.name)
-    if what_data.lower() == "all_soi_active":
-        data = SOI.query.filter_by(status="Active").with_entities(SOI.name)
+        data = SOI.query.filter_by(status="Active - POE").with_entities(SOI.name)
+    if what_data.lower() == "all_soi_active_forecasted":
+        data = SOI.query.filter_by(status="Active - forecasted").with_entities(SOI.name)
+    if what_data.lower() == "all_soi_active_not_forecasted":
+        data = SOI.query.filter_by(status="Active - not forecasted").with_entities(
+            SOI.name
+        )
     data = "\n".join([x[0] for x in data])
     pyperclip.copy(data)
     return redirect(request.referrer)
@@ -404,7 +413,12 @@ def remove_system_soi(id, system):
 
 
 statuses_component = ["Active", "EOL"]
-statuses_soi = ["Active", "POE", "EOL"]
+statuses_soi = [
+    "Active - forecasted",
+    "Active - not forecasted",
+    "Active - POE",
+    "Not active - EOL",
+]
 statuses_system = ["Active", "EOL"]
 
 

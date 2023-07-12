@@ -2,10 +2,14 @@
 {% block content %}
 <body>
   <a href="/soi_list/add_new_soi">Add new SOI</a>
+  <a href="/soi_list/status_active_forecasted">Show all Active - forecasted</a>
+  <a href="/product_list_to_clipboard/all_soi_active_forecasted">Get all Active - forecasted</a>
   <a href="/soi_list/status_poe">Show all POE</a>
   <a href="/product_list_to_clipboard/all_soi_poe">Get all POE</a>
-  <a href="/soi_list/status_active">Show all Active</a>
-  <a href="/product_list_to_clipboard/all_soi_active">Get all Active</a>
+  <a href="/soi_list/status_active_not_forecasted">Show all Active - not forecasted</a>
+  <a href="/product_list_to_clipboard/all_soi_active_not_forecasted">Get all Active - not forecasted</a>
+
+
   <form action="" method="post" novalidate>
     {{form.hidden_tag()}}
     <p style="font-size:18px">
