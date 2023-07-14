@@ -465,10 +465,7 @@ def get_current_comment(table, product_id):
 @app.route("/<table_name>_view/<id>/change_check", methods=["GET", "POST"])
 def change_check(table_name, id):
     to_change = db.session.query(tables_dict.get(table_name)).get(id)
-    if to_change.check:
-        to_change.check = False
-    else:
-        to_change.check = True
+    to_change.check = not to_change.check
     db.session.commit()
     return redirect(request.referrer)
 
@@ -476,10 +473,7 @@ def change_check(table_name, id):
 @app.route("/soi_view/<id>/change_dummy", methods=["GET", "POST"])
 def change_dummy(id):
     to_change = db.session.query(tables_dict.get("soi")).get(id)
-    if to_change.dummy:
-        to_change.dummy = False
-    else:
-        to_change.dummy = True
+    to_change.dummy = not to_change.dummy
     db.session.commit()
     return redirect(request.referrer)
 
