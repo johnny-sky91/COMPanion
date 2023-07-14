@@ -230,20 +230,23 @@ def system_list():
 
 @app.route("/product_list_to_clipboard/<what_data>", methods=["GET", "POST"])
 def product_list_to_clipboard(what_data):
-    data = []
-    if what_data.lower() == "active_components":
-        data = Component.query.filter_by(status="Active").with_entities(Component.name)
-    if what_data.lower() == "all_components":
-        data = Component.query.with_entities(Component.name)
-    if what_data.lower() == "all_soi_poe":
-        data = SOI.query.filter_by(status="Active - POE").with_entities(SOI.name)
-    if what_data.lower() == "all_soi_active_forecasted":
-        data = SOI.query.filter_by(status="Active - forecasted").with_entities(SOI.name)
-    if what_data.lower() == "all_soi_active_not_forecasted":
-        data = SOI.query.filter_by(status="Active - not forecasted").with_entities(
+    query_mapping = {
+        "active_components": Component.query.filter_by(status="Active").with_entities(
+            Component.name
+        ),
+        "all_components": Component.query.with_entities(Component.name),
+        "all_soi_poe": SOI.query.filter_by(status="Active - POE").with_entities(
             SOI.name
-        )
-    data = "\n".join([x[0] for x in data])
+        ),
+        "all_soi_active_forecasted": SOI.query.filter_by(
+            status="Active - forecasted"
+        ).with_entities(SOI.name),
+        "all_soi_active_not_forecasted": SOI.query.filter_by(
+            status="Active - not forecasted"
+        ).with_entities(SOI.name),
+    }
+    data = "\n".join([x[0] for x in query_mapping.get(what_data.lower())])
+
     pyperclip.copy(data)
     return redirect(request.referrer)
 
