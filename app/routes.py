@@ -189,21 +189,19 @@ def component_list(what_view):
 def soi_list(what_view):
     form = SearchProduct()
     sois = SOI.query.order_by(SOI.id.asc())
+    query_mapping = {
+        "dummy_true": {"dummy": True},
+        "check_true": {"check": True},
+        "status_poe": {"status": "Active - POE"},
+        "status_active_forecasted": {"status": "Active - forecasted"},
+        "status_active_not_forecasted": {"status": "Active - not forecasted"},
+        "status_eol": {"status": "Not active - EOL"},
+    }
 
-    if what_view.lower() == "dummy_true":
-        sois = SOI.query.order_by(SOI.id.asc()).filter_by(dummy=True)
-    if what_view.lower() == "check_true":
-        sois = SOI.query.order_by(SOI.id.asc()).filter_by(check=True)
-    if what_view.lower() == "status_poe":
-        sois = SOI.query.order_by(SOI.id.asc()).filter_by(status="Active - POE")
-    if what_view.lower() == "status_active_forecasted":
-        sois = SOI.query.order_by(SOI.id.asc()).filter_by(status="Active - forecasted")
-    if what_view.lower() == "status_active_not_forecasted":
-        sois = SOI.query.order_by(SOI.id.asc()).filter_by(
-            status="Active - not forecasted"
-        )
-    if what_view.lower() == "status_eol":
-        sois = SOI.query.order_by(SOI.id.asc()).filter_by(status="Not active - EOL")
+    if what_view.lower() in query_mapping:
+        query_filters = query_mapping[what_view.lower()]
+        sois = sois.filter_by(**query_filters)
+
     if form.validate_on_submit():
         sois = SOI.query.filter((SOI.name.like(f"%{form.product.data}%"))).all()
 
