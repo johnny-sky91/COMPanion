@@ -425,18 +425,23 @@ statuses_system = ["Active", "EOL"]
 @app.route("/<table>_view/<id>/change_status", methods=["GET", "POST"])
 def product_change_status(table, id):
     form = ChangeStatus()
+
+    tables_dict = {"component": Component, "soi": SOI, "system": System}
+
+    chosen_statuses = {
+        "component": statuses_component,
+        "soi": statuses_soi,
+        "system": statuses_system,
+    }
     product = db.session.query(tables_dict.get(table)).get(id)
-    if table == "component":
-        chosen_statuses = statuses_component
-    elif table == "soi":
-        chosen_statuses = statuses_soi
-    else:
-        chosen_statuses = statuses_system
-    form.status.choices = chosen_statuses
+
+    form.status.choices = chosen_statuses.get(table, [])
+
     if form.validate_on_submit():
         product.status = form.status.data
         db.session.commit()
         return redirect(url_for(f"{table}_view", id=id))
+
     return render_template(
         f"update/update_{table}_status.html",
         title=f"{product.name}",
