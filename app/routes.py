@@ -160,16 +160,15 @@ def component_list(what_view):
 
     components = Component.query.order_by(Component.id.asc())
 
-    if what_view.lower() == "check_true":
-        components = Component.query.order_by(Component.id.asc()).filter_by(check=True)
-    if what_view.lower() == "active_components":
-        components = Component.query.order_by(Component.id.asc()).filter_by(
-            status="Active"
-        )
-    if what_view.lower() == "eol_components":
-        components = Component.query.order_by(Component.id.asc()).filter_by(
-            status="EOL"
-        )
+    query_mapping = {
+        "check_true": {"check": True},
+        "active_components": {"status": "Active"},
+        "eol_components": {"status": "EOL"},
+    }
+
+    if what_view.lower() in query_mapping:
+        query_filters = query_mapping[what_view.lower()]
+        components = components.filter_by(**query_filters)
 
     if form.validate_on_submit():
         components = Component.query.filter(
@@ -202,6 +201,20 @@ def soi_list(what_view):
         query_filters = query_mapping[what_view.lower()]
         sois = sois.filter_by(**query_filters)
 
+    # if what_view.lower() == "dummy_true":
+    #     sois = SOI.query.order_by(SOI.id.asc()).filter_by(dummy=True)
+    # if what_view.lower() == "check_true":
+    #     sois = SOI.query.order_by(SOI.id.asc()).filter_by(check=True)
+    # if what_view.lower() == "status_poe":
+    #     sois = SOI.query.order_by(SOI.id.asc()).filter_by(status="Active - POE")
+    # if what_view.lower() == "status_active_forecasted":
+    #     sois = SOI.query.order_by(SOI.id.asc()).filter_by(status="Active - forecasted")
+    # if what_view.lower() == "status_active_not_forecasted":
+    #     sois = SOI.query.order_by(SOI.id.asc()).filter_by(
+    #         status="Active - not forecasted"
+    #     )
+    # if what_view.lower() == "status_eol":
+    #     sois = SOI.query.order_by(SOI.id.asc()).filter_by(status="Not active - EOL")
     if form.validate_on_submit():
         sois = SOI.query.filter((SOI.name.like(f"%{form.product.data}%"))).all()
 
