@@ -490,9 +490,7 @@ def remove_product_comment(table, table2, product_id, comment_id):
     return redirect(request.referrer)
 
 
-@app.route("/other/download_data", methods=["GET", "POST"])
-def download_app_data():
-    soi = SOI.query.all()
+def create_soi_table(soi):
     soi_table = pd.DataFrame(
         {
             "SOI": [x.name for x in soi],
@@ -506,28 +504,39 @@ def download_app_data():
             ],
         }
     )
+    return soi_table
 
-    component = Component.query.all()
+
+def create_component_table(components):
     component_table = pd.DataFrame(
         {
-            "Component": [x.name for x in component],
-            "Description": [x.description for x in component],
-            "Status": [x.status for x in component],
-            "Check": [x.check for x in component],
+            "Component": [x.name for x in components],
+            "Description": [x.description for x in components],
+            "Status": [x.status for x in components],
+            "Check": [x.check for x in components],
             "Last_comment": [
                 x.text if x is not None else ""
-                for x in last_comment(table="component", products=component)
+                for x in last_comment(table="component", products=components)
             ],
         }
     )
+    return component_table
+
+
+@app.route("/other/download_data", methods=["GET", "POST"])
+def download_app_data():
+    soi = SOI.query.all()
+    component = Component.query.all()
+
+    soi_table = create_soi_table(soi)
+    component_table = create_component_table(component)
 
     now = datetime.now()
     timestamp = now.strftime("%d-%m-%H%M")
     filename = f"app_downloads/COMPanion_data_{timestamp}.xlsx"
+    filepath = os.path.join(os.getcwd(), filename)
 
-    writer = pd.ExcelWriter(filename, engine="xlsxwriter")
-    soi_table.to_excel(writer, sheet_name="SOI_info", index=False)
-    component_table.to_excel(writer, sheet_name="Component_info", index=False)
-    writer._save()
-    path_report = os.path.join(os.getcwd(), filename)
-    return send_file(path_or_file=path_report, as_attachment=True)
+    with pd.ExcelWriter(filepath, engine="xlsxwriter") as writer:
+        soi_table.to_excel(writer, sheet_name="SOI_info", index=False)
+        component_table.to_excel(writer, sheet_name="Component_info", index=False)
+    return send_file(filepath, as_attachment=True)
