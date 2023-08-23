@@ -42,7 +42,7 @@
         <td><a href="{{ url_for('change_check', table_name='component', id=component.id) }}">{{ component.check }}</a></td>
         <td><a href="{{ url_for('add_product_comment', table='component', table2 = 'component_comment', id=component.id) }}">{{ last_comments[loop.index -1].text }}</a></td>
         {% if last_comments[loop.index -1] %}
-          <td>{{ moment(last_comments[loop.index -1].timestamp).format('DD/MM/YYYY hh:mm') }}</td>
+          <td>{{ moment(last_comments[loop.index -1].timestamp).format('DD/MM/YYYY HH:MM') }}</td>
         {% else %}
           <td></td>
         {% endif %}
