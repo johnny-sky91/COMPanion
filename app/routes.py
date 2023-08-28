@@ -38,6 +38,7 @@ from datetime import datetime
 @app.route("/todo/<what_view>", methods=["GET", "POST"])
 def todo_view(what_view):
     current_date = datetime.now().date()
+    week_number = current_date.isocalendar()[1]
     todos = Todo.query.filter_by(completed=False).all()
     form = AddTodo()
 
@@ -57,7 +58,12 @@ def todo_view(what_view):
         flash(f"New TODO has been added")
         return redirect(request.referrer)
     return render_template(
-        "todo.html", title="Todo", todos=todos, form=form, current_date=current_date
+        "todo.html",
+        title="Todo",
+        todos=todos,
+        form=form,
+        current_date=current_date,
+        week_number=week_number,
     )
 
 

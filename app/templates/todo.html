@@ -2,7 +2,7 @@
 {% block content %}
 <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 <body>
-  <p>Date: {{ current_date }}</p><a href="/todo/completed_true">Closed TODOs</a>
+  <p>Date: {{ current_date }}, Current week: {{ week_number }}</p><a href="/todo/completed_true">Closed TODOs</a>
   <form action="" method="post" novalidate>
     <p>
       {{ form.hidden_tag() }}
