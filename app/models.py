@@ -13,6 +13,7 @@ class Component(db.Model):
     check = db.Column(db.Boolean, default=False)
     comments = db.relationship("ComponentComment", backref="component", lazy=True)
     soi_joint = db.relationship("ComponentSoi", backref="component", lazy=True)
+    group = db.relationship("Group", backref="component", lazy=True)
 
     def __repr__(self):
         return f"<Component {self.name}>"
@@ -29,6 +30,7 @@ class SOI(db.Model):
     comments = db.relationship("SoiComment", backref="soi", lazy=True)
     component_joint = db.relationship("ComponentSoi", backref="soi", lazy=True)
     system_joint = db.relationship("SystemSoi", backref="soi", lazy=True)
+    group = db.relationship("Group", backref="soi", lazy=True)
 
     def __repr__(self):
         return f"<SOI {self.name}>"
@@ -95,6 +97,14 @@ class Todo(db.Model):
     priority = db.Column(db.String(16), nullable=False)
     deadline = db.Column(db.Date)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+
+class Group(db.Model):
+    __tablename__ = "group"
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(160), nullable=False)
+    soi_id = db.Column(db.Integer, db.ForeignKey("soi.id"))
+    component_id = db.Column(db.Integer, db.ForeignKey("component.id"))
 
 
 tables_dict = {table.__tablename__: table for table in db.Model.__subclasses__()}
