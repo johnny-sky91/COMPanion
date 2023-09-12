@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<p>Join SOI/component to group: {{ group.name }} </p>
+<form action="" method="post" novalidate>
+    {{form.hidden_tag()}}
+    <p style="font-size:18px">
+        {{ form.product_type.label }}:<br>{{ form.product_type() }}<br><br>
+        {{ form.product.label }}:<br>{{ form.product(style='height: 50px; width:300px') }}<br><br>
+        {{ form.submit() }}<br>
+        {% for error in form.product.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}<br>
+    </p>
+</form>
+{% endblock %}
