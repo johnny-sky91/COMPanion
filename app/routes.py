@@ -17,6 +17,7 @@ from app.forms import (
     SearchProduct,
     AddSystemSOI,
     AddTodo,
+    AddGroup,
 )
 from app.models import (
     System,
@@ -29,6 +30,7 @@ from app.models import (
     SystemSoi,
     Todo,
     tables_dict,
+    Group,
 )
 import pyperclip, os
 import pandas as pd
@@ -220,6 +222,16 @@ def soi_list(what_view):
     )
 
 
+@app.route("/group_list", methods=["GET", "POST"])
+def group_list():
+    groups = ["A", "B", "C"]
+    return render_template(
+        f"lists/group_list.html",
+        title="Systems",
+        groups=groups,
+    )
+
+
 @app.route("/system_list", methods=["GET", "POST"])
 def system_list():
     systems = System.query.order_by(System.name.asc())
@@ -305,6 +317,37 @@ def add_new_soi():
         flash(f"A new SOI has been added - {new_soi.name}")
         return redirect(url_for("soi_list", what_view="all"))
     return render_template("add/add_new_soi.html", title="Add new SOI", form=form)
+
+
+@app.route("/group_list/add_new_group", methods=["GET", "POST"])
+def add_new_group():
+    groups = Group.query.all()
+    form = AddGroup()
+    if not groups:
+        if request.method == "POST" and form.validate_on_submit():
+            new_group_text = f"{form.name.data}_01"
+            new_group = Group(text=new_group_text)
+            db.session.add(new_group)
+            db.session.commit()
+
+            flash(f"A new group has been added - {new_group.text}")
+            return redirect(url_for("group_list"))
+
+        return render_template(
+            "add/add_new_group.html", title="Add new group", form=form
+        )
+    else:
+        last_group = groups[-1]
+        last_group_name, last_group_no = last_group.text.split("_")
+        new_group_no = str(int(last_group_no) + 1).zfill(len(last_group_no))
+        new_group_text = f"{last_group_name}_{new_group_no}"
+
+        new_group = Group(text=new_group_text)
+        db.session.add(new_group)
+        db.session.commit()
+
+        flash(f"A new group has been added - {new_group.text}")
+        return redirect(url_for("group_list"))
 
 
 @app.route("/system_list/add_new_system", methods=["GET", "POST"])
