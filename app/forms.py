@@ -69,6 +69,21 @@ class AddGroup(FlaskForm):
     submit = SubmitField("Add new group base name")
 
 
+class AddGroupProduct(FlaskForm):
+    product_type = SelectField(
+        "Product type",
+        choices=["SOI", "Component"],
+        validators=[DataRequired(message="Choose type of product")],
+    )
+
+    product = TextAreaField(
+        "Product", validators=[DataRequired(message="Product name can't be empty")]
+    )
+
+    submit = SubmitField("Add product to group")
+    # TODO add validator
+
+
 class AddSystem(FlaskForm):
     name = TextAreaField(
         "System name",
