@@ -2,7 +2,20 @@
 {% block content %}
 <body>
   <a href="/group_list/add_new_group">Add new group</a>
-
-<p>Place for groups info</p>
+<table>
+  <thead>
+    <tr>
+      <th>No</th>
+      <th>Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for group in groups %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td><a href="{{ url_for('group_view', id=group.id) }}">{{ group.name }}</a></td>
+    {% endfor %}
+  </tbody>
+</table>
 </body>
 {% endblock %}
