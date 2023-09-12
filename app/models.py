@@ -102,7 +102,7 @@ class Todo(db.Model):
 class Group(db.Model):
     __tablename__ = "group"
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(160), nullable=False)
+    name = db.Column(db.String(160), nullable=False)
     soi_id = db.Column(db.Integer, db.ForeignKey("soi.id"))
     component_id = db.Column(db.Integer, db.ForeignKey("component.id"))
 
