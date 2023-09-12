@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<p>Add new group</p>
+<p>Enter the primary name of the group. The next groups will only differ in numbering </p>
+<form action="" method="post" novalidate>
+    {{form.hidden_tag()}}
+    <p style="font-size:18px">
+        1. {{ form.name.label }}:<br>{{ form.name(style='height: 20px; width:200px') }}<br><br>
+        {{ form.submit() }} <br>
+        {% for error in form.name.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}<br>
+    </p>
+</form>
+{% endblock %}
