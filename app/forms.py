@@ -15,7 +15,7 @@ from wtforms.validators import (
     ValidationError,
     Optional,
 )
-from app.models import Component, SOI, System, ComponentSoi, SystemSoi
+from app.models import Component, SOI, System, ComponentSoi, SystemSoi, Group
 
 
 class AddComponent(FlaskForm):
@@ -60,6 +60,13 @@ class AddSOI(FlaskForm):
         soi = SOI.query.filter_by(name=name).first()
         if soi:
             raise ValidationError("SOI is already registered")
+
+
+class AddGroup(FlaskForm):
+    name = TextAreaField(
+        "Name", validators=[DataRequired(message="Group name can't be empty")]
+    )
+    submit = SubmitField("Add new group base name")
 
 
 class AddSystem(FlaskForm):
