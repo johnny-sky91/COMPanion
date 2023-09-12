@@ -1,6 +1,5 @@
 from app import db
 from datetime import datetime
-from enum import Enum
 
 
 class Component(db.Model):
@@ -13,7 +12,7 @@ class Component(db.Model):
     check = db.Column(db.Boolean, default=False)
     comments = db.relationship("ComponentComment", backref="component", lazy=True)
     soi_joint = db.relationship("ComponentSoi", backref="component", lazy=True)
-    group = db.relationship("Group", backref="component", lazy=True)
+    group = db.relationship("GroupProduct", backref="component", lazy=True)
 
     def __repr__(self):
         return f"<Component {self.name}>"
@@ -30,7 +29,7 @@ class SOI(db.Model):
     comments = db.relationship("SoiComment", backref="soi", lazy=True)
     component_joint = db.relationship("ComponentSoi", backref="soi", lazy=True)
     system_joint = db.relationship("SystemSoi", backref="soi", lazy=True)
-    group = db.relationship("Group", backref="soi", lazy=True)
+    group = db.relationship("GroupProduct", backref="soi", lazy=True)
 
     def __repr__(self):
         return f"<SOI {self.name}>"
@@ -103,6 +102,13 @@ class Group(db.Model):
     __tablename__ = "group"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(160), nullable=False)
+    products = db.relationship("GroupProduct", backref="group", lazy=True)
+
+
+class GroupProduct(db.Model):
+    __tablename__ = "group_product"
+    id = db.Column(db.Integer, primary_key=True)
+    group_id = db.Column(db.String(160), db.ForeignKey("group.id"))
     soi_id = db.Column(db.Integer, db.ForeignKey("soi.id"))
     component_id = db.Column(db.Integer, db.ForeignKey("component.id"))
 
