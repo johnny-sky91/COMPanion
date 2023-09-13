@@ -133,11 +133,9 @@ def soi_view(id):
 def group_pivot(soi_ids, comp_ids):
     soi = [SOI.query.get(soi_id).name for soi_id in soi_ids]
     soi_status = [SOI.query.get(soi_id).status for soi_id in soi_ids]
-
     comp_usage = [
         ComponentSoi.query.filter_by(soi_joint=x).first().usage for x in soi_ids
     ]
-
     component = [Component.query.get(component_id).name for component_id in comp_ids]
     comp_status = [
         Component.query.get(component_id).status for component_id in comp_ids
@@ -157,7 +155,8 @@ def group_pivot(soi_ids, comp_ids):
         aggfunc="first",
         fill_value=0,
     )
-    return group_pivot.to_html()
+
+    return group_pivot.to_html(index_names=True, bold_rows=False)
 
 
 @app.route("/group_list/group_view/<id>", methods=["GET", "POST"])
@@ -548,12 +547,16 @@ statuses_system = ["Active", "EOL", "NMB"]
 def product_change_status(table, id):
     form = ChangeStatus()
 
-    tables_dict = {"component": Component, "soi": SOI, "system": System}
+    tables_dict = {"component": Component, 
+                   "soi": SOI, 
+                   "system": System, 
+                   "group": Group}
 
     chosen_statuses = {
         "component": statuses_component,
         "soi": statuses_soi,
         "system": statuses_system,
+        "group": statuses_system,
     }
     product = db.session.query(tables_dict.get(table)).get(id)
 
@@ -563,9 +566,8 @@ def product_change_status(table, id):
         product.status = form.status.data
         db.session.commit()
         return redirect(url_for(f"{table}_view", id=id))
-
     return render_template(
-        f"update/update_{table}_status.html",
+        f"update/update_status.html",
         title=f"{product.name}",
         form=form,
     )
