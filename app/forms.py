@@ -15,7 +15,15 @@ from wtforms.validators import (
     ValidationError,
     Optional,
 )
-from app.models import Component, SOI, System, ComponentSoi, SystemSoi, Group
+from app.models import (
+    Component,
+    SOI,
+    System,
+    ComponentSoi,
+    SystemSoi,
+    Group,
+    GroupProduct,
+)
 
 
 class AddComponent(FlaskForm):
@@ -70,17 +78,14 @@ class AddGroup(FlaskForm):
 
 
 class AddGroupProduct(FlaskForm):
-    product_type = SelectField(
-        "Product type",
-        choices=["SOI", "Component"],
-        validators=[DataRequired(message="Choose type of product")],
+    soi = TextAreaField(
+        "SOI", validators=[DataRequired(message="SOI name can't be empty")]
+    )
+    component = TextAreaField(
+        "Component", validators=[DataRequired(message="Component name can't be empty")]
     )
 
-    product = TextAreaField(
-        "Product", validators=[DataRequired(message="Product name can't be empty")]
-    )
-
-    submit = SubmitField("Add product to group")
+    submit = SubmitField("Add SOI/component to group")
     # TODO add validator
 
 
