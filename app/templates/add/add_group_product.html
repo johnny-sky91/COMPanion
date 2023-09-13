@@ -1,16 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
 
-<p>Join SOI/component to group: {{ group.name }} </p>
+<p>Add SOI/component to group: {{ group.name }} </p>
 <form action="" method="post" novalidate>
-    {{form.hidden_tag()}}
+    {{ form.hidden_tag() }}
     <p style="font-size:18px">
-        {{ form.product_type.label }}:<br>{{ form.product_type() }}<br><br>
-        {{ form.product.label }}:<br>{{ form.product(style='height: 50px; width:300px') }}<br><br>
-        {{ form.submit() }}<br>
-        {% for error in form.product.errors %}
+        {{ form.soi.label }}:<br>{{ form.soi(style='height: 30px; width:200px') }}<br><br>
+        {% for error in form.soi.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}<br>
+        {{ form.component.label }}:<br>{{ form.component(style='height: 30px; width:200px') }}<br><br>
+        {% for error in form.component.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}<br>
+        {{ form.submit() }}<br>
     </p>
 </form>
 {% endblock %}
