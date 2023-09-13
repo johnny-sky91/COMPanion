@@ -18,6 +18,7 @@ from app.forms import (
     AddSystemSOI,
     AddTodo,
     AddGroup,
+    AddGroupProduct,
 )
 from app.models import (
     System,
@@ -31,6 +32,7 @@ from app.models import (
     Todo,
     tables_dict,
     Group,
+    GroupProduct,
 )
 import pyperclip, os
 import pandas as pd
@@ -130,6 +132,53 @@ def soi_view(id):
     )
 
 
+def group_pivot(soi_ids, comp_ids):
+    soi = [SOI.query.get(soi_id).name for soi_id in soi_ids]
+    soi_status = [SOI.query.get(soi_id).status for soi_id in soi_ids]
+
+    comp_usage = [
+        ComponentSoi.query.filter_by(soi_joint=x).first().usage for x in soi_ids
+    ]
+
+    component = [Component.query.get(component_id).name for component_id in comp_ids]
+    comp_status = [
+        Component.query.get(component_id).status for component_id in comp_ids
+    ]
+    data = {
+        "SOI": soi,
+        "SOI status": soi_status,
+        "Component": component,
+        "Component status": comp_status,
+        "Usage": comp_usage,
+    }
+    group_df = pd.DataFrame(data)
+    group_pivot = group_df.pivot_table(
+        index=["SOI status", "SOI"],
+        columns=["Component status", "Component"],
+        values="Usage",
+        aggfunc="first",
+        fill_value=0,
+    )
+    return group_pivot.to_html()
+
+
+@app.route("/group_list/group_view/<id>", methods=["GET", "POST"])
+def group_view(id):
+    group = Group.query.get(id)
+
+    group_products = GroupProduct.query.filter_by(group_id=id).all()
+
+    soi_ids = [product.soi_id for product in group_products]
+    comp_ids = [product.component_id for product in group_products]
+
+    return render_template(
+        "view/group_view.html",
+        title=f"{group.name}",
+        group=group,
+        group_pivot=group_pivot(soi_ids=soi_ids, comp_ids=comp_ids),
+    )
+
+
 @app.route("/system_list/system_view/<id>", methods=["GET", "POST"])
 def system_view(id):
     system = System.query.get(id)
@@ -224,10 +273,11 @@ def soi_list(what_view):
 
 @app.route("/group_list", methods=["GET", "POST"])
 def group_list():
-    groups = ["A", "B", "C"]
+    groups = Group.query.all()
+
     return render_template(
         f"lists/group_list.html",
-        title="Systems",
+        title="Groups",
         groups=groups,
     )
 
@@ -325,12 +375,12 @@ def add_new_group():
     form = AddGroup()
     if not groups:
         if request.method == "POST" and form.validate_on_submit():
-            new_group_text = f"{form.name.data}_01"
-            new_group = Group(text=new_group_text)
+            new_group_name = f"{form.name.data}_01"
+            new_group = Group(name=new_group_name)
             db.session.add(new_group)
             db.session.commit()
 
-            flash(f"A new group has been added - {new_group.text}")
+            flash(f"A new group has been added - {new_group.name}")
             return redirect(url_for("group_list"))
 
         return render_template(
@@ -338,15 +388,15 @@ def add_new_group():
         )
     else:
         last_group = groups[-1]
-        last_group_name, last_group_no = last_group.text.split("_")
+        last_group_name, last_group_no = last_group.name.split("_")
         new_group_no = str(int(last_group_no) + 1).zfill(len(last_group_no))
-        new_group_text = f"{last_group_name}_{new_group_no}"
+        new_group_name = f"{last_group_name}_{new_group_no}"
 
-        new_group = Group(text=new_group_text)
+        new_group = Group(name=new_group_name)
         db.session.add(new_group)
         db.session.commit()
 
-        flash(f"A new group has been added - {new_group.text}")
+        flash(f"A new group has been added - {new_group.name}")
         return redirect(url_for("group_list"))
 
 
@@ -417,6 +467,30 @@ def add_system_soi(id):
     )
 
 
+@app.route("/group_list/group_view/<id>/add_product", methods=["GET", "POST"])
+def add_group_product(id):
+    group = Group.query.get(id)
+    form = AddGroupProduct()
+    if form.validate_on_submit():
+        new_soi = SOI.query.filter_by(name=form.soi.data).first()
+        new_comp = Component.query.filter_by(name=form.component.data).first()
+        new_product_group = GroupProduct(
+            group_id=id, soi_id=new_soi.id, component_id=new_comp.id
+        )
+        db.session.add(new_product_group)
+        db.session.commit()
+        flash(
+            f"SOI {new_soi.name} and component {new_comp.name} has been added to group {group.name}"
+        )
+        return redirect(url_for("group_view", id=id))
+    return render_template(
+        "add/add_group_product.html",
+        title=f"Add product to group {group.name}",
+        form=form,
+        group=group,
+    )
+
+
 @app.route("/<table>_view/<id>/add_<table2>", methods=["GET", "POST"])
 def add_product_comment(table, table2, id):
     product = db.session.query(tables_dict.get(table)).get(id)
@@ -461,14 +535,15 @@ def remove_system_soi(id, system):
     return redirect(request.referrer)
 
 
-statuses_component = ["Active", "EOL"]
+statuses_component = ["Active", "EOL", "NMB"]
 statuses_soi = [
     "Active - forecasted",
     "Active - not forecasted",
     "Active - POE",
     "Not active - EOL",
+    "NMB",
 ]
-statuses_system = ["Active", "EOL"]
+statuses_system = ["Active", "EOL", "NMB"]
 
 
 @app.route("/<table>_view/<id>/change_status", methods=["GET", "POST"])
