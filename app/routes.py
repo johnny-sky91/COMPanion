@@ -39,10 +39,15 @@ import pandas as pd
 from datetime import datetime
 
 
-@app.route("/todo/<what_view>", methods=["GET", "POST"])
-def todo_view(what_view):
+@app.context_processor
+def inject_date_cw():
     current_date = datetime.now().date()
     week_number = current_date.isocalendar()[1]
+    return dict(current_date=current_date, week_number=week_number)
+
+
+@app.route("/todo/<what_view>", methods=["GET", "POST"])
+def todo_view(what_view):
     todos = Todo.query.filter_by(completed=False).all()
     form = AddTodo()
 
@@ -61,14 +66,7 @@ def todo_view(what_view):
         db.session.commit()
         flash(f"New TODO has been added")
         return redirect(request.referrer)
-    return render_template(
-        "todo.html",
-        title="Todo",
-        todos=todos,
-        form=form,
-        current_date=current_date,
-        week_number=week_number,
-    )
+    return render_template("todo.html", title="Todo", todos=todos, form=form)
 
 
 @app.route("/todo/<id>/change_status", methods=["GET", "POST"])
