@@ -7,7 +7,6 @@
   margin-right: 10px;
 }
 
- /* table */
  table {
   font-family: Helvetica;
   border-collapse: collapse;
@@ -16,7 +15,7 @@
 
 td, th {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 3px;
 }
 
 thead th {
@@ -35,7 +34,7 @@ th {
   padding-bottom: 12px;
   text-align: left;
   background-color: #bdbdbd;
-  color: white;
+  color: black;
 }
 
 h1 {
