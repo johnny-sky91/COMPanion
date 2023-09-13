@@ -102,6 +102,8 @@ class Group(db.Model):
     __tablename__ = "group"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(160), nullable=False)
+    status = db.Column(db.String(160))
+    check = db.Column(db.Boolean, default=False)
     products = db.relationship("GroupProduct", backref="group", lazy=True)
 
 
