@@ -131,32 +131,31 @@ def soi_view(id):
 
 
 def group_pivot(soi_ids, comp_ids):
-    soi = [SOI.query.get(soi_id).name for soi_id in soi_ids]
-    soi_status = [SOI.query.get(soi_id).status for soi_id in soi_ids]
+    soi = [SOI.query.get(soi_id) for soi_id in soi_ids]
     comp_usage = [
         ComponentSoi.query.filter_by(soi_joint=x).first().usage for x in soi_ids
     ]
-    component = [Component.query.get(component_id).name for component_id in comp_ids]
-    comp_status = [
-        Component.query.get(component_id).status for component_id in comp_ids
-    ]
+    component = [Component.query.get(component_id) for component_id in comp_ids]
     data = {
         "SOI": soi,
-        "SOI status": soi_status,
         "Component": component,
-        "Component status": comp_status,
         "Usage": comp_usage,
     }
     group_df = pd.DataFrame(data)
     group_pivot = group_df.pivot_table(
-        index=["SOI status", "SOI"],
-        columns=["Component status", "Component"],
+        index=["SOI"],
+        columns=["Component"],
         values="Usage",
         aggfunc="first",
         fill_value=0,
+        sort=False,
     )
 
-    return group_pivot.to_html(index_names=True, bold_rows=False)
+    results_soi = group_pivot.index.tolist()
+    results_component = group_pivot.columns.tolist()
+    results_usage = group_pivot.values.tolist()
+    soi_usage = zip(results_soi, results_usage)
+    return results_component, soi_usage
 
 
 @app.route("/group_list/group_view/<id>", methods=["GET", "POST"])
@@ -167,12 +166,13 @@ def group_view(id):
 
     soi_ids = [product.soi_id for product in group_products]
     comp_ids = [product.component_id for product in group_products]
-
+    data_group = group_pivot(soi_ids=soi_ids, comp_ids=comp_ids)
     return render_template(
         "view/group_view.html",
         title=f"{group.name}",
         group=group,
-        group_pivot=group_pivot(soi_ids=soi_ids, comp_ids=comp_ids),
+        components=data_group[0],
+        soi_usage=data_group[1],
     )
 
 
@@ -547,10 +547,7 @@ statuses_system = ["Active", "EOL", "NMB"]
 def product_change_status(table, id):
     form = ChangeStatus()
 
-    tables_dict = {"component": Component, 
-                   "soi": SOI, 
-                   "system": System, 
-                   "group": Group}
+    tables_dict = {"component": Component, "soi": SOI, "system": System, "group": Group}
 
     chosen_statuses = {
         "component": statuses_component,
