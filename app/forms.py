@@ -186,3 +186,11 @@ class AddTodo(FlaskForm):
     )
     deadline = DateField("Deadline", validators=[Optional()])
     submit = SubmitField("Add TODO")
+
+
+class AddProductNote(FlaskForm):
+    note = TextAreaField(
+        "Note",
+        validators=[DataRequired(message="New note can't be empty")],
+    )
+    submit = SubmitField("Change note")
