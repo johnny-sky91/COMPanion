@@ -27,6 +27,10 @@
         <td colspan="6"><a href="{{ url_for('product_change_status', table='soi', id=soi.id) }}">{{ soi.status }}</a></td>
       </tr>
       <tr>
+        <th>Note</th>
+        <td><a href="{{ url_for('add_new_note', table='soi', id=soi.id) }}">{{ soi.note }}</a></td>
+      </tr>
+      <tr>
         <th rowspan="{{ components|length + 1 }}"><a href="{{ url_for('add_comp_soi', id=soi.id) }}">Components used</a></th>
         <th>Name</th>
         <th>Status</th>

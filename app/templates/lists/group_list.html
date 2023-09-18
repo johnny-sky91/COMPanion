@@ -7,8 +7,9 @@
     <tr>
       <th>No</th>
       <th>Name</th>
-      <th>Check</th>
       <th>Status</th>
+      <th>Note</th>
+      <th>Check</th>
     </tr>
   </thead>
   <tbody>
@@ -16,8 +17,9 @@
     <tr>
       <td>{{ loop.index }}</td>
       <td><a href="{{ url_for('group_view', id=group.id) }}">{{ group.name }}</a></td>
-      <td><a href="{{ url_for('change_check',table_name='group', id=group.id) }}">{{ group.check }}</a></td>
       <td><a href="{{ url_for('product_change_status', table='group', id=group.id) }}">{{ group.status }}</a></td>
+      <td><a href="{{ url_for('add_new_note', table='group', id=group.id) }}">{{ group.note }}</a></td>
+      <td><a href="{{ url_for('change_check',table_name='group', id=group.id) }}">{{ group.check }}</a></td>
     </tr>
     {% endfor %}
   </tbody>
