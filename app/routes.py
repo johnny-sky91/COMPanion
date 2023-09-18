@@ -19,6 +19,7 @@ from app.forms import (
     AddTodo,
     AddGroup,
     AddGroupProduct,
+    AddProductNote,
 )
 from app.models import (
     System,
@@ -508,6 +509,25 @@ def add_product_comment(table, table2, id):
         title=f"{product.name}",
         form=form,
         current_comment=current_comment,
+    )
+
+
+@app.route("/<table>_view/<id>/add_note", methods=["GET", "POST"])
+def add_new_note(table, id):
+    product = db.session.query(tables_dict.get(table)).get(id)
+    form = AddProductNote()
+    # table_note = tables_dict.get(table)
+    if form.validate_on_submit():
+        # new_note = table_note(note=form.note.data)
+        product.note = form.note.data
+        db.session.commit()
+        return redirect(url_for(f"{table}_view", id=id))
+    return render_template(
+        f"add/add_new_note.html",
+        title=f"{product.name}",
+        form=form,
+        current_note=product.note,
+        product=product,
     )
 
 
