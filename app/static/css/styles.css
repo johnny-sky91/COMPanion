@@ -11,6 +11,8 @@
   font-family: Helvetica;
   border-collapse: collapse;
   width: 100%;
+  overflow: hidden;
+
 }
 
 td, th {
@@ -29,7 +31,6 @@ tr:hover {background-color: #DEE2FC;}
 
 th {
   position: sticky;
-
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
