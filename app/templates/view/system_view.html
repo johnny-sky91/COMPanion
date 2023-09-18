@@ -19,6 +19,10 @@
       <td colspan="6"><a href="{{ url_for('product_change_status', table='system', id=system.id) }}">{{ system.status }}</a></td>
     </tr>
     <tr>
+      <th>Note</th>
+      <td><a href="{{ url_for('add_new_note', table='system', id=system.id) }}">{{ system.note }}</a></td>
+    </tr>
+    <tr>
       <th rowspan="{{ comments|length + 1 }}"><a href="{{ url_for('add_product_comment', table='system', table2 = 'system_comment', id=system.id) }}">Comments</a</th>
       <th>Comment</th>
       <th>Date</th>
