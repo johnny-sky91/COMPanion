@@ -15,6 +15,10 @@
       <td><a href="{{ url_for('product_change_status', table='group', id=group.id) }}">{{ group.status }}</a></td>
     </tr>
     <tr>
+      <th>Note</th>
+      <td><a href="{{ url_for('add_new_note', table='group', id=group.id) }}">{{ group.note }}</a></td>
+    </tr>
+    <tr>
       <th>Check</th>
       <td><a href="{{ url_for('change_check',table_name='group', id=group.id) }}">{{ group.check }}</a></td>
     </tr>
