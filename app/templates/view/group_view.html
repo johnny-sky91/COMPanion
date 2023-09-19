@@ -22,6 +22,19 @@
       <th>Note</th>
       <td><a href="{{ url_for('add_new_note', table='group', id=group.id) }}">{{ group.note }}</a></td>
     </tr>
+    <tr>
+      <th rowspan="{{ comments|length + 1 }}"><a href="{{ url_for('add_product_comment', table='group', table2 = 'group_comment', id=group.id) }}">Comments</a</th>
+      <th>Comment</th>
+      <th>Date</th>
+      <th colspan="4">Action</th>
+    </tr>
+    {% for comment in comments %}
+    <tr>
+      <td>{{ comment.text }}</td>
+      <td>{{ moment(comment.timestamp).format('DD/MM/YYYY HH:MM') }}</td>
+      <td colspan="4"><a href="{{ url_for('remove_product_comment', table='group', table2='group', product_id=group.id, comment_id=comment.id) }}">Remove</a></td>
+    </tr>
+    {% endfor %}
   </table>
   <table>
     <thead>
