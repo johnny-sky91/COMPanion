@@ -67,6 +67,14 @@ class SoiComment(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
 
+class GroupComment(db.Model):
+    __tablename__ = "group_comment"
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey("group.id"))
+    text = db.Column(db.String(160))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+
 class SystemComment(db.Model):
     __tablename__ = "system_comment"
     id = db.Column(db.Integer, primary_key=True)
@@ -109,6 +117,7 @@ class Group(db.Model):
     status = db.Column(db.String(160))
     note = db.Column(db.String(160))
     check = db.Column(db.Boolean, default=False)
+    comments = db.relationship("GroupComment", backref="group", lazy=True)
     products = db.relationship("GroupProduct", backref="group", lazy=True)
 
 
