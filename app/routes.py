@@ -134,7 +134,7 @@ def soi_view(id):
         components_last_comment=components_last_comment,
         components_details=components_details,
         systems=systems,
-        group=group
+        group=group,
     )
 
 
@@ -645,17 +645,32 @@ def remove_product_comment(table, table2, product_id, comment_id):
     return redirect(request.referrer)
 
 
-def create_soi_table(soi):
+def query_group_name(what_type, product_id):
+    if what_type == "soi":
+        what_group = GroupProduct.query.filter_by(soi_id=product_id).first()
+    if what_type == "component":
+        what_group = GroupProduct.query.filter_by(component_id=product_id).first()
+    if what_group:
+        group = Group.query.filter_by(id=what_group.group_id).first().name
+    else:
+        group = "NA"
+    return group
+
+
+def create_soi_table(sois):
+    soi_groups = [query_group_name("soi", soi.id) for soi in sois]
     soi_table = pd.DataFrame(
         {
-            "SOI": [x.name for x in soi],
-            "Description": [x.description for x in soi],
-            "Status": [x.status for x in soi],
-            "Dummy": [x.dummy for x in soi],
-            "Check": [x.check for x in soi],
+            "SOI": [x.name for x in sois],
+            "Description": [x.description for x in sois],
+            "Status": [x.status for x in sois],
+            "Dummy": [x.dummy for x in sois],
+            "Check": [x.check for x in sois],
+            "Group": soi_groups,
+            "Note": [x.note for x in sois],
             "Last_comment": [
                 x.text if x is not None else ""
-                for x in last_comment(table="soi", products=soi)
+                for x in last_comment(table="soi", products=sois)
             ],
         }
     )
@@ -663,12 +678,15 @@ def create_soi_table(soi):
 
 
 def create_component_table(components):
+    component_groups = [query_group_name("component", soi.id) for soi in components]
     component_table = pd.DataFrame(
         {
             "Component": [x.name for x in components],
             "Description": [x.description for x in components],
             "Status": [x.status for x in components],
             "Check": [x.check for x in components],
+            "Group": component_groups,
+            "Note": [x.note for x in components],
             "Last_comment": [
                 x.text if x is not None else ""
                 for x in last_comment(table="component", products=components)
@@ -678,13 +696,31 @@ def create_component_table(components):
     return component_table
 
 
+def create_group_table(groups):
+    group_table = pd.DataFrame(
+        {
+            "Group": [x.name for x in groups],
+            "Status": [x.status for x in groups],
+            "Check": [x.check for x in groups],
+            "Note": [x.note for x in groups],
+            "Last_comment": [
+                x.text if x is not None else ""
+                for x in last_comment(table="group", products=groups)
+            ],
+        }
+    )
+    return group_table
+
+
 @app.route("/other/download_data", methods=["GET", "POST"])
 def download_app_data():
     soi = SOI.query.all()
     component = Component.query.all()
+    group = Group.query.all()
 
     soi_table = create_soi_table(soi)
     component_table = create_component_table(component)
+    group_table = create_group_table(group)
 
     now = datetime.now()
     timestamp = now.strftime("%d-%m-%H%M")
@@ -694,4 +730,6 @@ def download_app_data():
     with pd.ExcelWriter(filepath, engine="xlsxwriter") as writer:
         soi_table.to_excel(writer, sheet_name="SOI_info", index=False)
         component_table.to_excel(writer, sheet_name="Component_info", index=False)
+        group_table.to_excel(writer, sheet_name="Group_info", index=False)
+
     return send_file(filepath, as_attachment=True)
