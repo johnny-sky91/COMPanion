@@ -28,7 +28,11 @@
     </tr>
     <tr>
       <th>Note</th>
-      <td><a href="{{ url_for('add_new_note', table='component', id=component.id) }}">{{ component.note }}</a></td>
+      <td colspan="3"><a href="{{ url_for('add_new_note', table='component', id=component.id) }}">{{ component.note }}</a></td>
+    </tr>
+    <tr>
+      <th>Group</th>
+      <td colspan="3"><a href="{{ url_for('group_view', id=group.id) }}">{{ group.name }}</a></td>
     </tr>
     <tr>
       <th rowspan="{{ sois|length + 1 }}">Used in SOI</th>
