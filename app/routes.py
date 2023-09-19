@@ -34,6 +34,7 @@ from app.models import (
     tables_dict,
     Group,
     GroupProduct,
+    GroupComment,
 )
 import pyperclip, os
 import pandas as pd
@@ -96,6 +97,8 @@ def component_view(id):
     sois = SOI.query.join(ComponentSoi).filter(ComponentSoi.comp_joint == id).all()
     sois_last_comment = last_comment(table="soi", products=sois)
 
+    what_group = GroupProduct.query.filter_by(component_id=id).first()
+    group = Group.query.filter_by(id=what_group.group_id).first()
     return render_template(
         "view/component_view.html",
         title=f"{component.name}",
@@ -103,6 +106,7 @@ def component_view(id):
         comments=comments,
         sois=sois,
         sois_last_comment=sois_last_comment,
+        group=group,
     )
 
 
@@ -119,6 +123,8 @@ def soi_view(id):
     components_details = ComponentSoi.query.filter_by(soi_joint=id).all()
     systems = System.query.join(SystemSoi).filter(SystemSoi.soi_joint == id).all()
 
+    what_group = GroupProduct.query.filter_by(soi_id=id).first()
+    group = Group.query.filter_by(id=what_group.group_id).first()
     return render_template(
         "view/soi_view.html",
         title=f"{soi.name}",
@@ -128,6 +134,7 @@ def soi_view(id):
         components_last_comment=components_last_comment,
         components_details=components_details,
         systems=systems,
+        group=group
     )
 
 
@@ -168,12 +175,19 @@ def group_view(id):
     soi_ids = [product.soi_id for product in group_products]
     comp_ids = [product.component_id for product in group_products]
     data_group = group_pivot(soi_ids=soi_ids, comp_ids=comp_ids)
+
+    comments = (
+        GroupComment.query.filter_by(product_id=id)
+        .order_by(GroupComment.id.desc())
+        .all()
+    )
     return render_template(
         "view/group_view.html",
         title=f"{group.name}",
         group=group,
         components=data_group[0],
         soi_usage=data_group[1],
+        comments=comments,
     )
 
 
