@@ -36,7 +36,7 @@ from app.models import (
     GroupProduct,
     GroupComment,
 )
-import pyperclip, os
+import pyperclip, os, json
 import pandas as pd
 from datetime import datetime
 
@@ -96,7 +96,7 @@ def component_view(id):
     )
     sois = SOI.query.join(ComponentSoi).filter(ComponentSoi.comp_joint == id).all()
     sois_last_comment = last_comment(table="soi", products=sois)
-
+    sois_names = json.dumps([soi.name for soi in sois])
     what_group = GroupProduct.query.filter_by(component_id=id).first()
     group = Group.query.filter_by(id=what_group.group_id).first()
     return render_template(
@@ -105,6 +105,7 @@ def component_view(id):
         component=component,
         comments=comments,
         sois=sois,
+        sois_names=sois_names,
         sois_last_comment=sois_last_comment,
         group=group,
     )
@@ -122,7 +123,7 @@ def soi_view(id):
     components_last_comment = last_comment(table="component", products=components)
     components_details = ComponentSoi.query.filter_by(soi_joint=id).all()
     systems = System.query.join(SystemSoi).filter(SystemSoi.soi_joint == id).all()
-
+    components_names = json.dumps([component.name for component in components])
     what_group = GroupProduct.query.filter_by(soi_id=id).first()
     group = Group.query.filter_by(id=what_group.group_id).first()
     return render_template(
@@ -131,6 +132,7 @@ def soi_view(id):
         soi=soi,
         comments=comments,
         components=components,
+        components_names=components_names,
         components_last_comment=components_last_comment,
         components_details=components_details,
         systems=systems,
@@ -175,6 +177,12 @@ def group_view(id):
     soi_ids = [product.soi_id for product in group_products]
     comp_ids = [product.component_id for product in group_products]
     data_group = group_pivot(soi_ids=soi_ids, comp_ids=comp_ids)
+    sois_names = json.dumps([SOI.query.get(soi_id).name for soi_id in soi_ids])
+    print(sois_names)
+    components_names = json.dumps(
+        [Component.query.get(component_id).name for component_id in comp_ids]
+    )
+    print(components_names)
 
     comments = (
         GroupComment.query.filter_by(product_id=id)
@@ -188,6 +196,8 @@ def group_view(id):
         components=data_group[0],
         soi_usage=data_group[1],
         comments=comments,
+        sois_names=sois_names,
+        components_names=components_names,
     )
 
 
