@@ -171,19 +171,16 @@ def group_pivot(soi_ids, comp_ids):
 @app.route("/group_list/group_view/<id>", methods=["GET", "POST"])
 def group_view(id):
     group = Group.query.get(id)
-
     group_products = GroupProduct.query.filter_by(group_id=id).all()
-
     soi_ids = [product.soi_id for product in group_products]
     comp_ids = [product.component_id for product in group_products]
     data_group = group_pivot(soi_ids=soi_ids, comp_ids=comp_ids)
-    sois_names = json.dumps([SOI.query.get(soi_id).name for soi_id in soi_ids])
-    print(sois_names)
-    components_names = json.dumps(
-        [Component.query.get(component_id).name for component_id in comp_ids]
+    sois_names = json.dumps(
+        list(set([SOI.query.get(soi_id).name for soi_id in soi_ids]))
     )
-    print(components_names)
-
+    components_names = json.dumps(
+        list(set([Component.query.get(component_id).name for component_id in comp_ids]))
+    )
     comments = (
         GroupComment.query.filter_by(product_id=id)
         .order_by(GroupComment.id.desc())
