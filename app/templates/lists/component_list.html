@@ -2,10 +2,8 @@
 {% block content %}
 <body>
   <a href="/component_list/add_new_component">Add new component</a>
-  <a href="/component_list/active_components">Show active components</a>
-  <a href="/product_list_to_clipboard/active_components">Get active components</a>
-  <a href="/product_list_to_clipboard/all_components">Get all components</a>
-  <a href="/component_list/eol_components">Show EOL components</a>
+  <a href="/component_list/active_components">Active</a>
+  <a href="/component_list/eol_components">EOL</a>
   <form action="" method="post" novalidate>
     {{form.hidden_tag()}}
     <p style="font-size:18px">
@@ -21,7 +19,7 @@
     <thead>
       <tr>
         <th>No</th>
-        <th>Component</th>
+        <th><copy_button type="copy_button" onClick="copyListToClipboard('{{ components_names }}')">Component</copy_button></th>
         <th>Description</th>
         <th>Supplier</th>
         <th>Status</th>
