@@ -36,7 +36,7 @@ from app.models import (
     GroupProduct,
     GroupComment,
 )
-import pyperclip, os, json
+import os, json
 import pandas as pd
 from datetime import datetime
 
@@ -233,29 +233,26 @@ def last_comment(table, products):
 @app.route("/component_list/<what_view>", methods=["GET", "POST"])
 def component_list(what_view):
     form = SearchProduct()
-
     components = Component.query.order_by(Component.id.asc())
-
     query_mapping = {
         "check_true": {"check": True},
         "active_components": {"status": "Active"},
         "eol_components": {"status": "EOL"},
     }
-
     if what_view.lower() in query_mapping:
         query_filters = query_mapping[what_view.lower()]
         components = components.filter_by(**query_filters)
-
     if form.validate_on_submit():
         components = Component.query.filter(
             (Component.name.like(f"%{form.product.data}%"))
         ).all()
-
+    components_names = json.dumps([component.name for component in components])
     return render_template(
         f"lists/component_list.html",
         title="Components",
         form=form,
         components=components,
+        components_names=components_names,
         last_comments=last_comment(table="component", products=components),
     )
 
@@ -279,12 +276,13 @@ def soi_list(what_view):
 
     if form.validate_on_submit():
         sois = SOI.query.filter((SOI.name.like(f"%{form.product.data}%"))).all()
-
+    sois_names = json.dumps([soi.name for soi in sois])
     last_comments = last_comment(table="soi", products=sois)
     return render_template(
         f"lists/soi_list.html",
         title="SOI",
         sois=sois,
+        sois_names=sois_names,
         last_comments=last_comments,
         form=form,
     )
@@ -310,29 +308,6 @@ def system_list():
         systems=systems,
         last_comments=last_comment(table="system", products=systems),
     )
-
-
-@app.route("/product_list_to_clipboard/<what_data>", methods=["GET", "POST"])
-def product_list_to_clipboard(what_data):
-    query_mapping = {
-        "active_components": Component.query.filter_by(status="Active").with_entities(
-            Component.name
-        ),
-        "all_components": Component.query.with_entities(Component.name),
-        "all_soi_poe": SOI.query.filter_by(status="Active - POE").with_entities(
-            SOI.name
-        ),
-        "all_soi_active_forecasted": SOI.query.filter_by(
-            status="Active - forecasted"
-        ).with_entities(SOI.name),
-        "all_soi_active_not_forecasted": SOI.query.filter_by(
-            status="Active - not forecasted"
-        ).with_entities(SOI.name),
-    }
-    data = "\n".join([x[0] for x in query_mapping.get(what_data.lower())])
-
-    pyperclip.copy(data)
-    return redirect(request.referrer)
 
 
 def get_used_components(products):
