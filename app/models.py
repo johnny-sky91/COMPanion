@@ -70,7 +70,7 @@ class SoiComment(db.Model):
 class GroupComment(db.Model):
     __tablename__ = "group_comment"
     id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(db.Integer, db.ForeignKey("group.id"))
+    product_id = db.Column(db.Integer, db.ForeignKey("my_group.id"))
     text = db.Column(db.String(160))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
@@ -110,21 +110,21 @@ class Todo(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
 
-class Group(db.Model):
-    __tablename__ = "group"
+class MyGroup(db.Model):
+    __tablename__ = "my_group"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(160), nullable=False)
     status = db.Column(db.String(160))
     note = db.Column(db.String(160))
     check = db.Column(db.Boolean, default=False)
-    comments = db.relationship("GroupComment", backref="group", lazy=True)
-    products = db.relationship("GroupProduct", backref="group", lazy=True)
+    comments = db.relationship("GroupComment", backref="my_group", lazy=True)
+    products = db.relationship("GroupProduct", backref="my_group", lazy=True)
 
 
 class GroupProduct(db.Model):
     __tablename__ = "group_product"
     id = db.Column(db.Integer, primary_key=True)
-    group_id = db.Column(db.String(160), db.ForeignKey("group.id"))
+    group_id = db.Column(db.String(160), db.ForeignKey("my_group.id"))
     soi_id = db.Column(db.Integer, db.ForeignKey("soi.id"))
     component_id = db.Column(db.Integer, db.ForeignKey("component.id"))
 

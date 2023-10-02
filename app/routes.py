@@ -32,7 +32,7 @@ from app.models import (
     SystemSoi,
     Todo,
     tables_dict,
-    Group,
+    MyGroup,
     GroupProduct,
     GroupComment,
 )
@@ -98,7 +98,7 @@ def component_view(id):
     sois_last_comment = last_comment(table="soi", products=sois)
     sois_names = json.dumps([soi.name for soi in sois])
     what_group = GroupProduct.query.filter_by(component_id=id).first()
-    group = Group.query.filter_by(id=what_group.group_id).first()
+    group = MyGroup.query.filter_by(id=what_group.group_id).first()
     return render_template(
         "view/component_view.html",
         title=f"{component.name}",
@@ -125,7 +125,7 @@ def soi_view(id):
     systems = System.query.join(SystemSoi).filter(SystemSoi.soi_joint == id).all()
     components_names = json.dumps([component.name for component in components])
     what_group = GroupProduct.query.filter_by(soi_id=id).first()
-    group = Group.query.filter_by(id=what_group.group_id).first()
+    group = MyGroup.query.filter_by(id=what_group.group_id).first()
     return render_template(
         "view/soi_view.html",
         title=f"{soi.name}",
@@ -168,9 +168,9 @@ def group_pivot(soi_ids, comp_ids):
     return results_component, soi_usage
 
 
-@app.route("/group_list/group_view/<id>", methods=["GET", "POST"])
-def group_view(id):
-    group = Group.query.get(id)
+@app.route("/my_group_list/my_group_view/<id>", methods=["GET", "POST"])
+def my_group_view(id):
+    group = MyGroup.query.get(id)
     group_products = GroupProduct.query.filter_by(group_id=id).all()
     soi_ids = [product.soi_id for product in group_products]
     comp_ids = [product.component_id for product in group_products]
@@ -187,7 +187,7 @@ def group_view(id):
         .all()
     )
     return render_template(
-        "view/group_view.html",
+        "view/my_group_view.html",
         title=f"{group.name}",
         group=group,
         components=data_group[0],
@@ -288,12 +288,12 @@ def soi_list(what_view):
     )
 
 
-@app.route("/group_list", methods=["GET", "POST"])
-def group_list():
-    groups = Group.query.all()
+@app.route("/my_group_list", methods=["GET", "POST"])
+def my_group_list():
+    groups = MyGroup.query.all()
 
     return render_template(
-        f"lists/group_list.html",
+        f"lists/my_group_list.html",
         title="Groups",
         groups=groups,
     )
@@ -365,12 +365,12 @@ def add_new_soi():
 
 @app.route("/group_list/add_new_group", methods=["GET", "POST"])
 def add_new_group():
-    groups = Group.query.all()
+    groups = MyGroup.query.all()
     form = AddGroup()
     if not groups:
         if request.method == "POST" and form.validate_on_submit():
             new_group_name = f"{form.name.data}_01"
-            new_group = Group(name=new_group_name)
+            new_group = MyGroup(name=new_group_name)
             db.session.add(new_group)
             db.session.commit()
 
@@ -386,7 +386,7 @@ def add_new_group():
         new_group_no = str(int(last_group_no) + 1).zfill(len(last_group_no))
         new_group_name = f"{last_group_name}_{new_group_no}"
 
-        new_group = Group(name=new_group_name)
+        new_group = MyGroup(name=new_group_name)
         db.session.add(new_group)
         db.session.commit()
 
@@ -463,7 +463,7 @@ def add_system_soi(id):
 
 @app.route("/group_list/group_view/<id>/add_product", methods=["GET", "POST"])
 def add_group_product(id):
-    group = Group.query.get(id)
+    group = MyGroup.query.get(id)
     form = AddGroupProduct()
     if form.validate_on_submit():
         new_soi = SOI.query.filter_by(name=form.soi.data).first()
@@ -491,6 +491,7 @@ def add_product_comment(table, table2, id):
     current_comment = get_current_comment(table=table, product_id=product.id)
     form = AddProductComment(text=current_comment)
     what_comment = tables_dict.get(table2)
+    print(f"{table}_view")
     if form.validate_on_submit():
         new_comment = what_comment(
             product_id=id,
@@ -512,9 +513,7 @@ def add_product_comment(table, table2, id):
 def add_new_note(table, id):
     product = db.session.query(tables_dict.get(table)).get(id)
     form = AddProductNote()
-    # table_note = tables_dict.get(table)
     if form.validate_on_submit():
-        # new_note = table_note(note=form.note.data)
         product.note = form.note.data
         db.session.commit()
         return redirect(url_for(f"{table}_view", id=id))
@@ -563,13 +562,18 @@ statuses_system = ["Active", "EOL", "NMB"]
 def product_change_status(table, id):
     form = ChangeStatus()
 
-    tables_dict = {"component": Component, "soi": SOI, "system": System, "group": Group}
+    tables_dict = {
+        "component": Component,
+        "soi": SOI,
+        "system": System,
+        "my_group": MyGroup,
+    }
 
     chosen_statuses = {
         "component": statuses_component,
         "soi": statuses_soi,
         "system": statuses_system,
-        "group": statuses_system,
+        "my_group": statuses_system,
     }
     product = db.session.query(tables_dict.get(table)).get(id)
 
@@ -633,7 +637,7 @@ def query_group_name(what_type, product_id):
     if what_type == "component":
         what_group = GroupProduct.query.filter_by(component_id=product_id).first()
     if what_group:
-        group = Group.query.filter_by(id=what_group.group_id).first().name
+        group = MyGroup.query.filter_by(id=what_group.group_id).first().name
     else:
         group = "NA"
     return group
@@ -687,7 +691,7 @@ def create_group_table(groups):
             "Note": [x.note for x in groups],
             "Last_comment": [
                 x.text if x is not None else ""
-                for x in last_comment(table="group", products=groups)
+                for x in last_comment(table="my_group", products=groups)
             ],
         }
     )
@@ -698,7 +702,7 @@ def create_group_table(groups):
 def download_app_data():
     soi = SOI.query.all()
     component = Component.query.all()
-    group = Group.query.all()
+    group = MyGroup.query.all()
 
     soi_table = create_soi_table(soi)
     component_table = create_component_table(component)
