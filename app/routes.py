@@ -288,10 +288,19 @@ def soi_list(what_view):
     )
 
 
-@app.route("/my_group_list", methods=["GET", "POST"])
-def my_group_list():
-    groups = MyGroup.query.all()
+@app.route("/my_group_list/<what_view>", methods=["GET", "POST"])
+def my_group_list(what_view):
+    groups = MyGroup.query.order_by(MyGroup.id.asc())
 
+    query_mapping = {
+        "check_true": {"check": True},
+        "status_active": {"status": "Active"},
+        "status_eol": {"status": "EOL"},
+        "status_nmb": {"status": "NMB"},
+    }
+    if what_view.lower() in query_mapping:
+        query_filters = query_mapping[what_view.lower()]
+        groups = groups.filter_by(**query_filters)
     return render_template(
         f"lists/my_group_list.html",
         title="Groups",
@@ -363,7 +372,7 @@ def add_new_soi():
     return render_template("add/add_new_soi.html", title="Add new SOI", form=form)
 
 
-@app.route("/group_list/add_new_group", methods=["GET", "POST"])
+@app.route("/my_group_list/add_new_group", methods=["GET", "POST"])
 def add_new_group():
     groups = MyGroup.query.all()
     form = AddGroup()
@@ -375,7 +384,7 @@ def add_new_group():
             db.session.commit()
 
             flash(f"A new group has been added - {new_group.name}")
-            return redirect(url_for("group_list"))
+            return redirect(url_for("my_group_list"))
 
         return render_template(
             "add/add_new_group.html", title="Add new group", form=form
@@ -391,7 +400,7 @@ def add_new_group():
         db.session.commit()
 
         flash(f"A new group has been added - {new_group.name}")
-        return redirect(url_for("group_list"))
+        return redirect(url_for("my_group_list"))
 
 
 @app.route("/system_list/add_new_system", methods=["GET", "POST"])
