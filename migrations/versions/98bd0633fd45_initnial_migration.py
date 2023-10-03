@@ -1,8 +1,8 @@
-"""empty message
+"""Initnial migration
 
-Revision ID: 860e37af2e23
+Revision ID: 98bd0633fd45
 Revises: 
-Create Date: 2023-04-24 14:02:23.025720
+Create Date: 2023-10-02 21:38:13.249723
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '860e37af2e23'
+revision = '98bd0633fd45'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,17 +22,29 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=160), nullable=True),
     sa.Column('description', sa.String(length=160), nullable=True),
+    sa.Column('supplier', sa.String(length=160), nullable=True),
     sa.Column('status', sa.String(length=160), nullable=True),
+    sa.Column('note', sa.String(length=160), nullable=True),
     sa.Column('check', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
+    )
+    op.create_table('my_group',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(length=160), nullable=False),
+    sa.Column('status', sa.String(length=160), nullable=True),
+    sa.Column('note', sa.String(length=160), nullable=True),
+    sa.Column('check', sa.Boolean(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('soi',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=160), nullable=True),
     sa.Column('description', sa.String(length=160), nullable=True),
     sa.Column('status', sa.String(length=160), nullable=True),
+    sa.Column('note', sa.String(length=160), nullable=True),
     sa.Column('check', sa.Boolean(), nullable=True),
+    sa.Column('dummy', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
@@ -40,10 +52,24 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=160), nullable=True),
     sa.Column('status', sa.String(length=160), nullable=True),
+    sa.Column('note', sa.String(length=160), nullable=True),
     sa.Column('check', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
+    op.create_table('todo',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('text', sa.String(length=160), nullable=False),
+    sa.Column('note', sa.String(length=160), nullable=True),
+    sa.Column('completed', sa.Boolean(), nullable=True),
+    sa.Column('priority', sa.String(length=16), nullable=False),
+    sa.Column('deadline', sa.Date(), nullable=True),
+    sa.Column('timestamp', sa.DateTime(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
+    with op.batch_alter_table('todo', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_todo_timestamp'), ['timestamp'], unique=False)
+
     op.create_table('component_comment',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('product_id', sa.Integer(), nullable=True),
@@ -59,8 +85,31 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('comp_joint', sa.Integer(), nullable=True),
     sa.Column('soi_joint', sa.Integer(), nullable=True),
+    sa.Column('main', sa.Boolean(), nullable=True),
+    sa.Column('usage', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['comp_joint'], ['component.id'], ),
     sa.ForeignKeyConstraint(['soi_joint'], ['soi.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('my_group_comment',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('product_id', sa.Integer(), nullable=True),
+    sa.Column('text', sa.String(length=160), nullable=True),
+    sa.Column('timestamp', sa.DateTime(), nullable=True),
+    sa.ForeignKeyConstraint(['product_id'], ['my_group.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    with op.batch_alter_table('my_group_comment', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_my_group_comment_timestamp'), ['timestamp'], unique=False)
+
+    op.create_table('my_group_product',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('my_group_id', sa.String(length=160), nullable=True),
+    sa.Column('soi_id', sa.Integer(), nullable=True),
+    sa.Column('component_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['component_id'], ['component.id'], ),
+    sa.ForeignKeyConstraint(['my_group_id'], ['my_group.id'], ),
+    sa.ForeignKeyConstraint(['soi_id'], ['soi.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('soi_comment',
@@ -85,11 +134,20 @@ def upgrade():
     with op.batch_alter_table('system_comment', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_system_comment_timestamp'), ['timestamp'], unique=False)
 
+    op.create_table('system_soi',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('system_joint', sa.Integer(), nullable=True),
+    sa.Column('soi_joint', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['soi_joint'], ['soi.id'], ),
+    sa.ForeignKeyConstraint(['system_joint'], ['system.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     # ### end Alembic commands ###
 
 
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
+    op.drop_table('system_soi')
     with op.batch_alter_table('system_comment', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_system_comment_timestamp'))
 
@@ -98,12 +156,22 @@ def downgrade():
         batch_op.drop_index(batch_op.f('ix_soi_comment_timestamp'))
 
     op.drop_table('soi_comment')
+    op.drop_table('my_group_product')
+    with op.batch_alter_table('my_group_comment', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_my_group_comment_timestamp'))
+
+    op.drop_table('my_group_comment')
     op.drop_table('component_soi')
     with op.batch_alter_table('component_comment', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_component_comment_timestamp'))
 
     op.drop_table('component_comment')
+    with op.batch_alter_table('todo', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_todo_timestamp'))
+
+    op.drop_table('todo')
     op.drop_table('system')
     op.drop_table('soi')
+    op.drop_table('my_group')
     op.drop_table('component')
     # ### end Alembic commands ###

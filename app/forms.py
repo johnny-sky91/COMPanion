@@ -21,8 +21,6 @@ from app.models import (
     System,
     ComponentSoi,
     SystemSoi,
-    MyGroup,
-    GroupProduct,
 )
 
 

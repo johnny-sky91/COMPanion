@@ -33,8 +33,8 @@ from app.models import (
     Todo,
     tables_dict,
     MyGroup,
-    GroupProduct,
-    GroupComment,
+    MyGroupProduct,
+    MyGroupComment,
 )
 import os, json
 import pandas as pd
@@ -97,8 +97,8 @@ def component_view(id):
     sois = SOI.query.join(ComponentSoi).filter(ComponentSoi.comp_joint == id).all()
     sois_last_comment = last_comment(table="soi", products=sois)
     sois_names = json.dumps([soi.name for soi in sois])
-    what_group = GroupProduct.query.filter_by(component_id=id).first()
-    group = MyGroup.query.filter_by(id=what_group.group_id).first()
+    what_group = MyGroupProduct.query.filter_by(component_id=id).first()
+    group = MyGroup.query.filter_by(id=what_group.my_group_id).first()
     return render_template(
         "view/component_view.html",
         title=f"{component.name}",
@@ -124,8 +124,8 @@ def soi_view(id):
     components_details = ComponentSoi.query.filter_by(soi_joint=id).all()
     systems = System.query.join(SystemSoi).filter(SystemSoi.soi_joint == id).all()
     components_names = json.dumps([component.name for component in components])
-    what_group = GroupProduct.query.filter_by(soi_id=id).first()
-    group = MyGroup.query.filter_by(id=what_group.group_id).first()
+    what_group = MyGroupProduct.query.filter_by(soi_id=id).first()
+    group = MyGroup.query.filter_by(id=what_group.my_group_id).first()
     return render_template(
         "view/soi_view.html",
         title=f"{soi.name}",
@@ -171,7 +171,7 @@ def group_pivot(soi_ids, comp_ids):
 @app.route("/my_group_list/my_group_view/<id>", methods=["GET", "POST"])
 def my_group_view(id):
     group = MyGroup.query.get(id)
-    group_products = GroupProduct.query.filter_by(group_id=id).all()
+    group_products = MyGroupProduct.query.filter_by(my_group_id=id).all()
     soi_ids = [product.soi_id for product in group_products]
     comp_ids = [product.component_id for product in group_products]
     data_group = group_pivot(soi_ids=soi_ids, comp_ids=comp_ids)
@@ -182,8 +182,8 @@ def my_group_view(id):
         list(set([Component.query.get(component_id).name for component_id in comp_ids]))
     )
     comments = (
-        GroupComment.query.filter_by(product_id=id)
-        .order_by(GroupComment.id.desc())
+        MyGroupComment.query.filter_by(product_id=id)
+        .order_by(MyGroupComment.id.desc())
         .all()
     )
     return render_template(
@@ -477,7 +477,7 @@ def add_group_product(id):
     if form.validate_on_submit():
         new_soi = SOI.query.filter_by(name=form.soi.data).first()
         new_comp = Component.query.filter_by(name=form.component.data).first()
-        new_product_group = GroupProduct(
+        new_product_group = MyGroupProduct(
             group_id=id, soi_id=new_soi.id, component_id=new_comp.id
         )
         db.session.add(new_product_group)
@@ -642,9 +642,9 @@ def remove_product_comment(table, table2, product_id, comment_id):
 
 def query_group_name(what_type, product_id):
     if what_type == "soi":
-        what_group = GroupProduct.query.filter_by(soi_id=product_id).first()
+        what_group = MyGroupProduct.query.filter_by(soi_id=product_id).first()
     if what_type == "component":
-        what_group = GroupProduct.query.filter_by(component_id=product_id).first()
+        what_group = MyGroupProduct.query.filter_by(component_id=product_id).first()
     if what_group:
         group = MyGroup.query.filter_by(id=what_group.group_id).first().name
     else:

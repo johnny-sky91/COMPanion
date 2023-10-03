@@ -13,7 +13,7 @@ class Component(db.Model):
     check = db.Column(db.Boolean, default=False)
     comments = db.relationship("ComponentComment", backref="component", lazy=True)
     soi_joint = db.relationship("ComponentSoi", backref="component", lazy=True)
-    group = db.relationship("GroupProduct", backref="component", lazy=True)
+    my_group = db.relationship("MyGroupProduct", backref="component", lazy=True)
 
     def __repr__(self):
         return f"<Component {self.name}>"
@@ -31,7 +31,7 @@ class SOI(db.Model):
     comments = db.relationship("SoiComment", backref="soi", lazy=True)
     component_joint = db.relationship("ComponentSoi", backref="soi", lazy=True)
     system_joint = db.relationship("SystemSoi", backref="soi", lazy=True)
-    group = db.relationship("GroupProduct", backref="soi", lazy=True)
+    my_group = db.relationship("MyGroupProduct", backref="soi", lazy=True)
 
     def __repr__(self):
         return f"<SOI {self.name}>"
@@ -67,8 +67,8 @@ class SoiComment(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
 
-class GroupComment(db.Model):
-    __tablename__ = "group_comment"
+class MyGroupComment(db.Model):
+    __tablename__ = "my_group_comment"
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey("my_group.id"))
     text = db.Column(db.String(160))
@@ -117,14 +117,14 @@ class MyGroup(db.Model):
     status = db.Column(db.String(160))
     note = db.Column(db.String(160))
     check = db.Column(db.Boolean, default=False)
-    comments = db.relationship("GroupComment", backref="my_group", lazy=True)
-    products = db.relationship("GroupProduct", backref="my_group", lazy=True)
+    comments = db.relationship("MyGroupComment", backref="my_group", lazy=True)
+    products = db.relationship("MyGroupProduct", backref="my_group", lazy=True)
 
 
-class GroupProduct(db.Model):
-    __tablename__ = "group_product"
+class MyGroupProduct(db.Model):
+    __tablename__ = "my_group_product"
     id = db.Column(db.Integer, primary_key=True)
-    group_id = db.Column(db.String(160), db.ForeignKey("my_group.id"))
+    my_group_id = db.Column(db.String(160), db.ForeignKey("my_group.id"))
     soi_id = db.Column(db.Integer, db.ForeignKey("soi.id"))
     component_id = db.Column(db.Integer, db.ForeignKey("component.id"))
 
