@@ -32,7 +32,11 @@
     </tr>
     <tr>
       <th>Group</th>
+      {% if group is not none %}   
       <td colspan="3"><a href="{{ url_for('my_group_view', id=group.id) }}">{{ group.name }}</a></td>
+      {% else %}
+      <td colspan="3">None</td>
+      {% endif %}
     </tr>
     <tr>
       <th rowspan="{{ sois|length + 1 }}">Used in SOI</th>

@@ -98,7 +98,10 @@ def component_view(id):
     sois_last_comment = last_comment(table="soi", products=sois)
     sois_names = json.dumps([soi.name for soi in sois])
     what_group = MyGroupProduct.query.filter_by(component_id=id).first()
-    group = MyGroup.query.filter_by(id=what_group.my_group_id).first()
+    if what_group is None:
+        group = None
+    else:
+        group = MyGroup.query.filter_by(id=what_group.my_group_id).first()
     return render_template(
         "view/component_view.html",
         title=f"{component.name}",
@@ -125,7 +128,10 @@ def soi_view(id):
     systems = System.query.join(SystemSoi).filter(SystemSoi.soi_joint == id).all()
     components_names = json.dumps([component.name for component in components])
     what_group = MyGroupProduct.query.filter_by(soi_id=id).first()
-    group = MyGroup.query.filter_by(id=what_group.my_group_id).first()
+    if what_group is None:
+        group = None
+    else:
+        group = MyGroup.query.filter_by(id=what_group.my_group_id).first()
     return render_template(
         "view/soi_view.html",
         title=f"{soi.name}",
@@ -646,7 +652,7 @@ def query_group_name(what_type, product_id):
     if what_type == "component":
         what_group = MyGroupProduct.query.filter_by(component_id=product_id).first()
     if what_group:
-        group = MyGroup.query.filter_by(id=what_group.group_id).first().name
+        group = MyGroup.query.filter_by(id=what_group.my_group_id).first().name
     else:
         group = "NA"
     return group

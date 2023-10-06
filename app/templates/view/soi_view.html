@@ -32,7 +32,11 @@
       </tr>
       <tr>
         <th>Group</th>
-        <td colspan="6"><a href="{{ url_for('my_group_view', id=group.id) }}">{{ group.name }}</a></td>
+        {% if group is not none %}   
+        <td colspan="3"><a href="{{ url_for('my_group_view', id=group.id) }}">{{ group.name }}</a></td>
+        {% else %}
+        <td colspan="3">None</td>
+        {% endif %}
       </tr>
       <tr>
         <th rowspan="{{ components|length + 1 }}"><a href="{{ url_for('add_comp_soi', id=soi.id) }}">Components used</a></th>
