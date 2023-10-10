@@ -66,7 +66,7 @@ def todo_view(what_view):
         )
         db.session.add(new_todo)
         db.session.commit()
-        flash(f"New TODO has been added")
+        flash(f"New TODO added")
         return redirect(request.referrer)
     return render_template("todo.html", title="Todo", todos=todos, form=form)
 
@@ -354,7 +354,7 @@ def add_new_component():
         )
         db.session.add(new_component)
         db.session.commit()
-        flash(f"A new component has been added - {new_component.name}")
+        flash(f"New component added - {new_component.name}")
         return redirect(url_for("component_list", what_view="all"))
     return render_template(
         "add/add_new_component.html", title="Add new Component", form=form
@@ -373,7 +373,7 @@ def add_new_soi():
         )
         db.session.add(new_soi)
         db.session.commit()
-        flash(f"A new SOI has been added - {new_soi.name}")
+        flash(f"New SOI added - {new_soi.name}")
         return redirect(url_for("soi_list", what_view="all"))
     return render_template("add/add_new_soi.html", title="Add new SOI", form=form)
 
@@ -389,7 +389,7 @@ def add_new_group():
             db.session.add(new_group)
             db.session.commit()
 
-            flash(f"A new group has been added - {new_group.name}")
+            flash(f"New group added - {new_group.name}")
             return redirect(url_for("my_group_list"))
 
         return render_template(
@@ -405,7 +405,7 @@ def add_new_group():
         db.session.add(new_group)
         db.session.commit()
 
-        flash(f"A new group has been added - {new_group.name}")
+        flash(f"New group added - {new_group.name}")
         return redirect(url_for("my_group_list"))
 
 
@@ -420,7 +420,7 @@ def add_new_system():
         )
         db.session.add(new_system)
         db.session.commit()
-        flash(f"A new System has been added - {new_system.name}")
+        flash(f"New system added - {new_system.name}")
         return redirect(url_for("system_list"))
     return render_template("add/add_new_system.html", title="Add new system", form=form)
 
@@ -445,7 +445,7 @@ def add_comp_soi(id):
         )
         db.session.add(new_component_soi)
         db.session.commit()
-        flash(f"New components for SOI {soi.name} has been added")
+        flash(f"New components for SOI {soi.name} added")
         return redirect(url_for("soi_view", id=id))
     return render_template(
         "add/add_comp_soi.html", title=f"Add comp to {soi.name}", form=form, soi=soi
@@ -466,7 +466,7 @@ def add_system_soi(id):
         )
         db.session.add(new_system_soi)
         db.session.commit()
-        flash(f"{soi.name} has been added to system {form.system.data}")
+        flash(f"{soi.name} added to system {form.system.data}")
         return redirect(url_for("soi_view", id=id))
     return render_template(
         "add/add_system_soi.html",
@@ -489,7 +489,7 @@ def add_group_product(id):
         db.session.add(new_product_group)
         db.session.commit()
         flash(
-            f"SOI {new_soi.name} and component {new_comp.name} has been added to group {group.name}"
+            f"SOI {new_soi.name} and component {new_comp.name} added to group {group.name}"
         )
         return redirect(url_for("group_view", id=id))
     return render_template(
@@ -514,7 +514,7 @@ def add_product_comment(table, table2, id):
         )
         db.session.add(new_comment)
         db.session.commit()
-        flash(f"New comment has been added")
+        flash(f"New comment added")
         return redirect(url_for(f"{table}_view", id=id))
     return render_template(
         f"add/add_product_comment.html",
@@ -684,6 +684,7 @@ def create_component_table(components):
         {
             "Component": [x.name for x in components],
             "Description": [x.description for x in components],
+            "Supplier": [x.supplier for x in components],
             "Status": [x.status for x in components],
             "Check": [x.check for x in components],
             "Group": component_groups,
