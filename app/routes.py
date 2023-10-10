@@ -307,9 +307,11 @@ def my_group_list(what_view):
     if what_view.lower() in query_mapping:
         query_filters = query_mapping[what_view.lower()]
         groups = groups.filter_by(**query_filters)
+    last_comments = last_comment(table="my_group", products=groups)
     return render_template(
         f"lists/my_group_list.html",
         title="Groups",
+        last_comments=last_comments,
         groups=groups,
     )
 
@@ -506,7 +508,6 @@ def add_product_comment(table, table2, id):
     current_comment = get_current_comment(table=table, product_id=product.id)
     form = AddProductComment(text=current_comment)
     what_comment = tables_dict.get(table2)
-    print(f"{table}_view")
     if form.validate_on_submit():
         new_comment = what_comment(
             product_id=id,

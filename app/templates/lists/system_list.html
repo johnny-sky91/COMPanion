@@ -17,7 +17,7 @@
     <tbody>
       {% for system in systems %}
       <tr>
-        <td>{{ system.id }}</td>
+        <td>{{ loop.index }}</td>
         <td><a href="{{ url_for('system_view', id=system.id) }}">{{ system.name }}</a></td>
         <td>{{ system.status }}</td>
         <td><a href="{{ url_for('change_check', table_name='system', id=system.id) }}">{{ system.check }}</a></td>

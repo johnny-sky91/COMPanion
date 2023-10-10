@@ -23,7 +23,7 @@
       <td colspan="3"><a href="{{ url_for('add_new_note', table='my_group', id=group.id) }}">{{ group.note }}</a></td>
     </tr>
     <tr>
-      <th rowspan="{{ comments|length + 1 }}"><a href="{{ url_for('add_product_comment', table='my_group', table2 = 'group_comment', id=group.id) }}">Comments</a</th>
+      <th rowspan="{{ comments|length + 1 }}"><a href="{{ url_for('add_product_comment', table='my_group', table2 = 'my_group_comment', id=group.id) }}">Comments</a</th>
       <th>Comment</th>
       <th>Date</th>
       <th colspan="4">Action</th>
