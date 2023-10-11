@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<body>
+  <table>
+    <thead>
+    <th colspan="3">{{ group.name }}<br><a href="{{ url_for('add_my_group_product', id=group.id) }}">Add new products</a></th>
+      <tr>
+        <th>SOI</th>
+        <th>Component</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for soi_component in data %}
+        <tr>
+        <td>{{ soi_component[0].name }}</td>
+        <td>{{ soi_component[1].name }}</td>
+        <td>Remove</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+  </body>
+
+{% endblock %}

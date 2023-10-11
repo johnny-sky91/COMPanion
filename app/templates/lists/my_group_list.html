@@ -25,7 +25,6 @@
       <td><a href="{{ url_for('change_check',table_name='my_group', id=group.id) }}">{{ group.check }}</a></td>
       <td><a href="{{ url_for('add_new_note', table='my_group', id=group.id) }}">{{ group.note }}</a></td>
       <td><a href="{{ url_for('add_product_comment', table='my_group', table2 = 'my_group_comment', id=group.id) }}">{{ last_comments[loop.index -1].text }}</a></td>
-
     </tr>
     {% endfor %}
   </tbody>

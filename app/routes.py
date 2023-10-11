@@ -79,6 +79,25 @@ def change_status_todo(id):
     return redirect(request.referrer)
 
 
+@app.route("/my_group_list/my_group_view/<id>/change_content", methods=["GET", "POST"])
+def change_group_content(id):
+    group = MyGroup.query.get(id)
+    group_products = MyGroupProduct.query.filter_by(my_group_id=id).all()
+    sois = [SOI.query.filter_by(id=pair.soi_id).first() for pair in group_products]
+    components = [
+        Component.query.filter_by(id=pair.component_id).first()
+        for pair in group_products
+    ]
+    data = zip(sois, components)
+    return render_template(
+        "update/update_group.html",
+        title=f"{group.name}_change_content",
+        group=group,
+        group_products=group_products,
+        data=data,
+    )
+
+
 @app.route("/todo/<id>/remove", methods=["GET", "POST"])
 def remove_todo(id):
     db.session.query(Todo).filter_by(id=id).delete()
@@ -178,15 +197,20 @@ def group_pivot(soi_ids, comp_ids):
 def my_group_view(id):
     group = MyGroup.query.get(id)
     group_products = MyGroupProduct.query.filter_by(my_group_id=id).all()
+
     soi_ids = [product.soi_id for product in group_products]
     comp_ids = [product.component_id for product in group_products]
+
     data_group = group_pivot(soi_ids=soi_ids, comp_ids=comp_ids)
-    sois_names = json.dumps(
-        list(set([SOI.query.get(soi_id).name for soi_id in soi_ids]))
-    )
+
+    sois = [SOI.query.get(soi_id) for soi_id in soi_ids]
+    sois_names = json.dumps(list(set([soi.name for soi in sois])))
+
+    components = [Component.query.get(component_id) for component_id in comp_ids]
     components_names = json.dumps(
-        list(set([Component.query.get(component_id).name for component_id in comp_ids]))
+        list(set([component.name for component in components]))
     )
+
     comments = (
         MyGroupComment.query.filter_by(product_id=id)
         .order_by(MyGroupComment.id.desc())
@@ -478,22 +502,22 @@ def add_system_soi(id):
     )
 
 
-@app.route("/group_list/group_view/<id>/add_product", methods=["GET", "POST"])
-def add_group_product(id):
+@app.route("/my_group_list/my_group_view/<id>/add_product", methods=["GET", "POST"])
+def add_my_group_product(id):
     group = MyGroup.query.get(id)
     form = AddGroupProduct()
     if form.validate_on_submit():
         new_soi = SOI.query.filter_by(name=form.soi.data).first()
         new_comp = Component.query.filter_by(name=form.component.data).first()
         new_product_group = MyGroupProduct(
-            group_id=id, soi_id=new_soi.id, component_id=new_comp.id
+            my_group_id=id, soi_id=new_soi.id, component_id=new_comp.id
         )
         db.session.add(new_product_group)
         db.session.commit()
         flash(
             f"SOI {new_soi.name} and component {new_comp.name} added to group {group.name}"
         )
-        return redirect(url_for("group_view", id=id))
+        return redirect(url_for("my_group_view", id=id))
     return render_template(
         "add/add_group_product.html",
         title=f"Add product to group {group.name}",
