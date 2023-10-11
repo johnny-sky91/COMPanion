@@ -11,11 +11,11 @@
       </tr>
     </thead>
     <tbody>
-        {% for soi_component in data %}
+        {% for pair in data %}
         <tr>
-        <td>{{ soi_component[0].name }}</td>
-        <td>{{ soi_component[1].name }}</td>
-        <td>Remove</td>
+        <td>{{ pair[0].name }}</td>
+        <td>{{ pair[1].name }}</td>
+        <td><a href="{{ url_for('remove_my_group_product',id=group.id, pair_id=pair[2].id) }}">Remove</a></td>
         </tr>
         {% endfor %}
     </tbody>

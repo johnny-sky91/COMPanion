@@ -88,7 +88,7 @@ def change_group_content(id):
         Component.query.filter_by(id=pair.component_id).first()
         for pair in group_products
     ]
-    data = zip(sois, components)
+    data = zip(sois, components, group_products)
     return render_template(
         "update/update_group.html",
         title=f"{group.name}_change_content",
@@ -584,6 +584,23 @@ def remove_system_soi(id, system):
     system_id = System.query.filter_by(name=system).first().id
     SystemSoi.query.filter_by(soi_joint=id, system_joint=system_id).delete()
     db.session.commit()
+    return redirect(request.referrer)
+
+
+@app.route(
+    "/my_group_list/my_group_view/<id>/remove_product/<pair_id>",
+    methods=["GET", "POST", "DELETE"],
+)
+def remove_my_group_product(id, pair_id):
+    group = MyGroup.query.get(id)
+    pair = MyGroupProduct.query.filter_by(id=pair_id)
+    soi = SOI.query.filter_by(id=pair.first().soi_id).first()
+    component = Component.query.filter_by(id=pair.first().component_id).first()
+    pair.delete()
+    db.session.commit()
+    flash(
+        f"SOI {soi.name} and component {component.name} removed from group {group.name}"
+    )
     return redirect(request.referrer)
 
 
