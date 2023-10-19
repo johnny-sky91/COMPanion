@@ -57,7 +57,9 @@
       <tr>
         <td><a href="{{ url_for('soi_view', id=data[0].id) }}">{{ data[0].name }}</a></td>
         <td>{{ data[0].status }}</td>
-        <td>{{ data[1][0] }}</td>
+        {% for x in data[1] %}
+        <td>{{ x }}</td>
+        {% endfor %}
       </tr>
       {% endfor %}
   </table>
