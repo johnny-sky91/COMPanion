@@ -7,6 +7,7 @@ from wtforms import (
     BooleanField,
     IntegerField,
     DateField,
+    validators,
 )
 from wtforms.validators import (
     DataRequired,
@@ -77,14 +78,28 @@ class AddGroup(FlaskForm):
 
 class AddGroupProduct(FlaskForm):
     soi = TextAreaField(
-        "SOI", validators=[DataRequired(message="SOI name can't be empty")]
+        "SOI",
+        validators=[DataRequired(message="SOI name can't be empty")],
     )
     component = TextAreaField(
         "Component", validators=[DataRequired(message="Component name can't be empty")]
     )
 
     submit = SubmitField("Add SOI/component to group")
-    # TODO add validator
+
+    def validate_soi(self, field):
+        name = field.data
+        soi = SOI.query.filter_by(name=name).first()
+        if not soi:
+            raise ValidationError("SOI isn't registered")
+
+    def validate_component(self, field):
+        name = field.data
+        component = Component.query.filter_by(name=name).first()
+        if not component:
+            raise ValidationError("Component isn't registered")
+
+    # TODO check if item is same group
 
 
 class AddSystem(FlaskForm):
