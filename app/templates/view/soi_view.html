@@ -33,9 +33,9 @@
       <tr>
         <th>Group</th>
         {% if group is not none %}   
-        <td colspan="3"><a href="{{ url_for('my_group_view', id=group.id) }}">{{ group.name }}</a></td>
+        <td colspan="6"><a href="{{ url_for('my_group_view', id=group.id) }}">{{ group.name }}</a></td>
         {% else %}
-        <td colspan="3">None</td>
+        <td colspan="6">None</td>
         {% endif %}
       </tr>
       <tr>
@@ -67,7 +67,7 @@
       <tr>
         <td>{{ system.name }}</td>
         <td>{{ system.status }}</td>
-        <td colspan="3"><a href="{{ url_for('remove_system_soi', id=soi.id, system=system.name) }}">Remove</a></td>
+        <td colspan="4"><a href="{{ url_for('remove_system_soi', id=soi.id, system=system.name) }}">Remove</a></td>
       </tr>
         {% endfor %}
       <tr>
