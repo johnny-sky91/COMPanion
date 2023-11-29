@@ -246,7 +246,10 @@ def system_view(id):
 
 @app.route("/other", methods=["GET", "POST"])
 def other_view():
-    return render_template("other.html")
+    return render_template(
+        "other.html",
+        title="Other",
+    )
 
 
 def last_comment(table, products):
