@@ -20,7 +20,7 @@
                 <a href="/system_list">Systems</a></a>
                 <a href="/other">Other</a></a>
             </div>
-            <a>Date: {{ current_date }}, Current week: {{ week_number }}</a>
+            <a>Date: {{ moment(current_date ).format('DD/MM/YYYY') }}, Current week: {{ week_number }}</a>
         </div>
         <!-- content -->
         <div class="container">
