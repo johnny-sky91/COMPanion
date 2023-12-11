@@ -263,6 +263,18 @@ def last_comment(table, products):
     return last_comments
 
 
+def groups_list(products):
+    groups_list = []
+    for product in products:
+        if not product.my_group:
+            groups_list.append(None)
+        else:
+            group_id = product.my_group[0].my_group_id
+            group = MyGroup.query.get(group_id)
+            groups_list.append(group if group else None)
+    return groups_list
+
+
 @app.route("/component_list/<what_view>", methods=["GET", "POST"])
 def component_list(what_view):
     form = SearchProduct()
@@ -280,12 +292,14 @@ def component_list(what_view):
             (Component.name.like(f"%{form.product.data}%"))
         ).all()
     components_names = json.dumps([component.name for component in components])
+    groups = groups_list(products=components)
     return render_template(
         f"lists/component_list.html",
         title="Components",
         form=form,
         components=components,
         components_names=components_names,
+        groups=groups,
         last_comments=last_comment(table="component", products=components),
     )
 
@@ -311,6 +325,8 @@ def soi_list(what_view):
         sois = SOI.query.filter((SOI.name.like(f"%{form.product.data}%"))).all()
     sois_names = json.dumps([soi.name for soi in sois])
     last_comments = last_comment(table="soi", products=sois)
+    groups = groups_list(products=sois)
+
     return render_template(
         f"lists/soi_list.html",
         title="SOI",
@@ -318,6 +334,7 @@ def soi_list(what_view):
         sois_names=sois_names,
         last_comments=last_comments,
         form=form,
+        groups=groups,
     )
 
 
