@@ -6,27 +6,22 @@
  a {
   margin-right: 10px;
 }
-
  table {
   font-family: Helvetica;
   border-collapse: collapse;
   width: 100%;
-}
 
+}
 td, th {
   border: 1px solid #ddd;
   padding: 3px;
 }
-
 thead th {
   position: sticky;
   top: 0;
 }
-
 tr:nth-child(even){background-color: #DFF5CE;white-space: nowrap;}
-
 tr:hover {background-color: #DEE2FC;}
-
 th {
   position: sticky;
   padding-top: 12px;
@@ -35,12 +30,10 @@ th {
   background-color: #86B049;
   color: black;
 }
-
 h1 {
   font-size: 36px;
   color: #333;
 }
-
 .menu {
 	background-color: #476930;
 	color: #fff;
@@ -54,12 +47,10 @@ h1 {
 	margin-left: 10px;
 	font-size: 20px;
 }
-
 content
 .container{
   max-width: 90%;
 }
-
 copy_button {
   color: #000000;
   background-color: #7ca540;
