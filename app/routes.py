@@ -452,7 +452,7 @@ def add_new_group():
         db.session.commit()
 
         flash(f"New group added - {new_group.name}")
-        return redirect(url_for("my_group_list"))
+        return redirect(request.referrer)
 
 
 @app.route("/system_list/add_new_system", methods=["GET", "POST"])
