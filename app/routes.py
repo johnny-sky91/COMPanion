@@ -787,7 +787,7 @@ def download_app_data():
     group_table = create_group_table(group)
 
     now = datetime.now()
-    timestamp = now.strftime("%d-%m-%H%M")
+    timestamp = now.strftime("%d%m%y_%H%M")
     filename = f"app_downloads/COMPanion_data_{timestamp}.xlsx"
     filepath = os.path.join(os.getcwd(), filename)
 
