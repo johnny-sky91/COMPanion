@@ -231,6 +231,7 @@ def my_group_view(id):
 @app.route("/system_list/system_view/<id>", methods=["GET", "POST"])
 def system_view(id):
     system = System.query.get(id)
+    sois = SOI.query.join(SystemSoi).filter(SystemSoi.system_joint == id).all()
     comments = (
         SystemComment.query.filter_by(product_id=id)
         .order_by(SystemComment.id.desc())
@@ -241,6 +242,7 @@ def system_view(id):
         title=f"{system.name}",
         system=system,
         comments=comments,
+        sois=sois,
     )
 
 
@@ -360,9 +362,20 @@ def my_group_list(what_view):
     )
 
 
-@app.route("/system_list", methods=["GET", "POST"])
-def system_list():
+@app.route("/system_list/<what_view>", methods=["GET", "POST"])
+def system_list(what_view):
     systems = System.query.order_by(System.name.asc())
+
+    query_mapping = {
+        "check_true": {"check": True},
+        "status_active": {"status": "Active"},
+        "status_eol": {"status": "EOL"},
+        "status_nmb": {"status": "NMB"},
+    }
+    if what_view.lower() in query_mapping:
+        query_filters = query_mapping[what_view.lower()]
+        systems = systems.filter_by(**query_filters)
+
     return render_template(
         f"lists/system_list.html",
         title="Systems",

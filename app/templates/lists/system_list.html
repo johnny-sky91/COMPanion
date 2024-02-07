@@ -1,15 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
 
-<a href="/system_list/add_new_system">Add new system</a>
+
 <body>
+  <a href="/system_list/add_new_system">Add new system</a>
+  <a href="/system_list/status_active">Active</a>
+  <a href="/system_list/status_eol">EOL</a>
+  <a href="/system_list/status_nmb">NMB</a>
   <table>
     <thead>
       <tr>
         <th>ID</th>
         <th>System</th>
         <th>Status</th>
-        <th>Check</th>
+        <th><a href="/system_list/check_true">Check</a></th>
         <th>Note</th>
         <th>Last comment</th>
       </tr>

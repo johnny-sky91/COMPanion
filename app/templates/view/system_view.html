@@ -23,6 +23,21 @@
       <td colspan="6"><a href="{{ url_for('add_new_note', table='system', id=system.id) }}">{{ system.note }}</a></td>
     </tr>
     <tr>
+      <th rowspan="{{ sois|length + 1 }}">SOI used</a></th>
+      <th>SOI</th>
+      <th>Description</th>
+      <th>Status</th>
+      <th colspan="3">Note</th>
+      {% for soi in sois %}
+      <tr>
+        <td><a href="{{ url_for('soi_view', id=soi.id) }}">{{ soi.name }}</a></td>
+        <td>{{ soi.description }}</td>
+        <td>{{ soi.status }}</td>
+        <td>{{ soi.note }}</td>
+      </tr>
+      {% endfor %}
+    </tr>
+    <tr>
       <th rowspan="{{ comments|length + 1 }}"><a href="{{ url_for('add_product_comment', table='system', table2 = 'system_comment', id=system.id) }}">Comments</a</th>
       <th>Comment</th>
       <th>Date</th>
