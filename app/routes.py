@@ -789,15 +789,69 @@ def create_group_table(groups):
     return group_table
 
 
+def create_system_table(systems):
+    system_table = pd.DataFrame(
+        {
+            "System": [x.name for x in systems],
+            "Status": [x.status for x in systems],
+            "Check": [x.check for x in systems],
+            "Note": [x.note for x in systems],
+            "Last_comment": [
+                x.text if x is not None else ""
+                for x in last_comment(table="system", products=systems)
+            ],
+        }
+    )
+    return system_table
+
+def create_bom_table(bom_data):
+    bom = pd.DataFrame(
+            {
+                "SOI": [
+                    SOI.query.filter_by(id=row.soi_joint).first().name
+                    for row in bom_data
+                ],
+                "Component": [
+                    Component.query.filter_by(id=row.comp_joint).first().name
+                    for row in bom_data
+                ],
+                "Usage": [row.usage for row in bom_data],
+                "Main": [row.main for row in bom_data],
+            }
+        )
+    return bom
+
+def create_system_soi_table(system_soi_data):
+        system_soi = pd.DataFrame(
+            {
+                "System": [
+                    System.query.filter_by(id=row.system_joint).first().name
+                    for row in system_soi_data
+                ],
+                "SOI": [
+                    SOI.query.filter_by(id=row.soi_joint).first().name
+                    for row in system_soi_data
+                ],
+            }
+        )
+        return system_soi
+
+
 @app.route("/other/download_data", methods=["GET", "POST"])
 def download_app_data():
     soi = SOI.query.all()
     component = Component.query.all()
     group = MyGroup.query.all()
+    system = System.query.all()
+    system_soi= SystemSoi.query.all()
+    bom = ComponentSoi.query.all()
 
     soi_table = create_soi_table(soi)
     component_table = create_component_table(component)
     group_table = create_group_table(group)
+    system_tabel = create_system_table(system)
+    system_soi_table = create_system_soi_table(system_soi)
+    bom_tabel = create_bom_table(bom)
 
     now = datetime.now()
     timestamp = now.strftime("%d%m%y_%H%M")
@@ -808,5 +862,8 @@ def download_app_data():
         soi_table.to_excel(writer, sheet_name="SOI_info", index=False)
         component_table.to_excel(writer, sheet_name="Component_info", index=False)
         group_table.to_excel(writer, sheet_name="Group_info", index=False)
+        system_tabel.to_excel(writer, sheet_name="System_info", index=False)
+        system_soi_table.to_excel(writer, sheet_name="System_SOI", index=False)
+        bom_tabel.to_excel(writer, sheet_name="BOM", index=False)
 
     return send_file(filepath, as_attachment=True)
