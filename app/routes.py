@@ -804,37 +804,38 @@ def create_system_table(systems):
     )
     return system_table
 
+
 def create_bom_table(bom_data):
     bom = pd.DataFrame(
-            {
-                "SOI": [
-                    SOI.query.filter_by(id=row.soi_joint).first().name
-                    for row in bom_data
-                ],
-                "Component": [
-                    Component.query.filter_by(id=row.comp_joint).first().name
-                    for row in bom_data
-                ],
-                "Usage": [row.usage for row in bom_data],
-                "Main": [row.main for row in bom_data],
-            }
-        )
+        {
+            "SOI": [
+                SOI.query.filter_by(id=row.soi_joint).first().name for row in bom_data
+            ],
+            "Component": [
+                Component.query.filter_by(id=row.comp_joint).first().name
+                for row in bom_data
+            ],
+            "Usage": [row.usage for row in bom_data],
+            "Main": [row.main for row in bom_data],
+        }
+    )
     return bom
 
+
 def create_system_soi_table(system_soi_data):
-        system_soi = pd.DataFrame(
-            {
-                "System": [
-                    System.query.filter_by(id=row.system_joint).first().name
-                    for row in system_soi_data
-                ],
-                "SOI": [
-                    SOI.query.filter_by(id=row.soi_joint).first().name
-                    for row in system_soi_data
-                ],
-            }
-        )
-        return system_soi
+    system_soi = pd.DataFrame(
+        {
+            "System": [
+                System.query.filter_by(id=row.system_joint).first().name
+                for row in system_soi_data
+            ],
+            "SOI": [
+                SOI.query.filter_by(id=row.soi_joint).first().name
+                for row in system_soi_data
+            ],
+        }
+    )
+    return system_soi
 
 
 @app.route("/other/download_data", methods=["GET", "POST"])
@@ -843,7 +844,7 @@ def download_app_data():
     component = Component.query.all()
     group = MyGroup.query.all()
     system = System.query.all()
-    system_soi= SystemSoi.query.all()
+    system_soi = SystemSoi.query.all()
     bom = ComponentSoi.query.all()
 
     soi_table = create_soi_table(soi)
@@ -855,7 +856,9 @@ def download_app_data():
 
     now = datetime.now()
     timestamp = now.strftime("%d%m%y_%H%M")
-    filename = f"app_downloads/COMPanion_data_{timestamp}.xlsx"
+    # filename = f"app_downloads/COMPanion_data_{timestamp}.xlsx"
+    filename = f"COMPanion_data_{timestamp}.xlsx"
+
     filepath = os.path.join(os.getcwd(), filename)
 
     with pd.ExcelWriter(filepath, engine="xlsxwriter") as writer:
@@ -866,4 +869,4 @@ def download_app_data():
         system_soi_table.to_excel(writer, sheet_name="System_SOI", index=False)
         bom_tabel.to_excel(writer, sheet_name="BOM", index=False)
 
-    return send_file(filepath, as_attachment=True)
+    return send_file(filepath, as_attachment=False)
