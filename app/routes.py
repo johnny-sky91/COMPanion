@@ -313,8 +313,8 @@ def soi_list(what_view):
     query_mapping = {
         "dummy_true": {"dummy": True},
         "check_true": {"check": True},
-        "status_poe": {"status": "Active - POE"},
         "status_active_forecasted": {"status": "Active - forecasted"},
+        "status_poe": {"status": "Active - POE"},
         "status_active_not_forecasted": {"status": "Active - not forecasted"},
         "status_eol": {"status": "Not active - EOL"},
     }
@@ -854,10 +854,16 @@ def download_app_data():
     system_soi_table = create_system_soi_table(system_soi)
     bom_tabel = create_bom_table(bom)
 
+    soi_table.columns = soi_table.columns.str.upper()
+    component_table.columns = component_table.columns.str.upper()
+    group_table.columns = group_table.columns.str.upper()
+    system_tabel.columns = system_tabel.columns.str.upper()
+    system_soi_table.columns = system_soi_table.columns.str.upper()
+    bom_tabel.columns = bom_tabel.columns.str.upper()
+
     now = datetime.now()
     timestamp = now.strftime("%d%m%y_%H%M")
-    # filename = f"app_downloads/COMPanion_data_{timestamp}.xlsx"
-    filename = f"COMPanion_data_{timestamp}.xlsx"
+    filename = f"app_downloads/COMPanion_data_{timestamp}.xlsx"
 
     filepath = os.path.join(os.getcwd(), filename)
 
@@ -869,4 +875,4 @@ def download_app_data():
         system_soi_table.to_excel(writer, sheet_name="System_SOI", index=False)
         bom_tabel.to_excel(writer, sheet_name="BOM", index=False)
 
-    return send_file(filepath, as_attachment=False)
+    return send_file(filepath, as_attachment=True)
