@@ -6,6 +6,7 @@ from flask import (
     url_for,
     request,
     send_file,
+    make_response,
 )
 from app.forms import (
     AddComponent,
@@ -36,7 +37,7 @@ from app.models import (
     MyGroupProduct,
     MyGroupComment,
 )
-import os, json
+import os, json, io
 import pandas as pd
 from datetime import datetime
 
@@ -738,13 +739,13 @@ def create_soi_table(sois):
     soi_table = pd.DataFrame(
         {
             "SOI": [x.name for x in sois],
-            "Description": [x.description for x in sois],
-            "Status": [x.status for x in sois],
-            "Dummy": [x.dummy for x in sois],
-            "Check": [x.check for x in sois],
-            "Group": soi_groups,
-            "Note": [x.note for x in sois],
-            "Last_comment": [
+            "DESCRIPTION": [x.description for x in sois],
+            "STATUS": [x.status for x in sois],
+            "DUMMY": [x.dummy for x in sois],
+            "CHECK": [x.check for x in sois],
+            "GROUP": soi_groups,
+            "NOTE": [x.note for x in sois],
+            "LAST_COMMENT": [
                 x.text if x is not None else ""
                 for x in last_comment(table="soi", products=sois)
             ],
@@ -757,14 +758,14 @@ def create_component_table(components):
     component_groups = [query_group_name("component", soi.id) for soi in components]
     component_table = pd.DataFrame(
         {
-            "Component": [x.name for x in components],
-            "Description": [x.description for x in components],
-            "Supplier": [x.supplier for x in components],
-            "Status": [x.status for x in components],
-            "Check": [x.check for x in components],
-            "Group": component_groups,
-            "Note": [x.note for x in components],
-            "Last_comment": [
+            "COMPONENT": [x.name for x in components],
+            "DESCRIPTION": [x.description for x in components],
+            "SUPPLIER": [x.supplier for x in components],
+            "STATUS": [x.status for x in components],
+            "CHECK": [x.check for x in components],
+            "GROUP": component_groups,
+            "NOTE": [x.note for x in components],
+            "LAST_COMMENT": [
                 x.text if x is not None else ""
                 for x in last_comment(table="component", products=components)
             ],
@@ -776,11 +777,11 @@ def create_component_table(components):
 def create_group_table(groups):
     group_table = pd.DataFrame(
         {
-            "Group": [x.name for x in groups],
-            "Status": [x.status for x in groups],
-            "Check": [x.check for x in groups],
-            "Note": [x.note for x in groups],
-            "Last_comment": [
+            "GROUP": [x.name for x in groups],
+            "STATUS": [x.status for x in groups],
+            "CHECK": [x.check for x in groups],
+            "NOTE": [x.note for x in groups],
+            "LAST_COMMENT": [
                 x.text if x is not None else ""
                 for x in last_comment(table="my_group", products=groups)
             ],
@@ -792,11 +793,11 @@ def create_group_table(groups):
 def create_system_table(systems):
     system_table = pd.DataFrame(
         {
-            "System": [x.name for x in systems],
-            "Status": [x.status for x in systems],
-            "Check": [x.check for x in systems],
-            "Note": [x.note for x in systems],
-            "Last_comment": [
+            "SYSTEM": [x.name for x in systems],
+            "STATUS": [x.status for x in systems],
+            "CHECK": [x.check for x in systems],
+            "NOTE": [x.note for x in systems],
+            "LAST_COMMENT": [
                 x.text if x is not None else ""
                 for x in last_comment(table="system", products=systems)
             ],
@@ -811,12 +812,12 @@ def create_bom_table(bom_data):
             "SOI": [
                 SOI.query.filter_by(id=row.soi_joint).first().name for row in bom_data
             ],
-            "Component": [
+            "COMPONENT": [
                 Component.query.filter_by(id=row.comp_joint).first().name
                 for row in bom_data
             ],
-            "Usage": [row.usage for row in bom_data],
-            "Main": [row.main for row in bom_data],
+            "USAGE": [row.usage for row in bom_data],
+            "MAIN": [row.main for row in bom_data],
         }
     )
     return bom
@@ -825,7 +826,7 @@ def create_bom_table(bom_data):
 def create_system_soi_table(system_soi_data):
     system_soi = pd.DataFrame(
         {
-            "System": [
+            "SYSTEM": [
                 System.query.filter_by(id=row.system_joint).first().name
                 for row in system_soi_data
             ],
@@ -854,25 +855,29 @@ def download_app_data():
     system_soi_table = create_system_soi_table(system_soi)
     bom_tabel = create_bom_table(bom)
 
-    soi_table.columns = soi_table.columns.str.upper()
-    component_table.columns = component_table.columns.str.upper()
-    group_table.columns = group_table.columns.str.upper()
-    system_tabel.columns = system_tabel.columns.str.upper()
-    system_soi_table.columns = system_soi_table.columns.str.upper()
-    bom_tabel.columns = bom_tabel.columns.str.upper()
-
     now = datetime.now()
     timestamp = now.strftime("%d%m%y_%H%M")
-    filename = f"app_downloads/COMPanion_data_{timestamp}.xlsx"
+    filename = f"COMPanion_data_{timestamp}"
 
-    filepath = os.path.join(os.getcwd(), filename)
+    out = io.BytesIO()
+    writer = pd.ExcelWriter(out, engine="xlsxwriter")
 
-    with pd.ExcelWriter(filepath, engine="xlsxwriter") as writer:
-        soi_table.to_excel(writer, sheet_name="SOI_info", index=False)
-        component_table.to_excel(writer, sheet_name="Component_info", index=False)
-        group_table.to_excel(writer, sheet_name="Group_info", index=False)
-        system_tabel.to_excel(writer, sheet_name="System_info", index=False)
-        system_soi_table.to_excel(writer, sheet_name="System_SOI", index=False)
-        bom_tabel.to_excel(writer, sheet_name="BOM", index=False)
+    soi_table.to_excel(excel_writer=writer, index=False, sheet_name="SOI_info")
+    component_table.to_excel(
+        excel_writer=writer, index=False, sheet_name="Component_info"
+    )
+    group_table.to_excel(excel_writer=writer, index=False, sheet_name="Group_info")
+    system_tabel.to_excel(excel_writer=writer, index=False, sheet_name="System_info")
+    system_soi_table.to_excel(excel_writer=writer, index=False, sheet_name="System_SOI")
+    bom_tabel.to_excel(excel_writer=writer, index=False, sheet_name="BOM")
 
-    return send_file(filepath, as_attachment=True)
+    writer._save()
+
+    download_response = make_response(out.getvalue())
+
+    download_response.headers["Content-Disposition"] = (
+        f"attachment; filename={filename}.xlsx"
+    )
+    download_response.headers["Content-type"] = "application/x-xlsx"
+
+    return download_response
