@@ -228,6 +228,21 @@ def my_group_view(id):
     )
 
 
+@app.route("/my_group_list/next_group/<step>/<int:id>", methods=["GET"])
+def next_group(step, id):
+    if step.lower() == "forward":
+        new_id = id + 1
+    else:
+        new_id = id - 1
+
+    next_group = MyGroup.query.get(new_id)
+    if next_group:
+        return redirect(url_for("my_group_view", id=new_id))
+    else:
+        flash("No more groups")
+        return redirect(url_for("my_group_view", id=id))
+
+
 @app.route("/system_list/system_view/<id>", methods=["GET", "POST"])
 def system_view(id):
     system = System.query.get(id)

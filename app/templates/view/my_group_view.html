@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
 <tbody>
+  <a href="{{ url_for('next_group', step='back', id=group.id) }}">Previous</a>
+  <a href="{{ url_for('next_group', step='forward', id=group.id) }}">Next</a>
   <table>
     <tr>
       <th>ID</th>
       <td colspan="3">{{ group.id }}</a></td>
-    </tr>
+    </tr> 
     <tr>
-      <th>Name</th>
-      <td colspan="3"><a href="{{ url_for('change_group_content', id=group.id) }}">{{ group.name }}</a></td>
+      <th>Name<br>
+      </th>
+      <td colspan="3"><a href="{{ url_for('change_group_content', id=group.id) }}">{{ group.name }}</a>
     </tr>
     <tr>
       <th>Status</th>
