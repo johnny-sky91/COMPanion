@@ -5,7 +5,6 @@ from flask import (
     redirect,
     url_for,
     request,
-    send_file,
     make_response,
 )
 from app.forms import (
