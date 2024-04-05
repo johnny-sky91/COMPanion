@@ -65,5 +65,19 @@
       </tr>
       {% endfor %}
   </table>
+  <table>
+    <tr>
+      <th>Used in systems</th>
+      <th>System status</th>
+      <th>System note</th>
+      <tr>
+      {% for system in systems %}
+      <td><a href="{{ url_for('system_view', id=system.id) }}">{{ system.name }}</a></td>
+      <td>{{ system.status }}</td>
+      <td>{{ system.note }}</td>
+      </tr>
+      {% endfor %}
+    </tr>
+  </table>
 </tbody>
 {% endblock %}

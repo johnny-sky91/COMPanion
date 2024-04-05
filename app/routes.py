@@ -36,7 +36,7 @@ from app.models import (
     MyGroupProduct,
     MyGroupComment,
 )
-import os, json, io
+import json, io, operator
 import pandas as pd
 from datetime import datetime
 
@@ -216,6 +216,15 @@ def my_group_view(id):
         .order_by(MyGroupComment.id.desc())
         .all()
     )
+
+    systems = set()
+    for soi_id in set(soi_ids):
+        one_soi_systems = (
+            System.query.join(SystemSoi).filter(SystemSoi.soi_joint == soi_id).all()
+        )
+        systems.update(one_soi_systems)
+
+    systems = sorted(list(systems), key=operator.attrgetter("name"))
     return render_template(
         "view/my_group_view.html",
         title=f"{group.name}",
@@ -225,6 +234,7 @@ def my_group_view(id):
         comments=comments,
         sois_names=sois_names,
         components_names=components_names,
+        systems=systems,
     )
 
 
