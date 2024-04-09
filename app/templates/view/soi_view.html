@@ -65,7 +65,7 @@
       </tr>  
       {% for system in systems %}
       <tr>
-        <td>{{ system.name }}</td>
+        <td><a href="{{ url_for('system_view', id=system.id) }}">{{ system.name }}</a></td>
         <td>{{ system.status }}</td>
         <td colspan="4"><a href="{{ url_for('remove_system_soi', id=soi.id, system=system.name) }}">Remove</a></td>
       </tr>
