@@ -348,6 +348,9 @@ def soi_list(what_view):
         query_filters = query_mapping[what_view.lower()]
         sois = sois.filter_by(**query_filters)
 
+    elif what_view.lower() == "status_active_forecasted_and_poe":
+        sois = sois.filter(SOI.status.in_(["Active - POE", "Active - forecasted"]))
+
     if form.validate_on_submit():
         sois = SOI.query.filter((SOI.name.like(f"%{form.product.data}%"))).all()
     sois_names = json.dumps([soi.name for soi in sois])
