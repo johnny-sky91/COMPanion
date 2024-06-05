@@ -1,8 +1,8 @@
-"""Initnial migration
+"""First
 
-Revision ID: 98bd0633fd45
+Revision ID: 7086bed2cb12
 Revises: 
-Create Date: 2023-10-02 21:38:13.249723
+Create Date: 2024-06-05 10:34:04.248711
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '98bd0633fd45'
+revision = '7086bed2cb12'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,12 +21,16 @@ def upgrade():
     op.create_table('component',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=160), nullable=True),
+    sa.Column('codenumber', sa.String(length=64), nullable=True),
+    sa.Column('material_number', sa.Integer(), nullable=True),
     sa.Column('description', sa.String(length=160), nullable=True),
     sa.Column('supplier', sa.String(length=160), nullable=True),
     sa.Column('status', sa.String(length=160), nullable=True),
     sa.Column('note', sa.String(length=160), nullable=True),
     sa.Column('check', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('codenumber'),
+    sa.UniqueConstraint('material_number'),
     sa.UniqueConstraint('name')
     )
     op.create_table('my_group',
@@ -40,12 +44,14 @@ def upgrade():
     op.create_table('soi',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=160), nullable=True),
+    sa.Column('material_number', sa.Integer(), nullable=True),
     sa.Column('description', sa.String(length=160), nullable=True),
     sa.Column('status', sa.String(length=160), nullable=True),
     sa.Column('note', sa.String(length=160), nullable=True),
     sa.Column('check', sa.Boolean(), nullable=True),
     sa.Column('dummy', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('material_number'),
     sa.UniqueConstraint('name')
     )
     op.create_table('system',

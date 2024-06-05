@@ -1,4 +1,5 @@
 from app import db
+
 from datetime import datetime
 
 
@@ -6,6 +7,8 @@ class Component(db.Model):
     __tablename__ = "component"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(160), unique=True)
+    codenumber = db.Column(db.String(64), unique=True)
+    material_number = db.Column(db.Integer, unique=True)
     description = db.Column(db.String(160))
     supplier = db.Column(db.String(160))
     status = db.Column(db.String(160))
@@ -23,6 +26,7 @@ class SOI(db.Model):
     __tablename__ = "soi"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(160), unique=True)
+    material_number = db.Column(db.Integer, unique=True)
     description = db.Column(db.String(160))
     status = db.Column(db.String(160))
     note = db.Column(db.String(160))

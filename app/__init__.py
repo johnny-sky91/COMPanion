@@ -1,17 +1,22 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from config import Config
 from flask_moment import Moment
+from config import Config
 
-# todo - get __init__ empty
-
-app = Flask(__name__)
-moment = Moment(app)
-
-app.config.from_object(Config)
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+db = SQLAlchemy()
+migrate = Migrate()
+moment = Moment()
 
 
-from app import routes, models
+def create_app(config_class=Config):
+    app = Flask(__name__)
+    app.config.from_object(config_class)
+    db.init_app(app)
+    migrate.init_app(app, db)
+    moment.init_app(app)
+
+    with app.app_context():
+        from . import routes, models  # Import routes and models
+
+    return app
