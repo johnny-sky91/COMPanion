@@ -128,8 +128,7 @@ class MyGroup(db.Model):
 class MyGroupProduct(db.Model):
     __tablename__ = "my_group_product"
     id = db.Column(db.Integer, primary_key=True)
-    # TODO this should be INT!
-    my_group_id = db.Column(db.String(160), db.ForeignKey("my_group.id"))
+    my_group_id = db.Column(db.Integer, db.ForeignKey("my_group.id"))
     soi_id = db.Column(db.Integer, db.ForeignKey("soi.id"))
     component_id = db.Column(db.Integer, db.ForeignKey("component.id"))
 
