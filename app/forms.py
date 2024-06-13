@@ -187,7 +187,7 @@ class AddSystemSOI(FlaskForm):
 
 class SearchProduct(FlaskForm):
     product = StringField("Search product", validators=[DataRequired()])
-    submit = SubmitField("Search")
+    submit_search = SubmitField("Search")
 
 
 class AddTodo(FlaskForm):

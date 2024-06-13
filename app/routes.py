@@ -41,6 +41,7 @@ from app.models import (
 import json, io, operator
 import pandas as pd
 from datetime import datetime
+import pyperclip
 
 
 @app.context_processor
@@ -306,30 +307,45 @@ def groups_list(products):
 
 @app.route("/component_list/<what_view>", methods=["GET", "POST"])
 def component_list(what_view):
-    form = SearchProduct()
-    components = Component.query.order_by(Component.id.asc())
     query_mapping = {
         "check_true": {"check": True},
         "active_components": {"status": "Active"},
         "eol_components": {"status": "EOL"},
     }
+    components_query = Component.query
+
     if what_view.lower() in query_mapping:
         query_filters = query_mapping[what_view.lower()]
-        components = components.filter_by(**query_filters)
-    if form.validate_on_submit():
-        components = Component.query.filter(
-            (Component.name.like(f"%{form.product.data}%"))
-        ).all()
+        components_query = components_query.filter_by(**query_filters)
+
+    form_search = SearchProduct()
+
+    if form_search.submit_search.data and form_search.validate():
+        to_search = form_search.product.data
+        components_query = components_query.filter(
+            Component.name.like(f"%{to_search}%")
+            | Component.codenumber.like(f"%{to_search}%")
+        )
+
+    components = components_query.order_by(Component.id.asc()).all()
+
     components_names = json.dumps([component.name for component in components])
+    components_codnumbers = json.dumps(
+        [component.codenumber for component in components]
+    )
+
     groups = groups_list(products=components)
+    last_comments = last_comment(table="component", products=components)
+
     return render_template(
-        f"lists/component_list.html",
+        "lists/component_list.html",
         title="Components",
-        form=form,
-        components=components,
+        form_search=form_search,
         components_names=components_names,
+        components_codnumbers=components_codnumbers,
+        components=components,
         groups=groups,
-        last_comments=last_comment(table="component", products=components),
+        last_comments=last_comments,
     )
 
 
@@ -355,6 +371,7 @@ def soi_list(what_view):
 
     if form.validate_on_submit():
         sois = SOI.query.filter((SOI.name.like(f"%{form.product.data}%"))).all()
+
     sois_names = json.dumps([soi.name for soi in sois])
     last_comments = last_comment(table="soi", products=sois)
     groups = groups_list(products=sois)
@@ -768,6 +785,7 @@ def create_soi_table(sois):
     soi_table = pd.DataFrame(
         {
             "SOI": [x.name for x in sois],
+            "MATERIAL_NUMBER": [x.material_number for x in sois],
             "DESCRIPTION": [x.description for x in sois],
             "STATUS": [x.status for x in sois],
             "DUMMY": [x.dummy for x in sois],
@@ -788,6 +806,8 @@ def create_component_table(components):
     component_table = pd.DataFrame(
         {
             "COMPONENT": [x.name for x in components],
+            "CODENUMBER": [x.codenumber for x in components],
+            "MATERIAL_NUMBER": [x.material_number for x in components],
             "DESCRIPTION": [x.description for x in components],
             "SUPPLIER": [x.supplier for x in components],
             "STATUS": [x.status for x in components],
