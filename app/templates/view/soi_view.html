@@ -15,6 +15,10 @@
         <td colspan="6">{{ soi.description }}</td>
       </tr>
       <tr>
+        <th>Material number</th>
+        <td class="tg-0lax" colspan="4">{{ soi.material_number }}</td>
+      </tr>
+      <tr>
         <th>Dummy</th>
         <td colspan="6"><a href="{{ url_for('change_dummy', id=soi.id) }}">{{ soi.dummy }}</a></td>
       </tr>
