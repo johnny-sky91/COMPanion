@@ -15,6 +15,14 @@
       <td colspan="4">{{ component.description }}</td>
     </tr>
     <tr>
+      <th>Codenumber</th>
+      <td class="tg-0lax" colspan="4">{{ component.codenumber }}</td>
+    </tr>
+    <tr>
+      <th>Material number</th>
+      <td class="tg-0lax" colspan="4">{{ component.material_number }}</td>
+    </tr>
+    <tr>
       <th>Check</th>
       <td colspan="4"><a href="{{ url_for('change_check',table_name='component', id=component.id) }}">{{ component.check }}</a></td>
     </tr>
