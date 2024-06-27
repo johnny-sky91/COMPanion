@@ -8,12 +8,12 @@
   <a href="/soi_list/status_active_not_forecasted">Active - not forecasted</a>
 
   <form action="" method="post" novalidate>
-    {{form.hidden_tag()}}
+    {{form_search.hidden_tag()}}
     <p style="font-size:18px">
-      {{ form.product.label }}:
-      {{ form.product(style='height: 20px; width:200px') }}
-      {{ form.submit() }}
-      {% for error in form.product.errors %}
+      {{ form_search.product.label }}:
+      {{ form_search.product(style='height: 20px; width:200px') }}
+      {{ form_search.submit_search() }}
+      {% for error in form_search.product.errors %}
       <span style="color: red;">{{ error }}</span>
       {% endfor %}<br>
     </p>
@@ -36,7 +36,7 @@
       <tr>
         <td>{{ loop.index }}</td>
         <td><a href="{{ url_for('soi_view', id=soi.id) }}">{{ soi.name }}</a></td>
-        <td>{{ soi.description }}</td>
+        <td>{{ soi.description }}<br><h style="font-size: 14px;">{{ soi.material_number }}</h></td>
         {% if groups[loop.index -1] is not none %}   
         <td><a href="{{ url_for('my_group_view', id=groups[loop.index -1].id) }}">{{ groups[loop.index -1].name }}</a></td>
         {% else %}
