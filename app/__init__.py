@@ -17,6 +17,6 @@ def create_app(config_class=Config):
     moment.init_app(app)
 
     with app.app_context():
-        from . import routes, models  # Import routes and models
+        from . import routes, models
 
     return app
