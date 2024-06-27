@@ -351,7 +351,6 @@ def component_list(what_view):
 
 @app.route("/soi_list/<what_view>", methods=["GET", "POST"])
 def soi_list(what_view):
-    form = SearchProduct()
     sois = SOI.query.order_by(SOI.id.asc())
     query_mapping = {
         "dummy_true": {"dummy": True},
@@ -369,8 +368,9 @@ def soi_list(what_view):
     elif what_view.lower() == "status_active_forecasted_and_poe":
         sois = sois.filter(SOI.status.in_(["Active - POE", "Active - forecasted"]))
 
-    if form.validate_on_submit():
-        sois = SOI.query.filter((SOI.name.like(f"%{form.product.data}%"))).all()
+    form_search = SearchProduct()
+    if form_search.validate_on_submit():
+        sois = SOI.query.filter((SOI.name.like(f"%{form_search.product.data}%"))).all()
 
     sois_names = json.dumps([soi.name for soi in sois])
     last_comments = last_comment(table="soi", products=sois)
@@ -382,7 +382,7 @@ def soi_list(what_view):
         sois=sois,
         sois_names=sois_names,
         last_comments=last_comments,
-        form=form,
+        form_search=form_search,
         groups=groups,
     )
 
