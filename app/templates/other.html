@@ -1,7 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
 
-<p>Other view</p>
-<a href="/other/download_data">Download data</a>
+<a href="/other/download_data">Download app data</a><br><br>
+<a href="/other/download_groups_update_file">Prepare update groups file</a>
+<form action="/other/upload_groups_update_file" method="post" novalidate enctype="multipart/form-data" novalidate>
+  {{groups_form.hidden_tag()}}
+  <p style="font-size:18px">
+    {{ groups_form.groups_file.label }}:
+    {{ groups_form.groups_file() }}<br>
+    {{ groups_form.submit() }}
+    {% for error in groups_form.groups_file.errors %}
+    <span style="color: red;">{{ error }}</span>
+    {% endfor %}<br>
+  </p>
+</form>
 
 {% endblock %}

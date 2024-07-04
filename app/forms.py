@@ -7,6 +7,7 @@ from wtforms import (
     BooleanField,
     IntegerField,
     DateField,
+    FileField,
     validators,
 )
 from wtforms.validators import (
@@ -207,3 +208,8 @@ class AddProductNote(FlaskForm):
         validators=[DataRequired(message="New note can't be empty")],
     )
     submit = SubmitField("Change note")
+
+
+class AddGroupsFile(FlaskForm):
+    groups_file = FileField("Groups update file")
+    submit = SubmitField("Change groups")

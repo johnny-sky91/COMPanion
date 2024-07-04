@@ -22,6 +22,7 @@ from app.forms import (
     AddGroup,
     AddGroupProduct,
     AddProductNote,
+    AddGroupsFile,
 )
 from app.models import (
     System,
@@ -41,7 +42,6 @@ from app.models import (
 import json, io, operator
 import pandas as pd
 from datetime import datetime
-import pyperclip
 
 
 @app.context_processor
@@ -200,7 +200,8 @@ def group_pivot(soi_ids, comp_ids):
 def my_group_view(id):
     group = MyGroup.query.get(id)
     group_products = MyGroupProduct.query.filter_by(my_group_id=id).all()
-
+    for x in group_products:
+        print(x)
     soi_ids = [product.soi_id for product in group_products]
     comp_ids = [product.component_id for product in group_products]
 
@@ -274,12 +275,18 @@ def system_view(id):
     )
 
 
+# TODO upload excel file
 @app.route("/other", methods=["GET", "POST"])
 def other_view():
-    return render_template(
-        "other.html",
-        title="Other",
-    )
+    groups_form = AddGroupsFile()
+    if groups_form.validate_on_submit():
+        file = groups_form.groups_file.data
+        # print(groups_form.groups_file.data)
+        data = pd.read_excel(file)
+        print(data)
+        flash(f"Groups updated!")
+        return redirect(request.referrer)
+    return render_template("other.html", title="Other", groups_form=groups_form)
 
 
 def last_comment(table, products):
@@ -930,3 +937,74 @@ def download_app_data():
     download_response.headers["Content-type"] = "application/x-xlsx"
 
     return download_response
+
+
+@app.route("/other/download_groups_update_file", methods=["GET", "POST"])
+def download_groups_update_file():
+    update_table = pd.DataFrame(columns=["SOI", "COMPONENT", "GROUP"])
+
+    now = datetime.now()
+    timestamp = now.strftime("%d%m%y_%H%M")
+    filename = f"COMPanion_groups_update_{timestamp}"
+
+    out = io.BytesIO()
+
+    writer = pd.ExcelWriter(out, engine="xlsxwriter")
+    update_table.to_excel(excel_writer=writer, index=False, sheet_name="Groups_update")
+    writer._save()
+
+    download_response = make_response(out.getvalue())
+    download_response.headers["Content-Disposition"] = (
+        f"attachment; filename={filename}.xlsx"
+    )
+    download_response.headers["Content-type"] = "application/x-xlsx"
+
+    return download_response
+
+
+def groups_mass_change(group_data):
+    MyGroupProduct.query.delete()
+    db.session.commit()
+    if set(group_data.columns) != set(["SOI", "COMPONENT", "GROUP"]):
+        return f"Wrong file uploaded!"
+    for index, row in group_data.iterrows():
+        soi = SOI.query.filter_by(name=row["SOI"]).first()
+        component = Component.query.filter_by(name=row["COMPONENT"]).first()
+        group = MyGroup.query.filter_by(name=row["GROUP"]).first()
+
+        if not soi:
+            error_message = f"SOI '{row['SOI']}' not found in the database."
+            break
+        if not component:
+            error_message = f"Component '{row['COMPONENT']}' not found in the database."
+            break
+        if not group:
+            error_message = f"Group '{row['GROUP']}' not found in the database."
+            break
+
+        new_product_group = MyGroupProduct(
+            my_group_id=group.id,
+            soi_id=soi.id,
+            component_id=component.id,
+        )
+        db.session.add(new_product_group)
+        db.session.commit()
+    else:
+        return "All groups processed successfully."
+
+    return error_message
+
+
+@app.route("/other/upload_groups_update_file", methods=["GET", "POST"])
+def upload_groups_update_file():
+    form = AddGroupsFile()
+    if form.validate_on_submit():
+        groups_file = form.groups_file.data
+        if groups_file and groups_file.filename.endswith(".xlsx"):
+            data = pd.read_excel(io.BytesIO(groups_file.read()))
+            msg = groups_mass_change(group_data=data)
+            flash(msg)
+            return redirect(request.referrer)
+        else:
+            flash("Please upload a valid Excel file (.xlsx)")
+    return redirect(request.referrer)
