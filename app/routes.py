@@ -18,7 +18,6 @@ from app.forms import (
     AddCompSoi,
     SearchProduct,
     AddSystemSOI,
-    AddTodo,
     AddGroup,
     AddGroupProduct,
     AddProductNote,
@@ -33,7 +32,6 @@ from app.models import (
     SystemComment,
     ComponentSoi,
     SystemSoi,
-    Todo,
     tables_dict,
     MyGroup,
     MyGroupProduct,
@@ -50,37 +48,6 @@ def inject_date_cw():
     current_date = datetime.now().date()
     week_number = current_date.isocalendar()[1]
     return dict(current_date=current_date, week_number=week_number)
-
-
-@app.route("/todo/<what_view>", methods=["GET", "POST"])
-def todo_view(what_view):
-    todos = Todo.query.filter_by(completed=False).all()
-    form = AddTodo()
-
-    if what_view.lower() == "completed_false":
-        todos = Todo.query.filter_by(completed=False).all()
-    if what_view.lower() == "completed_true":
-        todos = Todo.query.filter_by(completed=True).all()
-
-    if form.validate_on_submit():
-        new_todo = Todo(
-            text=form.text.data,
-            priority=form.priority.data,
-            deadline=form.deadline.data,
-        )
-        db.session.add(new_todo)
-        db.session.commit()
-        flash(f"New TODO added")
-        return redirect(request.referrer)
-    return render_template("todo.html", title="Todo", todos=todos, form=form)
-
-
-@app.route("/todo/<id>/change_status", methods=["GET", "POST"])
-def change_status_todo(id):
-    todo = Todo.query.get(id)
-    todo.completed = not todo.completed
-    db.session.commit()
-    return redirect(request.referrer)
 
 
 @app.route("/my_group_list/my_group_view/<id>/change_content", methods=["GET", "POST"])
@@ -100,13 +67,6 @@ def change_group_content(id):
         group_products=group_products,
         data=data,
     )
-
-
-@app.route("/todo/<id>/remove", methods=["GET", "POST"])
-def remove_todo(id):
-    db.session.query(Todo).filter_by(id=id).delete()
-    db.session.commit()
-    return redirect(request.referrer)
 
 
 @app.route("/component_list/component_view/<id>", methods=["GET", "POST"])
