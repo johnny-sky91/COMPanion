@@ -17,8 +17,10 @@ def create_app(config_class=Config):
     moment.init_app(app)
 
     from app.todos import todos
+    from app.others import others
 
     app.register_blueprint(todos)
+    app.register_blueprint(others)
 
     with app.app_context():
         from . import routes, models
